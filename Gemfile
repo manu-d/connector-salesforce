@@ -24,8 +24,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'delayed_job_active_record'
-# gem 'puma'
-gem 'trinidad'
+gem 'puma'
 gem 'restforce'
 gem 'omniauth-salesforce'
 gem 'maestrano-rails'
