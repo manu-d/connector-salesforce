@@ -4,8 +4,6 @@ ruby '2.2.2', :engine => 'jruby', :engine_version => '9.0.1.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'
-# Use jdbcsqlite3 as the database for Active Record
-gem 'activerecord-jdbcsqlite3-adapter'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -23,7 +21,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-gem 'delayed_job_active_record'
 gem 'puma'
 gem 'restforce'
 gem 'omniauth-salesforce'
@@ -36,4 +33,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 group :production do
   gem 'rails_12factor'
   gem 'activerecord-jdbcpostgresql-adapter'
+  gem 'delayed_job_active_record'
+end
+
+group :test, :develpment do
+  gem 'activerecord-jdbcsqlite3-adapter'
 end
