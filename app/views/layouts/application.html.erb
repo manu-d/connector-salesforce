@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SalesForce Connector</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  
+  <p>Data sharing between Connec!™ and SalesForce APIs</p>
+
+  <div id="current-user-status">
+    <% if current_user %>
+      Welcome <%= current_user.first_name %> <br/><br/>
+      <%= link_to "Disconnect your Maestrano account", signout_path %> <br/>
+
+      <% if current_user.oauth_uid %>
+        Linked to SalesForce Account <%= current_user.oauth_uid %> <br/>
+        <%= link_to "Disconnect your Salesforce account", signout_omniauth_path %>
+      <% else %>
+        <%= link_to "Link your Salesforce account", "/auth/salesforce", id: "sign_in" %>
+      <% end %>
+    <% else %>
+      <%= link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default) %>
+    <% end %>
+  </div>
+
+<%= yield %>
+
+</body>
+</html>

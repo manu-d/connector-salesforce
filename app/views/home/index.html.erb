@@ -1,0 +1,15 @@
+<h2>Salesforce Accounts</h2>
+
+<% if @accounts %>
+  <% @accounts.each do |account| %>
+    <%= account.Id %> - <%= account.Name %><br/>
+  <% end %>
+<% end %>
+
+<h2>Connec! Organizations</h2>
+
+<% if @organizations %>
+  <% @organizations.each do |organization| %>
+    <%= organization['id'] %> - <%= organization['name'] %><br/>
+  <% end %>
+<% end %>
