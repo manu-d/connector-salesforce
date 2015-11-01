@@ -51,6 +51,7 @@ Maestrano['default'].configure do |config|
   # generated when you run 'rake maestrano:install' and is available at
   # <rails_root>/app/controllers/maestrano/auth/saml.rb
   #
+  config.sso.init_path = '/maestrano/auth/saml/init/default'
   
   # ==> SSO Consumer endpoint
   # This is your application path to the SAML endpoint that allows users to
