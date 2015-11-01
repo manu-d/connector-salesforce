@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   maestrano_routes
 
+  get 'metadata' => 'metadata#index'
+  get 'metadata/:tenant', to: 'metadata#index', as: 'tenant'
+
   get 'home/index' => 'home#index'
   post 'home/synchronize' => 'home#synchronize'
 
