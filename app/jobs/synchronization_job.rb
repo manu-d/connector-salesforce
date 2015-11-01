@@ -34,8 +34,7 @@ class SynchronizationJob
       refresh_token: organization.refresh_token,
       instance_url: organization.instance_url,
       client_id: ENV['salesforce_client_id'],
-      client_secret: ENV['salesforce_client_secret'],
-      cache: Rails.cache
+      client_secret: ENV['salesforce_client_secret']
 
     if last_synchronization
       # Cannot get the get_updated query to work
@@ -51,8 +50,7 @@ class SynchronizationJob
       refresh_token: organization.refresh_token,
       instance_url: organization.instance_url,
       client_id: ENV['salesforce_client_id'],
-      client_secret: ENV['salesforce_client_secret'],
-      cache: Rails.cache
+      client_secret: ENV['salesforce_client_secret']
 
     client.create('Account', Name: connec_organization['name'])
   end

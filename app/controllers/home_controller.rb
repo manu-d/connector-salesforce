@@ -14,8 +14,7 @@ class HomeController < ApplicationController
             refresh_token: organization.refresh_token,
             instance_url: organization.instance_url,
             client_id: ENV['salesforce_client_id'],
-            client_secret: ENV['salesforce_client_secret'],
-            cache: Rails.cache
+            client_secret: ENV['salesforce_client_secret']
 
           organization_data[:salesforce_organizations] = client.query('select Id, Name from Account ORDER BY Name')
         end

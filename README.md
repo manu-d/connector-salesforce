@@ -1,4 +1,4 @@
-== SalesForce Connector
+# SalesForce Connector
 
 The aim of this connector is to implement data sharing between Connec! and SalesForce
 
