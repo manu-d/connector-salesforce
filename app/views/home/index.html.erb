@@ -1,15 +1,13 @@
-<h2>Salesforce Accounts</h2>
+<% @organizations_data.each do |organization_data| %>
+  <h3>Maestrano Organization <%= organization_data[:uid] %> - <%= organization_data[:name] %> - Last synch: <%= organization_data[:last_synchronization].status %> <%= organization_data[:last_synchronization].updated_at %></h3>
 
-<% if @accounts %>
-  <% @accounts.each do |account| %>
-    <%= account.Id %> - <%= account.Name %><br/>
+  <h4>SalesForce Accounts</h4>
+  <% organization_data[:salesforce_organizations].each do |salesforce_organization| %>
+    <%= salesforce_organization.Id %> - <%= salesforce_organization.Name %><br/>
   <% end %>
-<% end %>
 
-<h2>Connec! Organizations</h2>
-
-<% if @organizations %>
-  <% @organizations.each do |organization| %>
-    <%= organization['id'] %> - <%= organization['name'] %><br/>
+  <h4>Connec Organization</h4>
+  <% organization_data[:connec_organizations].each do |connec_organization| %>
+    <%= connec_organization['id'] %> - <%= connec_organization['name'] %><br/>
   <% end %>
 <% end %>

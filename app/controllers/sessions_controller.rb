@@ -1,24 +1,25 @@
 class SessionsController < ApplicationController
-  # Link a user to SalesForce OAuth account
+  # Link an Organization to SalesForce OAuth account
   def create_omniauth
-    user = User.from_omniauth(env["omniauth.auth"])
-    session[:user_id] = user.id
+    Organization.from_omniauth(env["omniauth.auth"])
     redirect_to root_url
   end
 
-  # Unlink user from SalesForce
+  # Unlink Organization from SalesForce
   def destroy_omniauth
-    current_user.oauth_uid = nil
-    current_user.oauth_token = nil
-    current_user.refresh_token = nil
-    current_user.save
+    organization = Organization.find(params[:organization_id])
+    if organization && organization.member?(current_user)
+      organization.oauth_uid = nil
+      organization.oauth_token = nil
+      organization.refresh_token = nil
+      organization.save
+    end
     
     redirect_to root_url
   end
 
   # Logout
   def destroy
-    session.delete(:user_id)
     session.delete(:uid)
     @current_user = nil
 

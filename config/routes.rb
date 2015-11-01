@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   maestrano_routes
 
   get 'home/index' => 'home#index'
+  post 'home/synchronize' => 'home#synchronize'
 
   match 'auth/:provider/callback', to: 'sessions#create_omniauth', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]

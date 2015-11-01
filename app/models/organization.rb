@@ -31,4 +31,15 @@ class Organization < ActiveRecord::Base
   def remove_member(user)
     self.user_organization_rels.where(user_id:user.id).delete_all
   end
+
+  def self.from_omniauth(auth)
+    where(auth.slice(:provider, :uid).permit!).first_or_initialize.tap do |organization|
+      organization.oauth_provider = auth.provider
+      organization.oauth_uid = auth.uid
+      organization.oauth_token = auth.credentials.token
+      organization.refresh_token = auth.credentials.refresh_token
+      organization.instance_url = auth.credentials.instance_url
+      organization.save!
+    end
+  end
 end

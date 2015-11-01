@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151022132928) do
+ActiveRecord::Schema.define(version: 20151101052550) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -29,12 +29,38 @@ ActiveRecord::Schema.define(version: 20151022132928) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
+  create_table "id_maps", force: :cascade do |t|
+    t.string   "connec_id",         limit: 255
+    t.string   "connec_entity",     limit: 255
+    t.string   "salesforce_id",     limit: 255
+    t.string   "salesforce_entity", limit: 255
+    t.integer  "organization_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
   create_table "organizations", force: :cascade do |t|
-    t.string   "provider",   limit: 255
-    t.string   "uid",        limit: 255
-    t.string   "name",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "provider",       limit: 255
+    t.string   "uid",            limit: 255
+    t.string   "name",           limit: 255
+    t.string   "tenant",         limit: 255
+    t.string   "oauth_provider", limit: 255
+    t.string   "oauth_uid",      limit: 255
+    t.string   "oauth_token",    limit: 255
+    t.string   "refresh_token",  limit: 255
+    t.string   "instance_url",   limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "synchronizations", force: :cascade do |t|
+    t.string   "provider",        limit: 255
+    t.integer  "organization_id"
+    t.string   "tenant",          limit: 255
+    t.string   "status",          limit: 255
+    t.string   "message",         limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "user_organization_rels", force: :cascade do |t|
@@ -45,19 +71,14 @@ ActiveRecord::Schema.define(version: 20151022132928) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "provider",       limit: 255
-    t.string   "uid",            limit: 255
-    t.string   "first_name",     limit: 255
-    t.string   "last_name",      limit: 255
-    t.string   "email",          limit: 255
-    t.string   "country_code",   limit: 255
-    t.string   "oauth_provider", limit: 255
-    t.string   "oauth_uid",      limit: 255
-    t.string   "oauth_token",    limit: 255
-    t.string   "refresh_token",  limit: 255
-    t.string   "instance_url",   limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "provider",   limit: 255
+    t.string   "uid",        limit: 255
+    t.string   "first_name", limit: 255
+    t.string   "last_name",  limit: 255
+    t.string   "email",      limit: 255
+    t.string   "tenant",     limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
 end

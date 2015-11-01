@@ -9,17 +9,21 @@
 <body>
   
   <p>Data sharing between Connec!™ and SalesForce APIs</p>
+  <%= link_to "Synchronize all organizations", home_synchronize_path, method: :post %> <br/>
 
   <div id="current-user-status">
     <% if current_user %>
       Welcome <%= current_user.first_name %> <br/><br/>
       <%= link_to "Disconnect your Maestrano account", signout_path %> <br/>
 
-      <% if current_user.oauth_uid %>
-        Linked to SalesForce Account <%= current_user.oauth_uid %> <br/>
-        <%= link_to "Disconnect your Salesforce account", signout_omniauth_path %>
-      <% else %>
-        <%= link_to "Link your Salesforce account", "/auth/salesforce", id: "sign_in" %>
+      <% current_user.organizations.each do |organization| %>
+        Organization: <%= organization.uid %> - <%= organization.name %>
+        <% if organization.oauth_uid %>
+          Linked to SalesForce Account <%= organization.oauth_uid %> <br/>
+          <%= link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id) %>
+        <% else %>
+          <%= link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce", id: "sign_in" %>
+        <% end %>
       <% end %>
     <% else %>
       <%= link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default) %>
