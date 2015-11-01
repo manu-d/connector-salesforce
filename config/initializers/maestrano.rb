@@ -8,13 +8,13 @@ Maestrano['default'].configure do |config|
   # The api-sandbox allows you to easily test integration scenarios.
   # More details on http://api-sandbox.maestrano.io
   #
-  config.environment = 'local'
+  config.environment = Rails.environment
   
   # ==> Application host
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
-  config.app.host = 'http://localhost:3001'
+  config.app.host = 'http://connector-salesforce.herokuapp.com'
   
   # ==> App ID & API key
   # Your application App ID and API key which you can retrieve on http://maestrano.com
@@ -24,7 +24,6 @@ Maestrano['default'].configure do |config|
   #
   config.api.id = ENV['connec_api_id']
   config.api.key = ENV['connec_api_key']
-  config.api.host = 'http://localhost:3000'
 
   # ==> Single Sign-On activation
   # Enable/Disable single sign-on. When troubleshooting authentication issues
@@ -39,7 +38,6 @@ Maestrano['default'].configure do |config|
   # responsible for the single sign-on handshake (e.g: https://idp.my-app.com)
   # then you can specify it below
   #
-  config.sso.idm = 'http://localhost:3001'
   
   # ==> SSO Initialization endpoint
   # This is your application path to the SAML endpoint that allows users to
@@ -53,7 +51,6 @@ Maestrano['default'].configure do |config|
   # generated when you run 'rake maestrano:install' and is available at
   # <rails_root>/app/controllers/maestrano/auth/saml.rb
   #
-  config.sso.init_path = '/maestrano/auth/saml/init/default'
   
   # ==> SSO Consumer endpoint
   # This is your application path to the SAML endpoint that allows users to
@@ -124,8 +121,6 @@ Maestrano['default'].configure do |config|
   #
   # config.webhook.account.groups_path = '/maestrano/account/groups/:id',
   # config.webhook.account.group_users_path = '/maestrano/account/groups/:group_id/users/:id',
-
-  config.connec.base_path = '/api/v2'
 end
 
 # Example of multi-tenant configuration
