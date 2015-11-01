@@ -14,7 +14,7 @@ Maestrano['default'].configure do |config|
   # This is your application host (e.g: my-app.com) which is ultimately
   # used to redirect users to the right SAML url during SSO handshake.
   #
-  config.app.host = 'http://connector-salesforce.herokuapp.com'
+  config.app.host = 'https://connector-salesforce.herokuapp.com'
   
   # ==> App ID & API key
   # Your application App ID and API key which you can retrieve on http://maestrano.com
