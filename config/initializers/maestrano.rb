@@ -8,7 +8,7 @@ Maestrano['default'].configure do |config|
   # The api-sandbox allows you to easily test integration scenarios.
   # More details on http://api-sandbox.maestrano.io
   #
-  config.environment = Rails.environment
+  config.environment = 'production'
   
   # ==> Application host
   # This is your application host (e.g: my-app.com) which is ultimately
