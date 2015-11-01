@@ -1,5 +1,5 @@
-web:		sh script/jruby -S trinidad -p $PORT
-worker:     sh script/rake jobs:work
-console:	sh script/jruby script/rails console
-rake:		sh script/jruby -S rake
-jruby:		sh script/jruby
+web:		sh bin/jruby -S trinidad -p $PORT
+worker:     sh bin/rake jobs:work
+console:	sh bin/jruby script/rails console
+rake:		sh bin/jruby -S rake
+jruby:		sh bin/jruby
