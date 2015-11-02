@@ -56,15 +56,26 @@ class SynchronizationJob
   end
 
   def connec_organizations(organization, last_synchronization)
+    organizations = []
+
     client = Maestrano::Connec::Client.new(organization.uid)
+
+    # Fetch first page
     if last_synchronization.blank?
       response = client.get("/organizations")
     else
       query_param = URI.encode("$filter=updated_at >= #{last_synchronization.updated_at}")
       response = client.get("/organizations?#{query_param}")
+      organizations << JSON.parse(response.body)['organizations']
+    end
+
+    # Fetch subsequent pages
+    while response[:pagination] && response[:pagination][:next]
+      response = client.get(response[:pagination][:next])
+      organizations << JSON.parse(response.body)['organizations']
     end
     
-    JSON.parse(response.body)['organizations']
+    organizations
   end
 
   def connec_create_organization(organization, salesforce_account)
