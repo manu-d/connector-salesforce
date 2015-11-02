@@ -71,13 +71,16 @@ class SynchronizationJob
     else
       query_param = URI.encode("$filter=updated_at >= #{last_synchronization.updated_at}")
       response = client.get("/organizations?#{query_param}")
-      organizations << JSON.parse(response.body)['organizations']
     end
 
+    response_hash = JSON.parse(response.body)
+    organizations << response_hash['organizations']
+
     # Fetch subsequent pages
-    while response[:pagination] && response[:pagination][:next]
-      response = client.get(response[:pagination][:next])
-      organizations << JSON.parse(response.body)['organizations']
+    while response_hash[:pagination] && response_hash[:pagination][:next]
+      response = client.get(response_hash[:pagination][:next])
+      response_hash = JSON.parse(response.body)
+      organizations << response_hash['organizations']
     end
     
     organizations.flatten
