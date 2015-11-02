@@ -57,8 +57,13 @@ class SynchronizationJob
 
   def connec_organizations(organization, last_synchronization)
     client = Maestrano::Connec::Client.new(organization.uid)
-    query_param = URI.encode("$filter=updated_at >= #{last_synchronization.updated_at}")
-    response = client.get("/organizations?#{query_param}")
+    if last_synchronization.blank?
+      response = client.get("/organizations")
+    else
+      query_param = URI.encode("$filter=updated_at >= #{last_synchronization.updated_at}")
+      response = client.get("/organizations?#{query_param}")
+    end
+    
     JSON.parse(response.body)['organizations']
   end
 
