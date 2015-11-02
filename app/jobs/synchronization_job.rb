@@ -1,9 +1,12 @@
 class SynchronizationJob
 
   def perform
-    Rails.logger.info "Start synchronization"
+    Rails.logger.info "Start synchronizations"
+    
     Organization.where("organizations.oauth_token IS NOT NULL").each do |organization|
+      Rails.logger.info "Start synchronization, organization=#{organization.uid}"
       current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
+      
       begin
         last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
 
@@ -28,10 +31,10 @@ class SynchronizationJob
           end
         end
 
-        Rails.logger.info "End synchronization - success"
+        Rails.logger.info "Finished synchronization, organization=#{organization.uid}, status=success"
         current_synchronization.update_attributes(status: 'SUCCESS')
       rescue Exception => e
-        Rails.logger.info "End synchronization - error=#{e.message} #{e.backtrace.join("\n\t")}"
+        Rails.logger.info "Finished synchronization, organization=#{organization.uid}, status=error, message=#{e.message} backtrace=#{e.backtrace.join("\n\t")}"
         current_synchronization.update_attributes(status: 'ERROR', message: e.message)
       end
     end
@@ -44,6 +47,7 @@ class SynchronizationJob
       client_id: ENV['salesforce_client_id'],
       client_secret: ENV['salesforce_client_secret']
 
+    Rails.logger.debug "Fetching SalesForce Accounts"
     if last_synchronization
       # Cannot get the get_updated query to work
       # client.get_updated('Account', last_synchronization.updated_at, Time.now)
@@ -64,8 +68,9 @@ class SynchronizationJob
   end
 
   def connec_organizations(organization, last_synchronization)
-    organizations = []
+    Rails.logger.debug "Fetching Connec! Organizations"
 
+    organizations = []
     client = Maestrano::Connec::Client.new(organization.uid)
 
     # Fetch first page
@@ -83,7 +88,9 @@ class SynchronizationJob
     while response_hash['pagination'] && response_hash['pagination']['next']
       # ugly way to convert https://api-connec/api/v2/group_id/organizations?next_page_params to /organizations?next_page_params
       next_page = response_hash['pagination']['next'].gsub(/^(.*)\/organizations/, '')
+Rails.logger.warn "Fetching page: #{next_page}"
       response = client.get(next_page)
+Rails.logger.warn "Received response: #{response.code} - #{response.body}"
       response_hash = JSON.parse(response.body)
       organizations << response_hash['organizations']
     end
