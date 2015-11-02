@@ -75,7 +75,7 @@ class SynchronizationJob
       organizations << JSON.parse(response.body)['organizations']
     end
     
-    organizations
+    organizations.flatten
   end
 
   def connec_create_organization(organization, salesforce_account)
