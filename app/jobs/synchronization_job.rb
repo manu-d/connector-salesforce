@@ -77,8 +77,8 @@ class SynchronizationJob
     organizations << response_hash['organizations']
 
     # Fetch subsequent pages
-    while response_hash[:pagination] && response_hash[:pagination][:next]
-      response = client.get(response_hash[:pagination][:next])
+    while response_hash['pagination'] && response_hash['pagination']['next']
+      response = client.get(response_hash['pagination']['next'])
       response_hash = JSON.parse(response.body)
       organizations << response_hash['organizations']
     end
