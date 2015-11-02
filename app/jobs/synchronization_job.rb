@@ -1,37 +1,40 @@
 class SynchronizationJob
 
   def perform
-      Organization.where("organizations.oauth_token IS NOT NULL").each do |organization|
-        current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
-        begin
-          last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
+    Rails.logger.info "Start synchronization"
+    Organization.where("organizations.oauth_token IS NOT NULL").each do |organization|
+      current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
+      begin
+        last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
 
-          salesforce_accounts = salesforce_accounts(organization, last_synchronization)
-          connec_organizations = connec_organizations(organization, last_synchronization)
+        salesforce_accounts = salesforce_accounts(organization, last_synchronization)
+        connec_organizations = connec_organizations(organization, last_synchronization)
 
-          salesforce_accounts.each do |salesforce_account|
-            idmap = IdMap.find_or_create_by(salesforce_id: salesforce_account.Id, salesforce_entity: 'Account', organization_id: organization.id)
-            # Entity does not exist in Connec!
-            if idmap.connec_id.blank?
-              connec_organization = connec_create_organization(organization, salesforce_account)
-              idmap.update_attributes(connec_id: connec_organization['id'], connec_entity: 'organization')
-            end
+        salesforce_accounts.each do |salesforce_account|
+          idmap = IdMap.find_or_create_by(salesforce_id: salesforce_account.Id, salesforce_entity: 'Account', organization_id: organization.id)
+          # Entity does not exist in Connec!
+          if idmap.connec_id.blank?
+            connec_organization = connec_create_organization(organization, salesforce_account)
+            idmap.update_attributes(connec_id: connec_organization['id'], connec_entity: 'organization')
           end
-
-          connec_organizations.each do |connec_organization|
-            idmap = IdMap.find_or_create_by(connec_id: connec_organization['id'], connec_entity: 'organization', organization_id: organization.id)
-            # Entity does not exist in SalesForce
-            if idmap.salesforce_id.blank?
-              account_id = salesforce_create_organization(organization, connec_organization)
-              idmap.update_attributes(salesforce_id: account_id, salesforce_entity: 'Account')
-            end
-          end
-
-          current_synchronization.update_attributes(status: 'SUCCESS')
-        rescue Exception => e
-          current_synchronization.update_attributes(status: 'ERROR', message: e.message)
         end
+
+        connec_organizations.each do |connec_organization|
+          idmap = IdMap.find_or_create_by(connec_id: connec_organization['id'], connec_entity: 'organization', organization_id: organization.id)
+          # Entity does not exist in SalesForce
+          if idmap.salesforce_id.blank?
+            account_id = salesforce_create_organization(organization, connec_organization)
+            idmap.update_attributes(salesforce_id: account_id, salesforce_entity: 'Account')
+          end
+        end
+
+        Rails.logger.info "End synchronization - success"
+        current_synchronization.update_attributes(status: 'SUCCESS')
+      rescue Exception => e
+        Rails.logger.info "End synchronization - error=#{e.message} #{e.backtrace.join("\n\t")}"
+        current_synchronization.update_attributes(status: 'ERROR', message: e.message)
       end
+    end
   end
 
   def salesforce_accounts(organization, last_synchronization)
@@ -78,7 +81,9 @@ class SynchronizationJob
 
     # Fetch subsequent pages
     while response_hash['pagination'] && response_hash['pagination']['next']
-      response = client.get(response_hash['pagination']['next'])
+      # ugly way to convert https://api-connec/api/v2/group_id/organizations?next_page_params to /organizations?next_page_params
+      next_page = response_hash['pagination']['next'].gsub(/^(.*)\/organizations/, '')
+      response = client.get(next_page)
       response_hash = JSON.parse(response.body)
       organizations << response_hash['organizations']
     end
