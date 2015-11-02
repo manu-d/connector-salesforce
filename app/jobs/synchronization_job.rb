@@ -1,31 +1,37 @@
 class SynchronizationJob
+
   def perform
-    Organization.where("organizations.oauth_token IS NOT NULL").each do |organization|
-      last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
-      current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
+    current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
 
-      salesforce_accounts = salesforce_accounts(organization, last_synchronization)
-      connec_organizations = connec_organizations(organization, last_synchronization)
+    begin
+      Organization.where("organizations.oauth_token IS NOT NULL").each do |organization|
+        last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
 
-      salesforce_accounts.each do |salesforce_account|
-        idmap = IdMap.find_or_create_by(salesforce_id: salesforce_account.Id, salesforce_entity: 'Account', organization_id: organization.id)
-        # Entity does not exist in Connec!
-        if idmap.connec_id.blank?
-          connec_organization = connec_create_organization(organization, salesforce_account)
-          idmap.update_attributes(connec_id: connec_organization['id'], connec_entity: 'organization')
+        salesforce_accounts = salesforce_accounts(organization, last_synchronization)
+        connec_organizations = connec_organizations(organization, last_synchronization)
+
+        salesforce_accounts.each do |salesforce_account|
+          idmap = IdMap.find_or_create_by(salesforce_id: salesforce_account.Id, salesforce_entity: 'Account', organization_id: organization.id)
+          # Entity does not exist in Connec!
+          if idmap.connec_id.blank?
+            connec_organization = connec_create_organization(organization, salesforce_account)
+            idmap.update_attributes(connec_id: connec_organization['id'], connec_entity: 'organization')
+          end
         end
-      end
 
-      connec_organizations.each do |connec_organization|
-        idmap = IdMap.find_or_create_by(connec_id: connec_organization['id'], connec_entity: 'organization', organization_id: organization.id)
-        # Entity does not exist in SalesForce
-        if idmap.salesforce_id.blank?
-          account_id = salesforce_create_organization(organization, connec_organization)
-          idmap.update_attributes(salesforce_id: account_id, salesforce_entity: 'Account')
+        connec_organizations.each do |connec_organization|
+          idmap = IdMap.find_or_create_by(connec_id: connec_organization['id'], connec_entity: 'organization', organization_id: organization.id)
+          # Entity does not exist in SalesForce
+          if idmap.salesforce_id.blank?
+            account_id = salesforce_create_organization(organization, connec_organization)
+            idmap.update_attributes(salesforce_id: account_id, salesforce_entity: 'Account')
+          end
         end
-      end
 
-      current_synchronization.update_attributes(status: 'SUCCESS')
+        current_synchronization.update_attributes(status: 'SUCCESS')
+      end
+    rescue Exception => e
+      current_synchronization.update_attributes(status: 'ERROR', message: e.message)
     end
   end
 
