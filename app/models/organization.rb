@@ -28,20 +28,20 @@ class Organization < ActiveRecord::Base
     self.user_organization_rels.where(user_id:user.id).count > 0
   end
 
+  def admin?(user)
+    self.member?(user) #TODO
+  end
+
   def remove_member(user)
     self.user_organization_rels.where(user_id:user.id).delete_all
   end
 
-  def self.from_omniauth(uid, auth)
-    organization = Organization.find_by_uid(uid)
-    if organization
-    # where(auth.slice(:provider, :uid).permit!).first_or_initialize.tap do |organization|
-      organization.oauth_provider = auth.provider
-      organization.oauth_uid = auth.uid
-      organization.oauth_token = auth.credentials.token
-      organization.refresh_token = auth.credentials.refresh_token
-      organization.instance_url = auth.credentials.instance_url
-      organization.save!
-    end
+  def from_omniauth(auth)
+    organization.oauth_provider = auth.provider
+    organization.oauth_uid = auth.uid
+    organization.oauth_token = auth.credentials.token
+    organization.refresh_token = auth.credentials.refresh_token
+    organization.instance_url = auth.credentials.instance_url
+    organization.save!
   end
 end
