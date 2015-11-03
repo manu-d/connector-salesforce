@@ -1,17 +1,26 @@
 class SessionsController < ApplicationController
 
   def request_omniauth
-    auth_params = {
-      :state => params[:org_uid]
-    }
-    auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+    org_uid = params[:org_uid]
 
-    redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
+    if current_user_can_link(org_uid)
+      auth_params = {
+        :state => org_uid
+      }
+      auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+
+      redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
+    else
+      redirect_to root_url
+    end
   end
 
   # Link an Organization to SalesForce OAuth account
   def create_omniauth
-    Organization.from_omniauth(params[:state], env["omniauth.auth"])
+    org_uid = params[:state]
+    if current_user_can_link(org_uid)
+      Organization.from_omniauth(org_uid, env["omniauth.auth"])
+    end
     redirect_to root_url
   end
 
@@ -35,4 +44,9 @@ class SessionsController < ApplicationController
 
     redirect_to root_url
   end
+
+  private
+    def current_user_can_link(org_uid)
+      current_user && current_user.can_link(org_uid)
+    end
 end
