@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'home/index' => 'home#index'
   post 'home/synchronize' => 'home#synchronize'
 
+  match 'auth/:provider/request', to: 'sessions#request_omniauth', via: [:get, :post]
   match 'auth/:provider/callback', to: 'sessions#create_omniauth', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout_omniauth', to: 'sessions#destroy_omniauth', as: 'signout_omniauth', via: [:get, :post]

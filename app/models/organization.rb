@@ -6,40 +6,42 @@ class Organization < ActiveRecord::Base
     #group.free_trial_end_at = maestrano.free_trial_end_at
     #group.some_required_field = 'some-appropriate-default-value'
   end
-  
+
   #===================================
   # Associations
   #===================================
   has_many :user_organization_rels
   has_many :users, through: :user_organization_rels
-  
+
   #===================================
   # Validation
   #===================================
   validates :name, presence: true
-  
+
   def add_member(user)
     unless self.member?(user)
       self.user_organization_rels.create(user:user)
     end
   end
-  
+
   def member?(user)
     self.user_organization_rels.where(user_id:user.id).count > 0
   end
-  
+
+  def admin?(user)
+    self.member?(user) #TODO
+  end
+
   def remove_member(user)
     self.user_organization_rels.where(user_id:user.id).delete_all
   end
 
-  def self.from_omniauth(auth)
-    where(auth.slice(:provider, :uid).permit!).first_or_initialize.tap do |organization|
-      organization.oauth_provider = auth.provider
-      organization.oauth_uid = auth.uid
-      organization.oauth_token = auth.credentials.token
-      organization.refresh_token = auth.credentials.refresh_token
-      organization.instance_url = auth.credentials.instance_url
-      organization.save!
-    end
+  def from_omniauth(auth)
+    self.oauth_provider = auth.provider
+    self.oauth_uid = auth.uid
+    self.oauth_token = auth.credentials.token
+    self.refresh_token = auth.credentials.refresh_token
+    self.instance_url = auth.credentials.instance_url
+    self.save!
   end
 end
