@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   # Link an Organization to SalesForce OAuth account
   def create_omniauth
-    Organization.from_omniauth(env["omniauth.auth"])
+    Organization.from_omniauth(params[:state], env["omniauth.auth"])
     redirect_to root_url
   end
 
@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
       organization.refresh_token = nil
       organization.save
     end
-    
+
     redirect_to root_url
   end
 
