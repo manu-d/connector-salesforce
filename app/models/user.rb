@@ -19,8 +19,4 @@ class User < ActiveRecord::Base
   # Validation
   #===================================
   validates :email, presence: true
-
-  def can_omniauth(org_uid)
-    self.organizations.exists?(uid: org_uid) #TODO check admin/super-admin
-  end
 end
