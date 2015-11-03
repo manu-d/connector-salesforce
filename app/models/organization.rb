@@ -33,7 +33,7 @@ class Organization < ActiveRecord::Base
   end
 
   def self.from_omniauth(uid, auth)
-    organization = Organisation.find_by_uid(orga_uid)
+    organization = Organization.find_by_uid(uid)
     if organization
     # where(auth.slice(:provider, :uid).permit!).first_or_initialize.tap do |organization|
       organization.oauth_provider = auth.provider
