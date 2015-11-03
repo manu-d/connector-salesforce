@@ -1,4 +1,14 @@
 class SessionsController < ApplicationController
+
+  def request_omniauth
+    auth_params = {
+      :state => params[:org_uid]
+    }
+    auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+
+    redirect_to "/auth/#{params[:provider]}?#{auth_params}", id: "sign_in"
+  end
+
   # Link an Organization to SalesForce OAuth account
   def create_omniauth
     Organization.from_omniauth(params[:state], env["omniauth.auth"])
