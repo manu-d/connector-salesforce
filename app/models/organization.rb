@@ -37,11 +37,11 @@ class Organization < ActiveRecord::Base
   end
 
   def from_omniauth(auth)
-    organization.oauth_provider = auth.provider
-    organization.oauth_uid = auth.uid
-    organization.oauth_token = auth.credentials.token
-    organization.refresh_token = auth.credentials.refresh_token
-    organization.instance_url = auth.credentials.instance_url
-    organization.save!
+    self.oauth_provider = auth.provider
+    self.oauth_uid = auth.uid
+    self.oauth_token = auth.credentials.token
+    self.refresh_token = auth.credentials.refresh_token
+    self.instance_url = auth.credentials.instance_url
+    self.save!
   end
 end
