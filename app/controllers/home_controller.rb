@@ -16,7 +16,7 @@ class HomeController < ApplicationController
             client_id: ENV['salesforce_client_id'],
             client_secret: ENV['salesforce_client_secret']
 
-          organization_data[:salesforce_organizations] = client.query('select Id, Name from Account ORDER BY Name')
+          organization_data[:salesforce_organizations] = client.query('select Id, Name, Industry from Account ORDER BY Name')
         end
 
         # Fetch Connec! Organizations

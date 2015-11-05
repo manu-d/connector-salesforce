@@ -42,13 +42,15 @@ class Entity
       fields = self.mapping.values.join(', ')
       entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
       entities = entities.to_a
+
+      index = 0
       entities.each_with_index do |entity, i|
         if entity.LastModifiedDate < last_synchronization.updated_at
           index = i - 1
           break
         end
       end
-      i > 0 ? entities[0..index] : []
+      index > 0 ? entities[0..index] : []
     # end
   end
 
@@ -70,22 +72,33 @@ class Entity
   end
 
   def update_entity_to_external(client, connec_entity, external_id)
-    client.update(self.external_entity_name, data_to_external(connec_entity))
+    data = data_to_external(connec_entity)
+    data['ID'] = external_id
+    client.update(self.external_entity_name, data)
   end
 
   def push_entities_to_connec(connec_client, external_entities, organization)
     external_entities.each do |external_entity|
       idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
       # Entity does not exist in Connec!
-      connec_entity = self.push_entity_to_connec(connec_client, external_entity)
       if idmap.connec_id.blank?
+        connec_entity = self.create_entity_to_connec(connec_client, external_entity)
         idmap.update_attributes(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase)
+      else
+        connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id)
       end
     end
   end
 
-  def push_entity_to_connec(client, external_entity)
+  def create_entity_to_connec(client, external_entity)
     response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data_to_connec(external_entity) })
+    JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
+  end
+
+  def update_entity_to_connec(client, external_entity, connec_id)
+    data = data_to_connec(external_entity)
+    data['id'] = connec_id
+    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
