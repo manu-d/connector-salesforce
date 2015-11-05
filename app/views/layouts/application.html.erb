@@ -9,7 +9,6 @@
 <body>
 
   <p>Data sharing between Connec!™ and SalesForce APIs (v0.2)</p>
-  <%= link_to "Synchronize all organizations", home_synchronize_path, method: :post %> <br/>
 
   <div id="current-user-status">
     <% if current_user %>
@@ -21,6 +20,8 @@
         <% if organization.oauth_uid %>
           Linked to SalesForce Account <%= organization.oauth_uid %> <br/>
           <%= link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id) %>
+
+          <%= link_to "Synchronize your organizations", home_synchronize_path, method: :post, uid: organization.uid %> <br/>
         <% else %>
           <%= link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce/request?org_uid=#{organization.uid}" %>
         <% end %>
