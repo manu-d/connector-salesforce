@@ -8,4 +8,11 @@ class Orga < Entity
     "Account"
   end
 
+  def mapping
+    {
+      name: "Name",
+      industry: "Industry"
+    }
+  end
+
 end

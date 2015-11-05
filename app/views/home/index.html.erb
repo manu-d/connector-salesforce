@@ -9,14 +9,14 @@
   <h4>SalesForce Accounts</h4>
   <% if organization_data[:salesforce_organizations] %>
     <% organization_data[:salesforce_organizations].each do |salesforce_organization| %>
-      <%= salesforce_organization.Id %> - <%= salesforce_organization.Name %><br/>
+      <%= salesforce_organization.Id %> - <%= salesforce_organization.Name %> - <%= salesforce_organization.Industry %><br/>
     <% end %>
   <% end %>
 
   <h4>Connec Organization</h4>
   <% if organization_data[:connec_organizations] %>
     <% organization_data[:connec_organizations].each do |connec_organization| %>
-      <%= connec_organization['id'] %> - <%= connec_organization['name'] %><br/>
+      <%= connec_organization['id'] %> - <%= connec_organization['name'] %> - <%= connec_organization['industry'] %><br/>
     <% end %>
   <% end %>
 <% end %>
