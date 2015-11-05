@@ -39,34 +39,34 @@ class Entity
     # end
   end
 
-  def push_entities_to_external(connec_entities, organization)
+  def push_entities_to_external(external_client, connec_entities, organization)
     connec_entities.each do |connec_entity|
       idmap = IdMap.find_or_create_by(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
       # Entity does not exist in external
       if idmap.salesforce_id.blank?
-        external_id = self.push_entity_to_external(connec_entity)
+        external_id = self.push_entity_to_external(external_client, connec_entity)
         idmap.update_attributes(salesforce_id: external_id, salesforce_entity: self.external_entity_name)
       end
     end
   end
 
-  def push_entity_to_external(connec_entity)
-    @external_client.create(self.external_entity_name, Name: connec_entity['name'])
+  def push_entity_to_external(client, connec_entity)
+    client.create(self.external_entity_name, Name: connec_entity['name'])
   end
 
-  def push_entities_to_connec(external_entities, organization)
+  def push_entities_to_connec(connec_client, external_entities, organization)
     external_entities.each do |external_entity|
-      idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: @external_entity_name, organization_id: @organization.id)
+      idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
       # Entity does not exist in Connec!
       if idmap.connec_id.blank?
-        connec_data = self.push_entity_to_connec(external_entity)
-        idmap.update_attributes(connec_id: connec_data['id'], connec_entity: @connec_entity_name.downcase)
+        connec_data = self.push_entity_to_connec(connec_client, external_entity)
+        idmap.update_attributes(connec_id: connec_data['id'], connec_entity: self.connec_entity_name.downcase)
       end
     end
   end
 
-  def push_entity_to_connec(external_entity)
-    response = @connec_client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": { name: external_entity.Name} })
+  def push_entity_to_connec(client, external_entity)
+    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": { name: external_entity.Name} })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 

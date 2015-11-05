@@ -17,8 +17,8 @@ class SynchronizationJob
       connec_entities = entity_class.get_connec_entities(connec_client, last_synchronization)
       external_entities = entity_class.get_external_entities(external_client, last_synchronization)
 
-      entity_class.push_entities_to_external(connec_entities, organization)
-      entity_class.push_entities_to_connec(external_entities, organization)
+      entity_class.push_entities_to_connec(connec_client, external_entities, organization)
+      entity_class.push_entities_to_external(external_client, connec_entities, organization)
     end
   end
 end
