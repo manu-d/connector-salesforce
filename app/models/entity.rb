@@ -1,10 +1,12 @@
 class Entity
 
+  @@external_name = "SalesForce"
+
   #TODO LOG
   #TODO Error handling
 
   def get_connec_entities(client, last_synchronization)
-    Rails.logger.debug "Fetching Connec! #{self.class.name.pluralize}"
+    Rails.logger.info "Fetching Connec! #{self.connec_entity_name.pluralize}"
 
     entities = []
 
@@ -29,11 +31,13 @@ class Entity
     end
 
     entities.flatten
+    Rails.logger.info "Source=Connec!, Entity=#{self.connec_entity_name}, Response=#{entities}"
+    entities
   end
 
   #TODO Pagination
   def get_external_entities(client, last_synchronization)
-    Rails.logger.debug "Fetching external #{self.external_entity_name}"
+    Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
     # if last_synchronization
       # Cannot get the get_updated query to work
       # client.get_updated('Account', last_synchronization.updated_at, Time.now)
@@ -50,11 +54,14 @@ class Entity
           break
         end
       end
-      index > 0 ? entities[0..index] : []
+      entities = index > 0 ? entities[0..index] : []
+      Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
     # end
+    entities
   end
 
   def push_entities_to_external(external_client, connec_entities, organization)
+    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
     connec_entities.each do |connec_entity|
       idmap = IdMap.find_or_create_by(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
       # Entity does not exist in external
@@ -68,16 +75,19 @@ class Entity
   end
 
   def create_entity_to_external(client, connec_entity)
+    Rails.logger.debug "Create #{connec_entity} to #{@@external_name}"
     client.create(self.external_entity_name, data_to_external(connec_entity))
   end
 
   def update_entity_to_external(client, connec_entity, external_id)
+    Rails.logger.debug "Update #{connec_entity} to #{@@external_name}"
     data = data_to_external(connec_entity)
     data['ID'] = external_id
     client.update(self.external_entity_name, data)
   end
 
   def push_entities_to_connec(connec_client, external_entities, organization)
+    Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
     external_entities.each do |external_entity|
       idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
       # Entity does not exist in Connec!
@@ -91,11 +101,13 @@ class Entity
   end
 
   def create_entity_to_connec(client, external_entity)
+    Rails.logger.debug "Create #{external_entity} to Connec!"
     response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data_to_connec(external_entity) })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
   def update_entity_to_connec(client, external_entity, connec_id)
+    Rails.logger.debug "Update #{external_entity} to Connec!"
     data = data_to_connec(external_entity)
     data['id'] = connec_id
     response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
