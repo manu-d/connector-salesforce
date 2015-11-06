@@ -2,9 +2,6 @@ class Entity
 
   @@external_name = "SalesForce"
 
-  #TODO LOG
-  #TODO Error handling
-
   def get_connec_entities(client, last_synchronization)
     Rails.logger.info "Fetching Connec! #{self.connec_entity_name.pluralize}"
 
@@ -15,7 +12,7 @@ class Entity
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}")
       Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}"
     else
-      query_param = URI.encode("$filter=updated_at gt #{last_synchronization.updated_at.strftime('%F')}")
+      query_param = URI.encode("$filter=updated_at gt '#{last_synchronization.updated_at.strftime('%F')}'")
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}?#{query_param}")
       Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}?#{query_param}"
     end
