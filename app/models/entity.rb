@@ -13,9 +13,11 @@ class Entity
     # Fetch first page
     if last_synchronization.blank?
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}")
+      Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}"
     else
-      query_param = URI.encode("$filter=updated_at >= #{last_synchronization.updated_at}")
+      query_param = URI.encode("$filter=updated_at gt #{last_synchronization.updated_at.strftime('%F')}")
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}?#{query_param}")
+      Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}?#{query_param}"
     end
 
     response_hash = JSON.parse(response.body)
@@ -62,9 +64,7 @@ class Entity
 
   def push_entities_to_external(external_client, connec_entities, organization)
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
-    Rails.logger.debug "Connec_entities = #{connec_entities}"
     connec_entities.each do |connec_entity|
-      Rails.logger.debug "Push to #{@@external_name}, connec_id=#{connec_entity['id']}, connec_entity= #{self.connec_entity_name.downcase}, organization_id=#{organization.id}"
       idmap = IdMap.find_or_create_by(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
       # Entity does not exist in external
       if idmap.salesforce_id.blank?
@@ -77,13 +77,14 @@ class Entity
   end
 
   def create_entity_to_external(client, connec_entity)
-    Rails.logger.debug "Create #{connec_entity} to #{@@external_name}"
-    client.create(self.external_entity_name, data_to_external(connec_entity))
+    data = data_to_external(connec_entity)
+    Rails.logger.debug "Create #{self.external_entity_name}: #{data} to #{@@external_name}"
+    client.create(self.external_entity_name, data)
   end
 
   def update_entity_to_external(client, connec_entity, external_id)
-    Rails.logger.debug "Update #{connec_entity} to #{@@external_name}"
     data = data_to_external(connec_entity)
+    Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{data} to #{@@external_name}"
     data['ID'] = external_id
     client.update(self.external_entity_name, data)
   end
@@ -103,14 +104,16 @@ class Entity
   end
 
   def create_entity_to_connec(client, external_entity)
-    Rails.logger.debug "Create #{external_entity} to Connec!"
-    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data_to_connec(external_entity) })
+    data = data_to_connec(external_entity)
+    Rails.logger.debug "Create #{self.connec_entity_name}: #{data} to Connec!"
+    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
   def update_entity_to_connec(client, external_entity, connec_id)
-    Rails.logger.debug "Update #{external_entity} to Connec!"
-    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": data_to_connec(external_entity) })
+    data = data_to_connec(external_entity)
+    Rails.logger.debug "Update #{self.connec_entity_name}: #{data} to Connec!"
+    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": data })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
@@ -118,7 +121,7 @@ class Entity
     def data_to_external(connec_entity)
       data = {}
       self.mapping.each do |k, v|
-        data[v] = connec_entity[k]
+        data[v] = connec_entity[k.to_s]
       end
       data
     end
@@ -126,7 +129,7 @@ class Entity
     def data_to_connec(external_entity)
       data = {}
       self.mapping.each do |k,v|
-        data[k] = external_entity.attrs[v]
+        data[k.to_s] = external_entity.attrs[v]
       end
       data
     end
