@@ -30,7 +30,7 @@ class Entity
       entities << response_hash["#{self.connec_entity_name.downcase.pluralize}"]
     end
 
-    entities.flatten
+    entities = entities.flatten
     Rails.logger.info "Source=Connec!, Entity=#{self.connec_entity_name}, Response=#{entities}"
     entities
   end
@@ -61,8 +61,10 @@ class Entity
   end
 
   def push_entities_to_external(external_client, connec_entities, organization)
-    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
+    Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
+    Rails.logger.debug "Connec_entities = #{connec_entities}"
     connec_entities.each do |connec_entity|
+      Rails.logger.debug "Push to #{@@external_name}, connec_id=#{connec_entity['id']}, connec_entity= #{self.connec_entity_name.downcase}, organization_id=#{organization.id}"
       idmap = IdMap.find_or_create_by(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
       # Entity does not exist in external
       if idmap.salesforce_id.blank?
@@ -87,7 +89,7 @@ class Entity
   end
 
   def push_entities_to_connec(connec_client, external_entities, organization)
-    Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
+    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
     external_entities.each do |external_entity|
       idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
       # Entity does not exist in Connec!
@@ -108,9 +110,7 @@ class Entity
 
   def update_entity_to_connec(client, external_entity, connec_id)
     Rails.logger.debug "Update #{external_entity} to Connec!"
-    data = data_to_connec(external_entity)
-    data['id'] = connec_id
-    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
+    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": data_to_connec(external_entity) })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
