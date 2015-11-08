@@ -109,11 +109,12 @@ class Entity
 
   def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
     external_entities.map!{|entity|
-      id = entity.ID
+      id = entity.Id
       entity = self.map_to_connec(entity.attrs)
-      idmap = IdMap.find(salesforce_id: id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
+      idmap = IdMap.where(salesforce_id: id, salesforce_entity: self.external_entity_name, organization_id: organization.id).first
 
-      if idmap && idmap.connec_id && connec_entity = connec_entities.find(id: idmap.connec_id)
+      if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
+        Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Preemption given to #{opts[:external_preemption] ? @@external_name : 'Connec!'}"
         if opts[:external_preemption]
           connec_id = connec_entity['id']
           connec_entity = entity
