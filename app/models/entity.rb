@@ -59,7 +59,7 @@ class Entity
   def push_entities_to_external(external_client, connec_entities, organization)
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
     connec_entities.each do |connec_entity|
-      idmap = IdMap.find_or_create_by(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
+      idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
       # Entity does not exist in external
       if idmap.salesforce_id.blank?
         external_id = self.create_entity_to_external(external_client, connec_entity)
@@ -70,23 +70,21 @@ class Entity
     end
   end
 
-  def create_entity_to_external(client, connec_entity)
-    data = self.map_to_external(connec_entity)
-    Rails.logger.debug "Create #{self.external_entity_name}: #{data} to #{@@external_name}"
-    client.create(self.external_entity_name, data)
+  def create_entity_to_external(client, mapped_connec_entity)
+    Rails.logger.debug "Create #{self.external_entity_name}: #{mapped_connec_entity} to #{@@external_name}"
+    client.create(self.external_entity_name, mapped_connec_entity)
   end
 
-  def update_entity_to_external(client, connec_entity, external_id)
-    data = self.map_to_external(connec_entity)
-    Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{data} to #{@@external_name}"
-    data['ID'] = external_id
-    client.update(self.external_entity_name, data)
+  def update_entity_to_external(client, mapped_connec_entity, external_id)
+    Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}"
+    mapped_connec_entity['ID'] = external_id
+    client.update(self.external_entity_name, mapped_connec_entity)
   end
 
   def push_entities_to_connec(connec_client, external_entities, organization)
     Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
     external_entities.each do |external_entity|
-      idmap = IdMap.find_or_create_by(salesforce_id: external_entity.Id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
+      idmap = IdMap.find_or_create_by(salesforce_id: external_entity['_external_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id)
       # Entity does not exist in Connec!
       if idmap.connec_id.blank?
         connec_entity = self.create_entity_to_connec(connec_client, external_entity)
@@ -97,18 +95,43 @@ class Entity
     end
   end
 
-  def create_entity_to_connec(client, external_entity)
-    data = self.map_to_connec(external_entity.attrs)
-    Rails.logger.debug "Create #{self.connec_entity_name}: #{data} to Connec!"
-    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
+  def create_entity_to_connec(client, mapped_external_entity)
+    Rails.logger.debug "Create #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
-  def update_entity_to_connec(client, external_entity, connec_id)
-    data = self.map_to_connec(external_entity.attrs)
-    Rails.logger.debug "Update #{self.connec_entity_name}: #{data} to Connec!"
-    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": data })
+  def update_entity_to_connec(client, mapped_external_entity, connec_id)
+    Rails.logger.debug "Update #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
+  end
+
+  def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
+    external_entities.map!{|entity|
+      id = entity.ID
+      entity = self.map_to_connec(entity.attrs)
+      idmap = IdMap.find(salesforce_id: id, salesforce_entity: self.external_entity_name, organization_id: organization.id)
+
+      if idmap && idmap.connec_id && connec_entity = connec_entities.find(id: idmap.connec_id)
+        if opts[:external_preemption]
+          connec_id = connec_entity['id']
+          connec_entity = entity
+          connec_entity['_connec_id'] = connec_id
+        else
+          entity = connec_entity
+        end
+      end
+      entity['_external_id'] = id
+      entity
+    }
+
+    connec_entities.map!{|entity|
+      id = entity['id'] || entity['_connec_id']
+      entity = self.map_to_external(entity)
+      entity['_connec_id'] = id
+      entity
+    }
   end
 
 end
