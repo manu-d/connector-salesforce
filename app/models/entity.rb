@@ -2,13 +2,13 @@ class Entity
 
   @@external_name = "SalesForce"
 
-  def get_connec_entities(client, last_synchronization)
+  def get_connec_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching Connec! #{self.connec_entity_name.pluralize}"
 
     entities = []
 
     # Fetch first page
-    if last_synchronization.blank?
+    if last_synchronization.blank? || opts[:full_sync]
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}")
       Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}"
     else
@@ -36,7 +36,7 @@ class Entity
   end
 
   #TODO Pagination
-  def get_external_entities(client, last_synchronization)
+  def get_external_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
     # if last_synchronization
       # Cannot get the get_updated query to work
@@ -47,8 +47,10 @@ class Entity
       entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
       entities = entities.to_a
 
-      index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
-      entities = index ? (index >= 0 ? entities[0..index] : []) : entities
+      unless opts[:full_sync]
+        index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
+        entities = index ? (index >= 0 ? entities[0..index] : []) : entities
+      end
       Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
     # end
     entities
