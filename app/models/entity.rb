@@ -47,6 +47,7 @@ class Entity
       entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
       entities = entities.to_a
 
+      Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
       index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
       entities = index ? (index >= 0 ? entities[0..index] : []) : entities
       Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
