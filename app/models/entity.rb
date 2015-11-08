@@ -32,6 +32,7 @@ class Entity
     entities = entities.flatten
     Rails.logger.info "Source=Connec!, Entity=#{self.connec_entity_name}, Response=#{entities}"
     entities
+    #TODO entities=[nil] (when auth fail for example)
   end
 
   #TODO Pagination
@@ -42,7 +43,7 @@ class Entity
       # client.get_updated('Account', last_synchronization.updated_at, Time.now)
       # client.query('select Id, Name from Account ORDER BY Name')
     # else
-      fields = self.mapping.values.join(', ')
+      fields = self.external_attributes.join(', ')
       entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
       entities = entities.to_a
 
@@ -68,13 +69,13 @@ class Entity
   end
 
   def create_entity_to_external(client, connec_entity)
-    data = data_to_external(connec_entity)
+    data = self.map_to_external(connec_entity)
     Rails.logger.debug "Create #{self.external_entity_name}: #{data} to #{@@external_name}"
     client.create(self.external_entity_name, data)
   end
 
   def update_entity_to_external(client, connec_entity, external_id)
-    data = data_to_external(connec_entity)
+    data = self.map_to_external(connec_entity)
     Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{data} to #{@@external_name}"
     data['ID'] = external_id
     client.update(self.external_entity_name, data)
@@ -95,34 +96,17 @@ class Entity
   end
 
   def create_entity_to_connec(client, external_entity)
-    data = data_to_connec(external_entity)
+    data = self.map_to_connec(external_entity.attrs)
     Rails.logger.debug "Create #{self.connec_entity_name}: #{data} to Connec!"
     response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": data })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
   def update_entity_to_connec(client, external_entity, connec_id)
-    data = data_to_connec(external_entity)
+    data = self.map_to_connec(external_entity.attrs)
     Rails.logger.debug "Update #{self.connec_entity_name}: #{data} to Connec!"
     response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": data })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
-
-  private
-    def data_to_external(connec_entity)
-      data = {}
-      self.mapping.each do |k, v|
-        data[v] = connec_entity[k.to_s]
-      end
-      data
-    end
-
-    def data_to_connec(external_entity)
-      data = {}
-      self.mapping.each do |k,v|
-        data[k.to_s] = external_entity.attrs[v]
-      end
-      data
-    end
 
 end
