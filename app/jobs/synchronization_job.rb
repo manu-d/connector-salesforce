@@ -1,5 +1,5 @@
 class SynchronizationJob
-  ENTITIES = %w(Orga)
+  ENTITIES = %w(Organization Person)
   EXTERNAL_NAME = "SalesForce"
 
   def sync(org_uid)
@@ -17,7 +17,7 @@ class SynchronizationJob
         client_secret: ENV['salesforce_client_secret']
 
       ENTITIES.each do |entity|
-        entity_class = entity.constantize.new
+        entity_class = "Entities::#{entity}".constantize.new
         connec_entities = entity_class.get_connec_entities(connec_client, last_synchronization)
         external_entities = entity_class.get_external_entities(external_client, last_synchronization)
 

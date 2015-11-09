@@ -1,4 +1,4 @@
-class Orga < Entity
+class Entities::Organization < Entity
 
   def connec_entity_name
     "Organization"
@@ -9,11 +9,11 @@ class Orga < Entity
   end
 
   def map_to_external(input)
-    OrgaMapper.normalize(input)
+    OrganizationMapper.normalize(input)
   end
 
   def map_to_connec(input)
-    OrgaMapper.denormalize(input)
+    OrganizationMapper.denormalize(input)
   end
 
   def external_attributes
@@ -40,7 +40,7 @@ class Orga < Entity
 
 end
 
-class OrgaMapper
+class OrganizationMapper
   extend HashMapper
 
   map from('/name'),  to('/Name')
