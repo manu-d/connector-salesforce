@@ -60,6 +60,7 @@ class Entity
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
     connec_entities.each do |connec_entity|
       idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
+      connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
       # Entity does not exist in external
       if idmap.salesforce_id.blank?
         external_id = self.create_entity_to_external(external_client, connec_entity)
@@ -72,13 +73,13 @@ class Entity
 
   def create_entity_to_external(client, mapped_connec_entity)
     Rails.logger.debug "Create #{self.external_entity_name}: #{mapped_connec_entity} to #{@@external_name}"
-    client.create(self.external_entity_name, mapped_connec_entity)
+    client.create!(self.external_entity_name, mapped_connec_entity)
   end
 
   def update_entity_to_external(client, mapped_connec_entity, external_id)
     Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}"
     mapped_connec_entity['ID'] = external_id
-    client.update(self.external_entity_name, mapped_connec_entity)
+    client.update!(self.external_entity_name, mapped_connec_entity)
   end
 
   def push_entities_to_connec(connec_client, external_entities, organization)
