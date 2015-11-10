@@ -10,15 +10,17 @@ class Entity
     # Fetch first page
     if last_synchronization.blank? || opts[:full_sync]
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}")
-      Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}"
     else
       query_param = URI.encode("$filter=updated_at gt '#{last_synchronization.updated_at.strftime('%F')}'")
       response = client.get("/#{self.connec_entity_name.downcase.pluralize}?#{query_param}")
-      Rails.logger.debug "Connec get query: /#{self.connec_entity_name.downcase.pluralize}?#{query_param}"
     end
 
     response_hash = JSON.parse(response.body)
-    entities << response_hash["#{self.connec_entity_name.downcase.pluralize}"]
+    if response_hash["#{self.connec_entity_name.downcase.pluralize}"]
+      entities << response_hash["#{self.connec_entity_name.downcase.pluralize}"]
+    else
+      raise "No data received from Connec! when trying to fetch #{self.connec_entity_name.pluralize}."
+    end
 
     # Fetch subsequent pages
     while response_hash['pagination'] && response_hash['pagination']['next']
@@ -32,7 +34,6 @@ class Entity
     entities = entities.flatten
     Rails.logger.info "Source=Connec!, Entity=#{self.connec_entity_name}, Response=#{entities}"
     entities
-    #TODO entities=[nil] (when auth fail for example)
   end
 
   #TODO Pagination
@@ -72,12 +73,12 @@ class Entity
   end
 
   def create_entity_to_external(client, mapped_connec_entity)
-    Rails.logger.debug "Create #{self.external_entity_name}: #{mapped_connec_entity} to #{@@external_name}"
+    Rails.logger.info "Create #{self.external_entity_name}: #{mapped_connec_entity} to #{@@external_name}"
     client.create!(self.external_entity_name, mapped_connec_entity)
   end
 
   def update_entity_to_external(client, mapped_connec_entity, external_id)
-    Rails.logger.debug "Update #{self.external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}"
+    Rails.logger.info "Update #{self.external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}"
     mapped_connec_entity['ID'] = external_id
     client.update!(self.external_entity_name, mapped_connec_entity)
   end
@@ -97,13 +98,13 @@ class Entity
   end
 
   def create_entity_to_connec(client, mapped_external_entity)
-    Rails.logger.debug "Create #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    Rails.logger.info "Create #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
     response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
 
   def update_entity_to_connec(client, mapped_external_entity, connec_id)
-    Rails.logger.debug "Update #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    Rails.logger.info "Update #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
     response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
     JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
   end
