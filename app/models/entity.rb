@@ -113,24 +113,24 @@ class Entity
     external_entities.map!{|entity|
       id = entity.Id
       entity = self.map_to_connec(entity.attrs)
+      entity['_external_id'] = id
       idmap = IdMap.where(salesforce_id: id, salesforce_entity: self.external_entity_name, organization_id: organization.id).first
 
       if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
         Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Preemption given to #{opts[:external_preemption] ? @@external_name : 'Connec!'}"
         if opts[:external_preemption]
-          connec_id = connec_entity['id']
-          connec_entity = entity
-          connec_entity['_connec_id'] = connec_id
+          connec_entities.delete(connec_entity)
+          entity
         else
-          entity = connec_entity
+          nil
         end
+      else
+        entity
       end
-      entity['_external_id'] = id
-      entity
-    }
+    }.compact!
 
     connec_entities.map!{|entity|
-      id = entity['id'] || entity['_connec_id']
+      id = entity['id']
       entity = self.map_to_external(entity)
       entity['_connec_id'] = id
       entity
