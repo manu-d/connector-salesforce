@@ -8,12 +8,8 @@ class Entities::Organization < Entity
     "Account"
   end
 
-  def map_to_external(input)
-    OrganizationMapper.normalize(input)
-  end
-
-  def map_to_connec(input)
-    OrganizationMapper.denormalize(input)
+  def mapper_name
+    "OrganizationMapper"
   end
 
   def external_attributes
@@ -42,6 +38,9 @@ end
 
 class OrganizationMapper
   extend HashMapper
+
+  def self.set_organization(organization_id)
+  end
 
   map from('/name'),  to('/Name')
   map from('/industry'),  to('/Industry')

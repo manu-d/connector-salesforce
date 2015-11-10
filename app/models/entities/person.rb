@@ -8,12 +8,8 @@ class Entities::Person < Entity
     "Contact"
   end
 
-  def map_to_external(input)
-    PersonMapper.normalize(input)
-  end
-
-  def map_to_connec(input)
-    PersonMapper.denormalize(input)
+  def mapper_name
+    "PersonMapper"
   end
 
   def external_attributes
@@ -47,18 +43,25 @@ end
 class PersonMapper
   extend HashMapper
 
+  #Quite ugly but haven't find another way to do it..
+  def self.set_organization(organization_id)
+    @@organization_id = organization_id
+  end
+
   #Not so pretty
   #Case when orga does not exist in connec! or Salesforce ? TODO
   #Should be prettier when connec will handle external id
   before_normalize do |input, output|
     if id = input['organization_id']
-      input['organization_id'] = IdMap.find_by_connec_id(id).salesforce_id
+      Rails.logger.debug "Before normalize: connec_id=#{id}"
+      input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).salesforce_id
+      Rails.logger.debug "Before normalize bis: salesforce_id=#{input['organization_id']}"
     end
     input
   end
   before_denormalize do |input, output|
     if id = input['AccountId']
-      input['AccountId'] = IdMap.find_by_salesforce_id(id).connec_id
+      input['AccountId'] = IdMap.find_by(salesforce_entity: 'Account', salesforce_id: id, organization_id: @@organization_id).connec_id
     end
     input
   end
@@ -67,7 +70,7 @@ class PersonMapper
   map from('/title'), to('/Salutation')
   map from('/first_name'), to('/FirstName')
   map from('/last_name'), to('/LastName')
-  map from('/Birthdate'), to('/Birthdate')
+  map from('/birth_date'), to('/Birthdate')
 
   map from('address_work/billing/line1'), to('MailingStreet')
   map from('address_work/billing/city'), to('MailingCity')

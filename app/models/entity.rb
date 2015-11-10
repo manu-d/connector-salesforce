@@ -137,4 +137,20 @@ class Entity
     }
   end
 
+  def set_mapper_organization(organization_id)
+    self.mapper_name.constantize.set_organization(organization_id)
+  end
+
+  def unset_mapper_organization
+    self.mapper_name.constantize.set_organization(nil)
+  end
+
+  def map_to_external(input)
+    self.mapper_name.constantize.normalize(input)
+  end
+
+  def map_to_connec(input)
+    self.mapper_name.constantize.denormalize(input)
+  end
+
 end
