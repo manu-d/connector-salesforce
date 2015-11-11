@@ -63,6 +63,11 @@ class PersonMapper
     if id = input['AccountId']
       input['AccountId'] = IdMap.find_by(salesforce_entity: 'Account', salesforce_id: id, organization_id: @@organization_id).connec_id
     end
+
+    #Better way to handle date?
+    if input['Birthdate']
+      input['Birthdate'] = input['Birthdate'].to_time.iso8601
+    end
     input
   end
   map from('/organization_id'), to('/AccountId')
