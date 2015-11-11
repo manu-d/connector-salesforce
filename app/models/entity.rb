@@ -60,15 +60,19 @@ class Entity
   def push_entities_to_external(external_client, connec_entities, organization)
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
     connec_entities.each do |connec_entity|
-      idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
-      connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
-      # Entity does not exist in external
-      if idmap.salesforce_id.blank?
-        external_id = self.create_entity_to_external(external_client, connec_entity)
-        idmap.update_attributes(salesforce_id: external_id, salesforce_entity: self.external_entity_name)
-      else
-        self.update_entity_to_external(external_client, connec_entity, idmap.salesforce_id)
-      end
+      push_entity_to_external(connec_entity)
+    end
+  end
+
+  def push_entity_to_external(external_client, connec_entity, organization)
+    idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
+    connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
+    # Entity does not exist in external
+    if idmap.salesforce_id.blank?
+      external_id = self.create_entity_to_external(external_client, connec_entity)
+      idmap.update_attributes(salesforce_id: external_id, salesforce_entity: self.external_entity_name)
+    else
+      self.update_entity_to_external(external_client, connec_entity, idmap.salesforce_id)
     end
   end
 
@@ -111,9 +115,7 @@ class Entity
 
   def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
     external_entities.map!{|entity|
-      id = entity.Id
       entity = self.map_to_connec(entity.attrs)
-      entity['_external_id'] = id
       idmap = IdMap.where(salesforce_id: id, salesforce_entity: self.external_entity_name, organization_id: organization.id).first
 
       if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
@@ -130,10 +132,7 @@ class Entity
     }.compact!
 
     connec_entities.map!{|entity|
-      id = entity['id']
-      entity = self.map_to_external(entity)
-      entity['_connec_id'] = id
-      entity
+      self.map_to_external(entity)
     }
   end
 
@@ -145,12 +144,18 @@ class Entity
     self.mapper_name.constantize.set_organization(nil)
   end
 
-  def map_to_external(input)
-    self.mapper_name.constantize.normalize(input)
+  def map_to_external(entity)
+    id = entity['id']
+    entity = self.mapper_name.constantize.normalize(entity)
+    entity['_connec_id'] = id
+    entity
   end
 
-  def map_to_connec(input)
-    self.mapper_name.constantize.denormalize(input)
+  def map_to_connec(entity)
+    id = entity.Id
+    entity = self.mapper_name.constantize.denormalize(entity)
+    entity['_external_id'] = id
+    entity
   end
 
 end

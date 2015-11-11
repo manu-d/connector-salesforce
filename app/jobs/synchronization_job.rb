@@ -31,7 +31,7 @@ class SynchronizationJob
 
       Rails.logger.info "Finished synchronization, organization=#{organization.uid}, status=success"
       current_synchronization.update_attributes(status: 'SUCCESS')
-    rescue Exception => e
+    rescue => e
       Rails.logger.info "Finished synchronization, organization=#{organization.uid}, status=error, message=#{e.message} backtrace=#{e.backtrace.join("\n\t")}"
       current_synchronization.update_attributes(status: 'ERROR', message: e.message)
     end
