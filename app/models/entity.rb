@@ -136,6 +136,12 @@ class Entity
     }
   end
 
+  def map_external_entities(external_entities)
+    external_entities.map!{|entity|
+      entity = self.map_to_connec(entity.attrs)
+    }
+  end
+
   def set_mapper_organization(organization_id)
     self.mapper_name.constantize.set_organization(organization_id)
   end
