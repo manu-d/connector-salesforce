@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     @organizations_data = []
-    
+
     if current_user
       # Process each Organization the current user belongs to
       current_user.organizations.each do |organization|

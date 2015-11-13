@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
     org_uid = params[:org_uid]
     organization = Organization.find_by_uid(org_uid)
 
-    if organization && organization.admin?(current_user)
+    if organization && is_admin?(current_user, organization)
       auth_params = {
         :state => org_uid
       }
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
     org_uid = params[:state]
     organization = Organization.find_by_uid(org_uid)
 
-    if organization && organization.admin?(current_user)
+    if organization && is_admin?(current_user, organization)
       organization.from_omniauth(env["omniauth.auth"])
     end
 
@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
   def destroy_omniauth
     organization = Organization.find(params[:organization_id])
 
-    if organization && organization.admin?(current_user)
+    if organization && is_admin?(current_user, organization)
       organization.oauth_uid = nil
       organization.oauth_token = nil
       organization.refresh_token = nil

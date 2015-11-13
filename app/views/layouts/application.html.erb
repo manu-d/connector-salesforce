@@ -17,13 +17,16 @@
 
       <% current_user.organizations.each do |organization| %>
         Organization: <%= organization.uid %> - <%= organization.name %>
-        <% if organization.oauth_uid %>
-          Linked to SalesForce Account <%= organization.oauth_uid %> <br/>
-          <%= link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id) %>
+        <% if is_admin?(current_user, organization) %>
+          <%= "You are #{session["role-#{organization.uid}"]} in this organization" %>
+          <% if organization.oauth_uid %>
+            Linked to SalesForce Account <%= organization.oauth_uid %> <br/>
+            <%= link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id) %>
 
-          <%= link_to "Synchronize your organization", home_synchronize_path(uid: organization.uid), method: :post%> <br/>
-        <% else %>
-          <%= link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce/request?org_uid=#{organization.uid}" %>
+            <%= link_to "Synchronize your organization", home_synchronize_path(uid: organization.uid), method: :post%> <br/>
+          <% else %>
+            <%= link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce/request?org_uid=#{organization.uid}" %>
+          <% end %>
         <% end %>
       <% end %>
     <% else %>

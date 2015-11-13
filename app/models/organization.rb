@@ -28,10 +28,6 @@ class Organization < ActiveRecord::Base
     self.user_organization_rels.where(user_id:user.id).count > 0
   end
 
-  def admin?(user)
-    self.member?(user) #TODO
-  end
-
   def remove_member(user)
     self.user_organization_rels.where(user_id:user.id).delete_all
   end
