@@ -45,6 +45,7 @@ class Maestrano::Auth::SamlController < Maestrano::Rails::SamlBaseController
     ### be there if you are using an authentication framework like Devise
     ### --
     session[:uid] = user.uid
+    session["role-#{organization.uid}"] = user_group_rel_hash[:role]
     redirect_to root_path
   end
 end
