@@ -158,7 +158,7 @@ class Entity
   end
 
   def map_to_connec(entity)
-    id = entity.Id
+    id = entity['Id']
     entity = self.mapper_name.constantize.denormalize(entity)
     entity['_external_id'] = id
     entity
