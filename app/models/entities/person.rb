@@ -18,6 +18,7 @@ class Entities::Person < Entity
       Salutation
       FirstName
       LastName
+      Title
       Birthdate
       MailingStreet
       MailingCity
@@ -53,9 +54,7 @@ class PersonMapper
   #Should be prettier when connec will handle external id
   before_normalize do |input, output|
     if id = input['organization_id']
-      Rails.logger.debug "Before normalize: connec_id=#{id}"
       input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).salesforce_id
-      Rails.logger.debug "Before normalize bis: salesforce_id=#{input['organization_id']}"
     end
     input
   end
@@ -75,6 +74,7 @@ class PersonMapper
   map from('/title'), to('/Salutation')
   map from('/first_name'), to('/FirstName')
   map from('/last_name'), to('/LastName')
+  map from('/job_title'), to('/Title')
   map from('/birth_date'), to('/Birthdate')
 
   map from('address_work/billing/line1'), to('MailingStreet')
