@@ -31,6 +31,7 @@ gem 'figaro'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'hash_mapper'
+gem 'haml-rails'
 
 group :production do
   gem 'rails_12factor'

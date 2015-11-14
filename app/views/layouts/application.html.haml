@@ -1,0 +1,32 @@
+!!!
+%html
+  %head
+    %title SalesForce Connector
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    %p Data sharing between Connec!™ and SalesForce APIs (v0.5)
+    #current-user-status
+      - if current_user
+        Welcome #{current_user.first_name}
+        %br
+        %br
+        = link_to "Disconnect your Maestrano account", signout_path
+        %br
+        - current_user.organizations.each do |organization|
+          Organization: #{organization.uid} - #{organization.name}
+          - if is_admin?(current_user, organization)
+            = "You are #{session[:"role_#{organization.uid}"]} in this organization"
+            - if organization.oauth_uid
+              Linked to SalesForce Account #{organization.oauth_uid}
+              %br
+              = link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id)
+              = link_to "Synchronize your organization", home_synchronize_path(uid: organization.uid), method: :post
+              %br
+            - else
+              = link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce/request?org_uid=#{organization.uid}"
+      - else
+        / # <haml_loud> link_to &quot;Link your Maestrano account&quot;, init_maestrano_auth_saml_index_path(tenant: :default) </haml_loud>
+        = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default, group_id: 'cld-9fwe')
+    = yield

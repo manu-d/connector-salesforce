@@ -70,9 +70,22 @@ GEM
       thor (~> 0.14)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    haml (4.0.7)
+      tilt
+    haml-rails (0.9.0)
+      actionpack (>= 4.0.1)
+      activesupport (>= 4.0.1)
+      haml (>= 4.0.6, < 5.0)
+      html2haml (>= 1.0.1)
+      railties (>= 4.0.1)
     hash_mapper (0.2.1)
       activesupport (~> 4)
     hashie (3.4.3)
+    html2haml (2.0.0)
+      erubis (~> 2.7.0)
+      haml (~> 4.0.0)
+      nokogiri (~> 1.6.0)
+      ruby_parser (~> 3.5)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httparty (0.13.7)
@@ -174,6 +187,8 @@ GEM
       faraday_middleware (>= 0.8.8)
       hashie (>= 1.2.0, < 4.0)
       json (>= 1.7.5, < 1.9.0)
+    ruby_parser (3.7.2)
+      sexp_processor (~> 4.1)
     sass (3.4.19)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
@@ -184,6 +199,7 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    sexp_processor (4.6.0)
     sprockets (3.4.0)
       rack (> 1, < 3)
     sprockets-rails (2.3.3)
@@ -219,6 +235,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   delayed_job_active_record
   figaro
+  haml-rails
   hash_mapper
   jbuilder (~> 2.0)
   jquery-rails
