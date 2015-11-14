@@ -1,7 +1,13 @@
-class NotificationController < ApplicationController
+class WebhookConnecController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
-  def handle
+  def receive
+    tenant_key = params['tenant_key']
+    unless Maestrano.with(tenant_key).authenticate(http_basic['login'],http_basic['password'])
+      render json: "Unauthorized, code: '401'", status: :unauthorized
+    end
+
+
     Rails.logger.debug "Received notification from Connec!: #{params}"
     params['notification'].each do |entity_name, entities|
       entity_name = entity_name.singularize
@@ -37,3 +43,23 @@ class NotificationController < ApplicationController
   end
 
 end
+
+
+# class WebhookConnecController
+#    
+#     # The 'receive' controller action responds to the following route
+#     # POST /mno-enterprise/acme-corp/connec/receive
+#     function receive
+#         # Retrieve the tenant key from the URL parameters
+#         tenant_key = params['tenant_key']
+#  
+#         # Authenticate request as usual
+#         unless Maestrano.with(tenant_key).authenticate(http_basic['login'],http_basic['password'])
+#             render json: "Unauthorized, code: '401'
+#         end
+#      
+#         # Finally, process the request for a specific tenant
+#         MyConnecWrapperClass.process_invoice_updates(params['invoices'],tenant_key)
+#     end
+#    
+# end
