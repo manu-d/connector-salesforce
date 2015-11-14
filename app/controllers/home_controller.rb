@@ -3,8 +3,9 @@ class HomeController < ApplicationController
     @organizations_data = []
 
     if current_user
-      # Process each Organization the current user belongs to
-      current_user.organizations.each do |organization|
+      organization = current_organization
+
+      if organization
         organization_data = {uid: organization.uid, name: organization.name}
         organization_data[:last_synchronization ] = Synchronization.where(organization_id: organization.id).order(updated_at: :desc).first
 
