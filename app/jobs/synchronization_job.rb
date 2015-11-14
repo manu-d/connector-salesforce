@@ -22,7 +22,7 @@ class SynchronizationJob
 
         external_entities = entity_class.get_external_entities(external_client, last_synchronization, opts)
 
-        if last_synchronization.blank? || opts[:sync_connec]
+        if last_synchronization.blank? || opts[:force_sync_connec]
           connec_entities = entity_class.get_connec_entities(connec_client, last_synchronization, opts)
           entity_class.consolidate_and_map_data(connec_entities, external_entities, organization, opts)
           entity_class.push_entities_to_external(external_client, connec_entities, organization)

@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  include UserAdminHelper
 
   def request_omniauth
     org_uid = params[:org_uid]
