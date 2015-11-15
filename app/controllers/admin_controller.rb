@@ -7,12 +7,29 @@ class AdminController < ApplicationController
     end
   end
 
+  def update
+    organization = Organization.find_by_id(params[:id])
+
+    if organization && is_admin?(current_user, organization)
+      organization.synchronized_entities.each do |entity, bool|
+        if !!params["#{entity}"]
+          organization.synchronized_entities[entity] = true
+        else
+          organization.synchronized_entities[entity] = false
+        end
+      end
+      organization.save
+    end
+
+    redirect_to admin_index_path
+  end
+
   def synchronize
-    return redirect_to admin_path unless is_admin
+    if is_admin
+      SynchronizationJob.new.sync(current_organization, params['opts'])
+    end
 
-    SynchronizationJob.new.sync(params[:uid])
-
-    redirect_to admin_path
+    redirect_to admin_index_path
   end
 
   private

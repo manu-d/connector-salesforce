@@ -7,6 +7,17 @@ class Organization < ActiveRecord::Base
     #group.some_required_field = 'some-appropriate-default-value'
   end
 
+  # If you add a new entities, you need to generate a migration to add it to existing organizations
+  ENTITIES = %w(organization person)
+
+  def initialize
+    super
+    self.synchronized_entities = {}
+    ENTITIES.each do |e|
+      self.synchronized_entities[e.to_sym] = true
+    end
+  end
+
   #===================================
   # Associations
   #===================================
@@ -17,6 +28,11 @@ class Organization < ActiveRecord::Base
   # Validation
   #===================================
   validates :name, presence: true
+
+  #===================================
+  # Serialized field
+  #===================================
+  serialize :synchronized_entities
 
   def add_member(user)
     unless self.member?(user)
