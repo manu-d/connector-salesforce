@@ -8,7 +8,7 @@
             %h4 You need to be Admin or Super Admin in your company to access this panel.
         .row
           .col-md-12.center
-            = link_to 'Go back to home page', root_path, class: 'btn btn-primary'
+            = link_to 'Go back to home page', root_path, class: 'btn btn-warning'
 
       - else
         .row
@@ -17,11 +17,14 @@
             %li
               %h4
                 Maestrano account:
-                = link_to "Disconnect your Maestrano account", signout_path, class: "btn btn-warning btn-sm"
+                = link_to "Disconnect your Maestrano account", signout_path, class: "btn btn-primary btn-sm"
             %li
               %h4
                 Salesforce account:
-                = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Salesforce account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-sm"
+                - if @organization.oauth_uid
+                  = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Salesforce account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-primary btn-sm"
+                - else
+                  = link_to "Connect #{@organization.name} (#{@organization.uid}) from your Salesforce account", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
             %li= link_to "Force a synchronization", admin_synchronize_path, method: :post, class: "btn btn-warning btn-sm"
         .spacer1
 

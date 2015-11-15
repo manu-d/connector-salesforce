@@ -26,10 +26,10 @@ class AdminController < ApplicationController
 
   def synchronize
     if is_admin
-      SynchronizationJob.new.sync(current_organization, params['opts'])
+      SynchronizationJob.new.sync(current_organization, params['opts'] || {})
     end
 
-    redirect_to admin_index_path
+    redirect_to root_path
   end
 
   private
