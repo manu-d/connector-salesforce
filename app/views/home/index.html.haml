@@ -4,7 +4,8 @@
       .container
         .row
           .col-md-4.col-md-offset-4.center
-            = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
+            / = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
+            = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default, group_id: 'cld-9fwe')
         .row
           .col-md-12
             %h2 Some blabla
@@ -14,35 +15,44 @@
   - else
     .banners
       .container
-        .row
-          %h2= "Welcome #{current_user.first_name}!"
 
         .row
-          Your company #{@organization.name} (#{@organization.uid}) is
-          - unless @organization.oauth_uid
-            not linked to any SalesForce account.
-            = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{organization.uid}", class: "btn btn-warning" if is_admin?(current_user, @organization)
-          - else
-            linked to a SalesForce account (#{@organization.oauth_uid})
+          %h4
+            Your company #{@organization.name}
+            %small (#{@organization.uid})
+            is
+            - unless @organization.oauth_uid
+              not linked to any SalesForce account.
+              = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
+            - else
+              linked to a SalesForce account
+              %small (#{@organization.oauth_uid})
 
         .row
-          .col-md-3
-            %h3= "Last synchronization:"
-          .col-md-5.center
+          %h3= "Last synchronization:"
+        .row
+          .col-md-10.col-md-offset-1.center
             - if @synchronizations
-              %h3.sync-status{class: @synchronizations.first.status.downcase}= "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
+              %h3.sync-status{class: @synchronizations.first.status.downcase}
+                = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
+                = @synchronizations.first.message if @synchronizations.first.status == 'ERROR'
             - else
               %h3 None
+        .spacer2
 
         -if @synchronizations
           .row
-            %h2= "Synchronizations history"
-            - @synchronizations.each do |sync|
-              .row.sync-status{class: sync.status.downcase}
-                .col-md-3
-                  = sync.updated_at
-                .col-md-3
-                  = sync.status
+            .col-md-12
+              %h3= "Synchronizations history"
+              - @synchronizations.each do |sync|
+                .row.sync-status{class: sync.status.downcase}
+                  .col-md-3
+                    = sync.updated_at
+                  .col-md-3
+                    = sync.status
+                  -if sync.status == 'ERROR'
+                    .col-md-6
+                      = sync.message
 
 
 

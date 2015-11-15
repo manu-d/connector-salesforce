@@ -1,2 +1,55 @@
 .admin
-  Admin
+  .banners
+    .container
+
+      - unless @organization
+        .row
+          .col-md-12.center
+            %h4 You need to be Admin or Super Admin in your company to access this panel.
+        .row
+          .col-md-12.center
+            = link_to 'Go back to home page', root_path, class: 'btn btn-primary'
+
+      - else
+        .row
+          %h3 Settings
+          %ul
+            %li
+              %h4
+                Maestrano account:
+                = link_to "Disconnect your Maestrano account", signout_path, class: "btn btn-warning btn-sm"
+            %li
+              %h4
+                Salesforce account:
+                = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Salesforce account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-sm"
+        .spacer1
+
+        .row
+          %h3 Synchronized entities
+          TODO
+        .spacer1
+
+        .row
+          %h3
+            IdMap
+            %small Equivalence between Maestrano's Connec! id and SalesForce id for each of your entities
+          .center
+            .row
+              .col-md-3
+                %strong Connec! entity
+              .col-md-3
+                %strong Connec! id
+              .col-md-3
+                %strong SalesForce entity
+              .col-md-3
+                %strong SalesForce id
+            - @idmaps.each do |idmap|
+              .row
+                .col-md-3
+                  = idmap.connec_entity.humanize
+                .col-md-3
+                  = idmap.connec_id
+                .col-md-3
+                  = idmap.salesforce_entity.humanize
+                .col-md-3
+                  = idmap.salesforce_id

@@ -3,6 +3,7 @@ class AdminController < ApplicationController
   def index
     if is_admin
       @organization = current_organization
+      @idmaps = IdMap.where(organization_id: @organization.id).order(:connec_entity)
     end
   end
 

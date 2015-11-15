@@ -21,10 +21,10 @@
         .collapse.navbar-collapse#maestrano-navbar-collapse
           %ul.nav.navbar-nav
             %li
-              =link_to "NoName", root_path
+              =link_to "Home", root_path
 
             %li
-              =link_to "Admin", admin_index_path
+              =link_to "Admin panel", admin_index_path
 
           %ul.nav.navbar-nav.navbar-right
             =image_tag "logos/salesforce.png", class: 'external-logo'
@@ -35,6 +35,10 @@
         .row
           .col-md-6.col-md-offset-3
             %h2 Salesforce connector
+
+    -if current_user
+      .banners.align-right.sticky-top
+        Connected as #{current_user.first_name} #{current_user.last_name}
 
     .wrapper
       = yield
