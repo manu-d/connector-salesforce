@@ -2,10 +2,11 @@ class WebhookConnecController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def receive
-    tenant_key = params['tenant_key']
-    unless Maestrano.with(tenant_key).authenticate(http_basic['login'],http_basic['password'])
-      return render json: "Unauthorized, code: '401'", status: :unauthorized
-    end
+    # TODO not working
+    # tenant_key = params['tenant_key']
+    # unless Maestrano.with(tenant_key).authenticate(http_basic['login'],http_basic['password'])
+    #   return render json: "Unauthorized, code: '401'", status: :unauthorized
+    # end
 
     params['notification'].each do |entity_name, entities|
       entity_name = entity_name.singularize
