@@ -11,7 +11,7 @@ class SynchronizationJob
     current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
 
     begin
-      last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS').order(updated_at: :desc).first
+      last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS', partial: false).order(updated_at: :desc).first
       connec_client = Maestrano::Connec::Client.new(organization.uid)
       external_client = Restforce.new :oauth_token => organization.oauth_token,
         refresh_token: organization.refresh_token,
@@ -20,6 +20,8 @@ class SynchronizationJob
         client_secret: ENV['salesforce_client_secret']
 
       if opts[:only_entities]
+        # The synchronization is marked as partial and will not be considered as the last-synchronization for the next sync
+        current_synchronization.update_attributes(partial: true)
         opts[:only_entities].each do |entity|
           sync_entity(entity, organization, connec_client, external_client, last_synchronization, opts)
         end

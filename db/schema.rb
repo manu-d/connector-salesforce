@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151115181753) do
+ActiveRecord::Schema.define(version: 20151115213529) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -60,8 +60,9 @@ ActiveRecord::Schema.define(version: 20151115181753) do
     t.string   "tenant",          limit: 255
     t.string   "status",          limit: 255
     t.string   "message",         limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "partial",                     default: false
   end
 
   create_table "user_organization_rels", force: :cascade do |t|
