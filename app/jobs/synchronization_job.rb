@@ -2,12 +2,13 @@ class SynchronizationJob
   EXTERNAL_NAME = "SalesForce"
 
   # Supported options:
+  #  * :forced => true  synchronization has been triggered manually (for logging purposes only)
   #  * :only_entities => [person, tasks_list]
   #  * :full_sync => true  synchronization is performed without date filtering
   #  * :force_sync_connec => true  Force a fetching of Connec! data (usually only done for the first sync, subsequents syncs are done via webhooks)
   #  * :external_preemption => true  preemption is given to external instead of connec! is case of conflict. Usefull only is synchronization is performed to both connec! and external
   def sync(organization, opts={})
-    Rails.logger.info "Start synchronization, organization=#{organization.uid}"
+    Rails.logger.info "Start synchronization, organization=#{organization.uid} #{opts[:forced] ? 'forced=true' : ''}"
     current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
 
     begin
@@ -20,6 +21,7 @@ class SynchronizationJob
         client_secret: ENV['salesforce_client_secret']
 
       if opts[:only_entities]
+        Rails.logger.info "Synchronization is partial and will synchronize only #{opts[:only_entities].join(' ')}"
         # The synchronization is marked as partial and will not be considered as the last-synchronization for the next sync
         current_synchronization.update_attributes(partial: true)
         opts[:only_entities].each do |entity|
