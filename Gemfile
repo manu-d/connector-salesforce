@@ -33,6 +33,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'hash_mapper'
 gem 'haml-rails'
 
+gem 'bootstrap-sass'
+gem 'autoprefixer-rails'
+
 group :production do
   gem 'rails_12factor'
   gem 'activerecord-jdbcpostgresql-adapter'

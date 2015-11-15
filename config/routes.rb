@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   maestrano_routes
 
   get 'home/index' => 'home#index'
-  post 'home/synchronize' => 'home#synchronize'
+  get 'admin/index' => 'admin#index'
+  post 'admin/synchronize' => 'admin#synchronize'
 
   post 'maestrano/connec/notifications' => 'webhook_connec#receive'
 

@@ -1,19 +1,95 @@
-- @organizations_data.each do |organization_data|
-  %h3
-    Maestrano Organization #{organization_data[:uid]} - #{organization_data[:name]}
-    - if organization_data[:last_synchronization]
-      \- Last synch: #{organization_data[:last_synchronization].status} #{organization_data[:last_synchronization].updated_at}
-      - if organization_data[:last_synchronization].status == "ERROR"
-        Error_msg: #{organization_data[:last_synchronization].message}
-  %h4 SalesForce Accounts
-  - if organization_data[:salesforce_organizations]
-    - organization_data[:salesforce_organizations].each do |salesforce_organization|
-      = salesforce_organization.Id
-      \- #{salesforce_organization.Name} - #{salesforce_organization.Industry}
-      %br
-  %h4 Connec Organization
-  - if organization_data[:connec_organizations]
-    - organization_data[:connec_organizations].each do |connec_organization|
-      = connec_organization['id']
-      \- #{connec_organization['name']} - #{connec_organization['industry']}
-      %br
+.home
+  - unless current_user
+    .banners
+      .container
+        .row
+          .col-md-4.col-md-offset-4.center
+            = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
+        .row
+          .col-md-12
+            %h2 Some blabla
+            More blablabla
+            %br
+            More blabla
+  - else
+    .banners
+      .container
+        .row
+          %h2= "Welcome #{current_user.first_name}!"
+
+        .row
+          Your company #{@organization.name} (#{@organization.uid}) is
+          - unless @organization.oauth_uid
+            not linked to any SalesForce account.
+            = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{organization.uid}", class: "btn btn-warning" if is_admin?(current_user, @organization)
+          - else
+            linked to a SalesForce account (#{@organization.oauth_uid})
+
+        .row
+          .col-md-3
+            %h3= "Last synchronization:"
+          .col-md-5.center
+            - if @synchronizations
+              %h3.sync-status{class: @synchronizations.first.status.downcase}= "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
+            - else
+              %h3 None
+
+        -if @synchronizations
+          .row
+            %h2= "Synchronizations history"
+            - @synchronizations.each do |sync|
+              .row.sync-status{class: sync.status.downcase}
+                .col-md-3
+                  = sync.updated_at
+                .col-md-3
+                  = sync.status
+
+
+
+
+    / = link_to "Disconnect your Maestrano account", signout_path
+
+/   - @organizations_data.each do |organization_data|
+/     %h3
+/       Maestrano Organization #{organization_data[:uid]} - #{organization_data[:name]}
+/       - if organization_data[:last_synchronization]
+/         \- Last synch: #{organization_data[:last_synchronization].status} #{organization_data[:last_synchronization].updated_at}
+/         - if organization_data[:last_synchronization].status == "ERROR"
+/           Error_msg: #{organization_data[:last_synchronization].message}
+/     %h4 SalesForce Accounts
+/     - if organization_data[:salesforce_organizations]
+/       - organization_data[:salesforce_organizations].each do |salesforce_organization|
+/         = salesforce_organization.Id
+/         \- #{salesforce_organization.Name} - #{salesforce_organization.Industry}
+/         %br
+/     %h4 Connec Organization
+/     - if organization_data[:connec_organizations]
+/       - organization_data[:connec_organizations].each do |connec_organization|
+/         = connec_organization['id']
+/         \- #{connec_organization['name']} - #{connec_organization['industry']}
+/         %br
+
+
+/ %p Data sharing between Connec!™ and SalesForce APIs (v0.5)
+/ #current-user-status
+/   - if current_user
+/     Welcome #{current_user.first_name}
+/     %br
+/     %br
+/     = link_to "Disconnect your Maestrano account", signout_path
+/     %br
+/     - current_user.organizations.each do |organization|
+/       Organization: #{organization.uid} - #{organization.name}
+/       - if is_admin?(current_user, organization)
+/         = "You are #{session[:"role_#{organization.uid}"]} in this organization"
+/         - if organization.oauth_uid
+/           Linked to SalesForce Account #{organization.oauth_uid}
+/           %br
+/           = link_to "Disconnect #{organization.uid} from your Salesforce account", signout_omniauth_path(organization_id: organization.id)
+/           = link_to "Synchronize your organization", home_synchronize_path(uid: organization.uid), method: :post
+/           %br
+/         - else
+/           = link_to "Link #{organization.uid} to your Salesforce account", "/auth/salesforce/request?org_uid=#{organization.uid}"
+/   - else
+/     / # <haml_loud> link_to &quot;Link your Maestrano account&quot;, init_maestrano_auth_saml_index_path(tenant: :default) </haml_loud>
+/     = link_to "Link your Maestrano account", init_maestrano_auth_saml_index_path(tenant: :default, group_id: 'cld-9fwe')
