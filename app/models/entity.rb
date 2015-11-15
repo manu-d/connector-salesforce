@@ -2,6 +2,38 @@ class Entity
 
   @@external_name = "SalesForce"
 
+  # ----------------------------------------------
+  #                 Mapper methods
+  # ----------------------------------------------
+  # Used to set a class variable in the mapper in order to
+  # have access to the organization for the idmaps queries
+  def set_mapper_organization(organization_id)
+    self.mapper_name.constantize.set_organization(organization_id)
+  end
+
+  def unset_mapper_organization
+    self.mapper_name.constantize.set_organization(nil)
+  end
+
+  # Map a Connec! entity to the external format while preserving the Connec! id
+  def map_to_external(entity)
+    id = entity['id']
+    entity = self.mapper_name.constantize.normalize(entity)
+    entity['_connec_id'] = id
+    entity
+  end
+
+  # Map an external entity to Connec! format while preserving the external id
+  def map_to_connec(entity)
+    id = entity['Id']
+    entity = self.mapper_name.constantize.denormalize(entity)
+    entity['_external_id'] = id
+    entity
+  end
+
+  # ----------------------------------------------
+  #                 Connec! methods
+  # ----------------------------------------------
   def get_connec_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching Connec! #{self.connec_entity_name.pluralize}"
 
@@ -36,24 +68,47 @@ class Entity
     entities
   end
 
+  def push_entities_to_connec(connec_client, mapped_external_entities, organization)
+    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
+    mapped_external_entities.each do |external_entity|
+      idmap = IdMap.find_or_create_by(salesforce_id: external_entity['_external_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id)
+
+      if idmap.connec_id.blank?
+        connec_entity = self.create_entity_to_connec(connec_client, external_entity)
+        idmap.update_attributes(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase)
+      else
+        connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id)
+      end
+    end
+  end
+
+  def create_entity_to_connec(client, mapped_external_entity)
+    Rails.logger.info "Create #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
+    JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
+  end
+
+  def update_entity_to_connec(client, mapped_external_entity, connec_id)
+    Rails.logger.info "Update #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
+    client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
+  end
+
+  # ----------------------------------------------
+  #                 External methods
+  # ----------------------------------------------
   #TODO Pagination
   def get_external_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
-    # if last_synchronization
-      # Cannot get the get_updated query to work
-      # client.get_updated('Account', last_synchronization.updated_at, Time.now)
-      # client.query('select Id, Name from Account ORDER BY Name')
-    # else
-      fields = self.external_attributes.join(', ')
-      entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
-      entities = entities.to_a
 
-      if last_synchronization && !opts[:full_sync]
-        index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
-        entities = index ? (index >= 0 ? entities[0..index] : []) : entities
-      end
-      Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
-    # end
+    fields = self.external_attributes.join(', ')
+    entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
+    entities = entities.to_a
+
+    if last_synchronization && !opts[:full_sync]
+      index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
+      entities = index ? (index >= 0 ? entities[0..index] : []) : entities
+    end
+    Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
     entities
   end
 
@@ -67,7 +122,7 @@ class Entity
   def push_entity_to_external(external_client, connec_entity, organization)
     idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
     connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
-    # Entity does not exist in external
+
     if idmap.salesforce_id.blank?
       external_id = self.create_entity_to_external(external_client, connec_entity)
       idmap.update_attributes(salesforce_id: external_id, salesforce_entity: self.external_entity_name)
@@ -87,35 +142,18 @@ class Entity
     client.update!(self.external_entity_name, mapped_connec_entity)
   end
 
-  def push_entities_to_connec(connec_client, external_entities, organization)
-    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
-    external_entities.each do |external_entity|
-      idmap = IdMap.find_or_create_by(salesforce_id: external_entity['_external_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id)
-      # Entity does not exist in Connec!
-      if idmap.connec_id.blank?
-        connec_entity = self.create_entity_to_connec(connec_client, external_entity)
-        idmap.update_attributes(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase)
-      else
-        connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id)
-      end
-    end
+  def map_external_entities(external_entities)
+    external_entities.map!{|entity|
+      entity = self.map_to_connec(entity.attrs) #external_entities came back in a custom SF collection, hence the .attre to normalize it to an hash
+    }
   end
 
-  def create_entity_to_connec(client, mapped_external_entity)
-    Rails.logger.info "Create #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
-    response = client.post("/#{self.connec_entity_name.downcase.pluralize}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
-    JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
-  end
-
-  def update_entity_to_connec(client, mapped_external_entity, connec_id)
-    Rails.logger.info "Update #{self.connec_entity_name}: #{mapped_external_entity} to Connec!"
-    response = client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
-    JSON.parse(response.body)["#{self.connec_entity_name.downcase.pluralize}"]
-  end
-
+  # ----------------------------------------------
+  #                 General methods
+  # ----------------------------------------------
   def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
     external_entities.map!{|entity|
-      entity = self.map_to_connec(entity.attrs)
+      entity = self.map_to_connec(entity.attrs) #external_entities came back in a custom SF collection, hence the .attre to normalize it to an hash
       idmap = IdMap.where(salesforce_id: entity['_connec_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id).first
 
       if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
@@ -135,33 +173,4 @@ class Entity
       self.map_to_external(entity)
     }
   end
-
-  def map_external_entities(external_entities)
-    external_entities.map!{|entity|
-      entity = self.map_to_connec(entity.attrs)
-    }
-  end
-
-  def set_mapper_organization(organization_id)
-    self.mapper_name.constantize.set_organization(organization_id)
-  end
-
-  def unset_mapper_organization
-    self.mapper_name.constantize.set_organization(nil)
-  end
-
-  def map_to_external(entity)
-    id = entity['id']
-    entity = self.mapper_name.constantize.normalize(entity)
-    entity['_connec_id'] = id
-    entity
-  end
-
-  def map_to_connec(entity)
-    id = entity['Id']
-    entity = self.mapper_name.constantize.denormalize(entity)
-    entity['_external_id'] = id
-    entity
-  end
-
 end

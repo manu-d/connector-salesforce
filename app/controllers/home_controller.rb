@@ -8,10 +8,4 @@ class HomeController < ApplicationController
       end
     end
   end
-
-  def synchronize
-    SynchronizationJob.new.sync(params[:uid])
-
-    redirect_to home_index_path
-  end
 end

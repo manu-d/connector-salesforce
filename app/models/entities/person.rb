@@ -50,8 +50,7 @@ class PersonMapper
   end
 
   #Not so pretty
-  #Case when orga does not exist in connec! or Salesforce ? TODO
-  #Should be prettier when connec will handle external id
+  #Case when orga does not exist in connec! or Salesforce? TODO
   before_normalize do |input, output|
     if id = input['organization_id']
       input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).salesforce_id
@@ -63,7 +62,7 @@ class PersonMapper
       input['AccountId'] = IdMap.find_by(salesforce_entity: 'Account', salesforce_id: id, organization_id: @@organization_id).connec_id
     end
 
-    #Better way to handle date?
+    #Better way to handle dates?
     if input['Birthdate']
       input['Birthdate'] = input['Birthdate'].to_time.iso8601
     end
@@ -118,7 +117,6 @@ class PersonMapper
 # Salutation picklist
 # PhotoUrl url
 # ReportsToId reference
-# Title string
 
 end
 

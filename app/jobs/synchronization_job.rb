@@ -1,6 +1,11 @@
 class SynchronizationJob
   EXTERNAL_NAME = "SalesForce"
 
+  # Supported options:
+  #  * :only_entities => [person, tasks_list]
+  #  * :full_sync => true  synchronization is performed without date filtering
+  #  * :force_sync_connec => true  Force a fetching of Connec! data (usually only done for the first sync, subsequents syncs are done via webhooks)
+  #  * :external_preemption => true  preemption is given to external instead of connec! is case of conflict. Usefull only is synchronization is performed to both connec! and external
   def sync(org_uid, opts={})
     organization = Organization.find_by_uid(org_uid)
     Rails.logger.info "Start synchronization, organization=#{organization.uid}"
@@ -17,11 +22,11 @@ class SynchronizationJob
 
       if opts[:only_entities]
         opts[:only_entities].each do |entity|
-          sync_entity(entity, organization)
+          sync_entity(entity, organization, connec_client, external_client)
         end
       else
         organization.synchronized_entities.select{|k, v| v}.keys.each do |entity|
-          sync_entity(entity, organization)
+          sync_entity(entity, organization, connec_client, external_client)
         end
       end
 
@@ -34,7 +39,7 @@ class SynchronizationJob
   end
 
   private
-    def sync_entity(entity, organization)
+    def sync_entity(entity, organization, connec_client, external_client)
       entity_class = "Entities::#{entity.titleize.split.join}".constantize.new
       entity_class.set_mapper_organization(organization.id)
 

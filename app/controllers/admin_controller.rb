@@ -11,7 +11,7 @@ class AdminController < ApplicationController
     organization = Organization.find_by_id(params[:id])
 
     if organization && is_admin?(current_user, organization)
-      organization.synchronized_entities.each do |entity, bool|
+      organization.synchronized_entities.keys.each do |entity|
         if !!params["#{entity}"]
           organization.synchronized_entities[entity] = true
         else
