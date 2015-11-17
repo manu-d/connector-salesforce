@@ -31,7 +31,7 @@
           %h3= "Last synchronization:"
         .row
           .col-md-10.col-md-offset-1.center
-            - if @synchronizations
+            - if @synchronizations.first
               %h3.sync-status{class: @synchronizations.first.status.downcase}
                 = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
                 = @synchronizations.first.message if @synchronizations.first.status == 'ERROR'

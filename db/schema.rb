@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20151115213529) do
     t.integer  "organization_id"
     t.string   "tenant",          limit: 255
     t.string   "status",          limit: 255
-    t.string   "message",         limit: 255
+    t.text     "message"
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
     t.boolean  "partial",                     default: false
