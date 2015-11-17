@@ -7,6 +7,19 @@ class Organization < ActiveRecord::Base
     #group.some_required_field = 'some-appropriate-default-value'
   end
 
+  # Define all the entities that the connector can synchronize
+  # If you add new entities, you need to generate
+  # a migration to add them to existing organizations
+  ENTITIES = %w(organization person)
+
+  def initialize
+    super
+    self.synchronized_entities = {}
+    ENTITIES.each do |entity|
+      self.synchronized_entities[entity.to_sym] = true
+    end
+  end
+
   #===================================
   # Associations
   #===================================
@@ -18,6 +31,11 @@ class Organization < ActiveRecord::Base
   #===================================
   validates :name, presence: true
 
+  #===================================
+  # Serialized field
+  #===================================
+  serialize :synchronized_entities
+
   def add_member(user)
     unless self.member?(user)
       self.user_organization_rels.create(user:user)
@@ -26,10 +44,6 @@ class Organization < ActiveRecord::Base
 
   def member?(user)
     self.user_organization_rels.where(user_id:user.id).count > 0
-  end
-
-  def admin?(user)
-    self.member?(user) #TODO
   end
 
   def remove_member(user)
