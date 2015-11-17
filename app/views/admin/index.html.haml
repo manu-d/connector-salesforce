@@ -63,10 +63,10 @@
             - @idmaps.each do |idmap|
               .row
                 .col-md-3
-                  = idmap.connec_entity.humanize
+                  = idmap.connec_entity ? idmap.connec_entity.humanize : nil
                 .col-md-3
                   = idmap.connec_id
                 .col-md-3
-                  = idmap.salesforce_entity.humanize
+                  = idmap.salesforce_entity ? idmap.salesforce_entity.humanize : nil
                 .col-md-3
                   = idmap.salesforce_id
