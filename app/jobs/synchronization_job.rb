@@ -1,4 +1,4 @@
-class SynchronizationJob
+class SynchronizationJob < Struct.new(:organization, :opts)
   EXTERNAL_NAME = "SalesForce"
 
   # Supported options:
@@ -7,7 +7,7 @@ class SynchronizationJob
   #  * :full_sync => true  synchronization is performed without date filtering
   #  * :force_sync_connec => true  Force a fetching of Connec! data (usually only done for the first sync, subsequents syncs are done via webhooks)
   #  * :external_preemption => true  preemption is given to external instead of connec! is case of conflict. Usefull only is synchronization is performed to both connec! and external
-  def sync(organization, opts={})
+  def perform
     Rails.logger.info "Start synchronization, organization=#{organization.uid} #{opts[:forced] ? 'forced=true' : ''}"
     current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
 

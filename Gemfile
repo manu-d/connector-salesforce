@@ -32,6 +32,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'hash_mapper'
 gem 'haml-rails'
+gem 'deepstruct'
 
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
