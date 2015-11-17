@@ -57,7 +57,7 @@ class Entity
     # Fetch subsequent pages
     while response_hash['pagination'] && response_hash['pagination']['next']
       # ugly way to convert https://api-connec/api/v2/group_id/organizations?next_page_params to /organizations?next_page_params
-      next_page = response_hash['pagination']['next'].gsub(/^(.*)\/#{self.connec_entity_name.downcase.pluralize}/, '/#{self.connec_entity_name.downcase.pluralize}')
+      next_page = response_hash['pagination']['next'].gsub(/^(.*)\/#{self.connec_entity_name.downcase.pluralize}/, self.connec_entity_name.downcase.pluralize)
       response = client.get(next_page)
       response_hash = JSON.parse(response.body)
       entities << response_hash["#{self.connec_entity_name.downcase.pluralize}"]
