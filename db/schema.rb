@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151101052550) do
+ActiveRecord::Schema.define(version: 20151115213529) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -40,17 +40,18 @@ ActiveRecord::Schema.define(version: 20151101052550) do
   end
 
   create_table "organizations", force: :cascade do |t|
-    t.string   "provider",       limit: 255
-    t.string   "uid",            limit: 255
-    t.string   "name",           limit: 255
-    t.string   "tenant",         limit: 255
-    t.string   "oauth_provider", limit: 255
-    t.string   "oauth_uid",      limit: 255
-    t.string   "oauth_token",    limit: 255
-    t.string   "refresh_token",  limit: 255
-    t.string   "instance_url",   limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "provider",              limit: 255
+    t.string   "uid",                   limit: 255
+    t.string   "name",                  limit: 255
+    t.string   "tenant",                limit: 255
+    t.string   "oauth_provider",        limit: 255
+    t.string   "oauth_uid",             limit: 255
+    t.string   "oauth_token",           limit: 255
+    t.string   "refresh_token",         limit: 255
+    t.string   "instance_url",          limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "synchronized_entities", limit: 255
   end
 
   create_table "synchronizations", force: :cascade do |t|
@@ -59,8 +60,9 @@ ActiveRecord::Schema.define(version: 20151101052550) do
     t.string   "tenant",          limit: 255
     t.string   "status",          limit: 255
     t.text     "message"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "partial",                     default: false
   end
 
   create_table "user_organization_rels", force: :cascade do |t|

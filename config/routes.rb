@@ -2,7 +2,12 @@ Rails.application.routes.draw do
   maestrano_routes
 
   get 'home/index' => 'home#index'
-  post 'home/synchronize' => 'home#synchronize'
+
+  get 'admin/index' => 'admin#index'
+  put 'admin/update' => 'admin#update'
+  post 'admin/synchronize' => 'admin#synchronize'
+
+  post 'maestrano/connec/notifications' => 'webhook_connec#receive'
 
   match 'auth/:provider/request', to: 'sessions#request_omniauth', via: [:get, :post]
   match 'auth/:provider/callback', to: 'sessions#create_omniauth', via: [:get, :post]

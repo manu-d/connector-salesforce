@@ -1,0 +1,52 @@
+!!!
+%html
+  %head
+    %title Maestrano SalesForce Connector
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    .navbar.navbar-fixed-top.navbar-inverse
+      .container-fluid
+        .navbar-header
+          %button.navbar-toggle{ type:'button', 'data-toggle'=>"collapse", 'data-target'=>"#maestrano-navbar-collapse" }
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{ href:root_path }
+            .mno-main-logo.hidden-xs
+            .visible-xs{ style:'margin-top:20px;' } Maestrano
+
+        .collapse.navbar-collapse#maestrano-navbar-collapse
+          %ul.nav.navbar-nav
+            %li
+              =link_to "Home", root_path
+
+            %li
+              =link_to "Admin panel", admin_index_path
+
+          %ul.nav.navbar-nav.navbar-right
+            =image_tag "logos/salesforce.png", class: 'external-logo'
+    .padding-navbar
+
+    .banners.promo.lightgray.sticky.title
+      .container
+        .row
+          .col-md-6.col-md-offset-3
+            %h2 Salesforce connector
+
+    -if current_user
+      .banners.align-right.sticky-top
+        Connected as #{current_user.first_name} #{current_user.last_name}
+
+    .wrapper
+      = yield
+
+    .footer
+      .container
+        .row
+          .col-xs-12
+            .copyright
+              © Copyright #{Time.now.year} Maestrano Pty Ltd (ABN: 80 152 564 424).
+              All rights reserved. Various trademarks held by their respective owners.
