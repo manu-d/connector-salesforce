@@ -115,7 +115,7 @@ class Entity
   def push_entities_to_external(external_client, connec_entities, organization)
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
     connec_entities.each do |connec_entity|
-      push_entity_to_external(connec_entity)
+      push_entity_to_external(external_client, connec_entity, organization)
     end
   end
 
