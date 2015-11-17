@@ -72,7 +72,7 @@ class PersonMapper
 
   map from('/title'), to('/Salutation')
   map from('/first_name'), to('/FirstName')
-  map from('/last_name'), to('/LastName')
+  map from('/last_name'), to('/LastName'), default: 'Undefined'
   map from('/job_title'), to('/Title')
   map from('/birth_date'), to('/Birthdate')
 
