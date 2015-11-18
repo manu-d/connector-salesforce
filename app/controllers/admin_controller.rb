@@ -26,7 +26,7 @@ class AdminController < ApplicationController
 
   def synchronize
     if is_admin
-      SynchronizationJob.new.sync(current_organization, params['opts'] || {})
+      Delayed::Job.enqueue SynchronizationJob.new(current_organization, params['opts'] || {})
     end
 
     redirect_to root_path
