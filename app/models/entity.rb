@@ -138,12 +138,6 @@ class Entity
     client.update!(self.external_entity_name, mapped_connec_entity)
   end
 
-  def map_external_entities(external_entities)
-    external_entities.map!{|entity|
-      entity = self.map_to_connec(entity)
-    }
-  end
-
   # ----------------------------------------------
   #                 General methods
   # ----------------------------------------------
