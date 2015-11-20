@@ -71,7 +71,7 @@ class Entity
   def push_entities_to_connec(connec_client, mapped_external_entities, organization)
     Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
     mapped_external_entities.each do |external_entity|
-      idmap = IdMap.find_or_create_by(salesforce_id: external_entity['_external_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id)
+      idmap = IdMap.find_or_create_by(external_id: external_entity['_external_id'], external_entity: self.external_entity_name, organization_id: organization.id)
 
       if idmap.connec_id.blank?
         connec_entity = self.create_entity_to_connec(connec_client, external_entity)
@@ -123,11 +123,11 @@ class Entity
     idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
     connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
 
-    if idmap.salesforce_id.blank?
+    if idmap.external_id.blank?
       external_id = self.create_entity_to_external(external_client, connec_entity)
-      idmap.update_attributes(salesforce_id: external_id, salesforce_entity: self.external_entity_name)
+      idmap.update_attributes(external_id: external_id, external_entity: self.external_entity_name)
     else
-      self.update_entity_to_external(external_client, connec_entity, idmap.salesforce_id)
+      self.update_entity_to_external(external_client, connec_entity, idmap.external_id)
     end
   end
 
@@ -144,7 +144,7 @@ class Entity
 
   def map_external_entities(external_entities)
     external_entities.map!{|entity|
-      entity = self.map_to_connec(entity.attrs) #external_entities came back in a custom SF collection, hence the .attre to normalize it to an hash
+      entity = self.map_to_connec(entity)
     }
   end
 
@@ -153,8 +153,8 @@ class Entity
   # ----------------------------------------------
   def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
     external_entities.map!{|entity|
-      entity = self.map_to_connec(entity.attrs) #external_entities came back in a custom SF collection, hence the .attre to normalize it to an hash
-      idmap = IdMap.where(salesforce_id: entity['_connec_id'], salesforce_entity: self.external_entity_name, organization_id: organization.id).first
+      entity = self.map_to_connec(entity)
+      idmap = IdMap.where(external_id: entity['_connec_id'], external_entity: self.external_entity_name, organization_id: organization.id).first
 
       if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
         Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Preemption given to #{opts[:external_preemption] ? @@external_name : 'Connec!'}"
