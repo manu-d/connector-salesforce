@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151115213529) do
+ActiveRecord::Schema.define(version: 20151120161446) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -30,13 +30,13 @@ ActiveRecord::Schema.define(version: 20151115213529) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "id_maps", force: :cascade do |t|
-    t.string   "connec_id",         limit: 255
-    t.string   "connec_entity",     limit: 255
-    t.string   "salesforce_id",     limit: 255
-    t.string   "salesforce_entity", limit: 255
+    t.string   "connec_id",       limit: 255
+    t.string   "connec_entity",   limit: 255
     t.integer  "organization_id"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "external_id",     limit: 255
+    t.string   "external_entity", limit: 255
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20151115213529) do
     t.integer  "organization_id"
     t.string   "tenant",          limit: 255
     t.string   "status",          limit: 255
-    t.text     "message"
+    t.string   "message",         limit: 255
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
     t.boolean  "partial",                     default: false
