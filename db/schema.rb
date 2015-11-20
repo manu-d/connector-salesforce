@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120161446) do
+ActiveRecord::Schema.define(version: 20151120162008) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -39,6 +39,10 @@ ActiveRecord::Schema.define(version: 20151120161446) do
     t.string   "external_entity", limit: 255
   end
 
+  add_index "id_maps", ["connec_id", "organization_id"], name: "index_id_maps_on_connec_id_and_organization_id"
+  add_index "id_maps", ["external_id", "organization_id"], name: "index_id_maps_on_external_id_and_organization_id"
+  add_index "id_maps", ["organization_id"], name: "index_id_maps_on_organization_id"
+
   create_table "organizations", force: :cascade do |t|
     t.string   "provider",              limit: 255
     t.string   "uid",                   limit: 255
@@ -53,6 +57,8 @@ ActiveRecord::Schema.define(version: 20151120161446) do
     t.datetime "updated_at",                        null: false
     t.string   "synchronized_entities", limit: 255
   end
+
+  add_index "organizations", ["uid"], name: "index_organizations_on_uid"
 
   create_table "synchronizations", force: :cascade do |t|
     t.string   "provider",        limit: 255
@@ -72,6 +78,9 @@ ActiveRecord::Schema.define(version: 20151120161446) do
     t.datetime "updated_at"
   end
 
+  add_index "user_organization_rels", ["organization_id"], name: "index_user_organization_rels_on_organization_id"
+  add_index "user_organization_rels", ["user_id"], name: "index_user_organization_rels_on_user_id"
+
   create_table "users", force: :cascade do |t|
     t.string   "provider",   limit: 255
     t.string   "uid",        limit: 255
@@ -82,5 +91,7 @@ ActiveRecord::Schema.define(version: 20151120161446) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  add_index "users", ["uid"], name: "index_users_on_uid"
 
 end
