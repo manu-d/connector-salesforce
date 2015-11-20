@@ -96,17 +96,13 @@ class Entity
   # ----------------------------------------------
   #                 External methods
   # ----------------------------------------------
-  #TODO Pagination
   def get_external_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
 
-    fields = self.external_attributes.join(', ')
-    entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
-    entities = entities.to_a
-
-    if last_synchronization && !opts[:full_sync]
-      index = entities.find_index{|entity| entity.LastModifiedDate < last_synchronization.updated_at }
-      entities = index ? (index >= 0 ? entities[0..index] : []) : entities
+    entities = []
+    ids = client.get_updated(self.external_entity_name, last_synchronization.updated_at, Time.now)['ids']
+    ids.each do |id|
+      entities << client.find(self.external_entity_name, id)
     end
     Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
     entities
