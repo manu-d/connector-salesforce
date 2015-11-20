@@ -50,7 +50,6 @@ class PersonMapper
   end
 
   #Not so pretty
-  #Case when orga does not exist in connec! or Salesforce? TODO
   before_normalize do |input, output|
     if id = input['organization_id']
       input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).external_id
@@ -58,6 +57,7 @@ class PersonMapper
     input
   end
   before_denormalize do |input, output|
+    input['opts'] = {'create_default_organization' :  true}
     if id = input['AccountId']
       input['AccountId'] = IdMap.find_by(external_entity: 'Account', external_id: id, organization_id: @@organization_id).connec_id
     end
