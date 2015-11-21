@@ -5,7 +5,11 @@ module SessionHelper
   end
 
   def current_organization
-    Organization.find_by_uid(session[:org_uid])
+    Organization.find_by(uid: session[:org_uid], tenant: session[:tenant])
+  end
+
+  def current_user
+    User.find_by(uid: session[:uid], , tenant: session[:tenant]))
   end
 
 end

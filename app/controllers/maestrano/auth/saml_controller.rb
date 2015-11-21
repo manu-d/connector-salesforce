@@ -47,6 +47,7 @@ class Maestrano::Auth::SamlController < Maestrano::Rails::SamlBaseController
     session[:uid] = user.uid
     session[:org_uid] = organization.uid
     session[:"role_#{organization.uid}"] = user_group_rel_hash[:role]
+    session[:tenant] = 'default' #TODO change
     redirect_to root_path
   end
 end
