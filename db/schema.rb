@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120162008) do
+ActiveRecord::Schema.define(version: 20151121102751) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -30,13 +30,15 @@ ActiveRecord::Schema.define(version: 20151120162008) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "id_maps", force: :cascade do |t|
-    t.string   "connec_id",       limit: 255
-    t.string   "connec_entity",   limit: 255
+    t.string   "connec_id",             limit: 255
+    t.string   "connec_entity",         limit: 255
     t.integer  "organization_id"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.string   "external_id",     limit: 255
-    t.string   "external_entity", limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "external_id",           limit: 255
+    t.string   "external_entity",       limit: 255
+    t.datetime "last_push_to_connec"
+    t.datetime "last_push_to_external"
   end
 
   add_index "id_maps", ["connec_id", "organization_id"], name: "index_id_maps_on_connec_id_and_organization_id"

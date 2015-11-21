@@ -68,16 +68,18 @@ class Entity
     entities
   end
 
-  def push_entities_to_connec(connec_client, mapped_external_entities, organization)
+  def push_entities_to_connec(connec_client, mapped_external_entities_with_idmaps)
     Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{self.connec_entity_name.pluralize}"
-    mapped_external_entities.each do |external_entity|
-      idmap = IdMap.find_or_create_by(external_id: external_entity['_external_id'], external_entity: self.external_entity_name, organization_id: organization.id)
+    mapped_external_entities_with_idmaps.each do |external_entity_with_idmap|
+      external_entity = external_entity_with_idmap[:entity]
+      idmap = external_entity_with_idmap[:idmap]
 
       if idmap.connec_id.blank?
         connec_entity = self.create_entity_to_connec(connec_client, external_entity)
-        idmap.update_attributes(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase)
+        idmap.update_attributes(connec_id: connec_entity['id'], connec_entity: self.connec_entity_name.downcase, last_push_to_connec: Time.now)
       else
         connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id)
+        idmap.update_attributes(last_push_to_connec: Time.now)
       end
     end
   end
@@ -108,22 +110,25 @@ class Entity
     entities
   end
 
-  def push_entities_to_external(external_client, connec_entities, organization)
+  def push_entities_to_external(external_client, connec_entities_with_idmaps)
     Rails.logger.info "Push Connec! #{self.connec_entity_name.pluralize} to #{@@external_name} #{self.external_entity_name.pluralize}"
-    connec_entities.each do |connec_entity|
-      push_entity_to_external(external_client, connec_entity, organization)
+    connec_entities_with_idmaps.each do |connec_entity_with_idmap|
+      push_entity_to_external(external_client, connec_entity_with_idmap)
     end
   end
 
-  def push_entity_to_external(external_client, connec_entity, organization)
-    idmap = IdMap.find_or_create_by(connec_id: connec_entity['_connec_id'], connec_entity: self.connec_entity_name.downcase, organization_id: organization.id)
+  def push_entity_to_external(external_client, connec_entity_with_idmap)
+    idmap = connec_entity_with_idmap[:idmap]
+    connec_entity = connec_entity_with_idmap[:entity]
+
     connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
 
     if idmap.external_id.blank?
       external_id = self.create_entity_to_external(external_client, connec_entity)
-      idmap.update_attributes(external_id: external_id, external_entity: self.external_entity_name)
+      idmap.update_attributes(external_id: external_id, external_entity: self.external_entity_name, last_push_to_external: Time.now)
     else
       self.update_entity_to_external(external_client, connec_entity, idmap.external_id)
+      idmap.update_attributes(last_push_to_external: Time.now)
     end
   end
 
@@ -141,26 +146,43 @@ class Entity
   # ----------------------------------------------
   #                 General methods
   # ----------------------------------------------
-  def consolidate_and_map_data(connec_entities, external_entities, organization, opts={})
+  # * Discards entities that do not need to be pushed because they have not been updated since their last push
+  # * Discards entities from one of the two source in case of conflict
+  # * Maps not discarded entities and associates them with their idmap, or create one if there isn't any
+  def consolidate_and_map_data(connec_entities, external_entities, organization)
     external_entities.map!{|entity|
-      entity = self.map_to_connec(entity)
-      idmap = IdMap.where(external_id: entity['_connec_id'], external_entity: self.external_entity_name, organization_id: organization.id).first
+      idmap = IdMap.find_by(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)
 
-      if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
-        Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Preemption given to #{opts[:external_preemption] ? @@external_name : 'Connec!'}"
-        if opts[:connec_preemption]
-          nil
-        else
+      # No idmap: creating one, nothing else to do
+      unless idMap
+        next {entity: self.map_to_connec(entity), idmap: IdMap.create(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)}
+      end
+
+      # Entity has not been modified since its last push to connec!
+      next nil if idmap.last_push_to_connec && idmap.last_push_to_connec > entity['LastModifiedDate']
+
+      # Check for conflict with entities from connec!
+      if idmap.connec_id && connec_entity = connec_entities.detect{|connec_entity| connec_entity['id'] == idmap.connec_id}
+        # We keep the most recently updated entity
+        if connec_entity['updated_at'] < entity['LastModifiedDate']
+          Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Entity from #{@@external_name} kept"
           connec_entities.delete(connec_entity)
-          entity
+          {entity: self.map_to_connec(entity), idmap: idmap}
+        else
+          Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Entity from Connec! kept"
+          nil
         end
-      else
-        entity
       end
     }.compact!
 
     connec_entities.map!{|entity|
-      self.map_to_external(entity)
-    }
+      idmap = IdMap.find_by(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)
+
+      if idmap && idmap.last_push_to_external && idmap.last_push_to_external > entity['updated_at']
+        nil
+      else
+        {entity: self.map_to_external(entity), idmap: idmap || IdMap.create(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)}
+      end
+    }.compact!
   end
 end

@@ -5,7 +5,6 @@ class SynchronizationJob < Struct.new(:organization, :opts)
   #  * :forced => true  synchronization has been triggered manually (for logging purposes only)
   #  * :only_entities => [person, tasks_list]
   #  * :full_sync => true  synchronization is performed without date filtering
-  #  * :connec_preemption => true  preemption is given to connec! instead of external is case of conflict
   def perform
     Rails.logger.info "Start synchronization, organization=#{organization.uid} #{opts[:forced] ? 'forced=true' : ''}"
     current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
@@ -47,9 +46,9 @@ class SynchronizationJob < Struct.new(:organization, :opts)
 
       external_entities = entity_class.get_external_entities(external_client, last_synchronization, opts)
       connec_entities = entity_class.get_connec_entities(connec_client, last_synchronization, opts)
-      entity_class.consolidate_and_map_data(connec_entities, external_entities, organization, opts)
-      entity_class.push_entities_to_external(external_client, connec_entities, organization)
-      entity_class.push_entities_to_connec(connec_client, external_entities, organization)
+      entity_class.consolidate_and_map_data(connec_entities, external_entities, organization)
+      entity_class.push_entities_to_external(external_client, connec_entities)
+      entity_class.push_entities_to_connec(connec_client, external_entities)
 
       entity_class.unset_mapper_organization
     end
