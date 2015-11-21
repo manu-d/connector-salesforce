@@ -9,7 +9,7 @@ module SessionHelper
   end
 
   def current_user
-    User.find_by(uid: session[:uid], , tenant: session[:tenant]))
+    User.find_by(uid: session[:uid], tenant: session[:tenant])
   end
 
 end
