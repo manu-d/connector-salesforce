@@ -148,11 +148,11 @@ class Entity
 
       if idmap && idmap.connec_id && connec_entity = connec_entities.detect{|entity| entity['id'] == idmap.connec_id}
         Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Preemption given to #{opts[:external_preemption] ? @@external_name : 'Connec!'}"
-        if opts[:external_preemption]
+        if opts[:connec_preemption]
+          nil
+        else
           connec_entities.delete(connec_entity)
           entity
-        else
-          nil
         end
       else
         entity

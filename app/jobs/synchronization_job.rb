@@ -5,7 +5,7 @@ class SynchronizationJob < Struct.new(:organization, :opts)
   #  * :forced => true  synchronization has been triggered manually (for logging purposes only)
   #  * :only_entities => [person, tasks_list]
   #  * :full_sync => true  synchronization is performed without date filtering
-  #  * :external_preemption => true  preemption is given to external instead of connec! is case of conflict
+  #  * :connec_preemption => true  preemption is given to connec! instead of external is case of conflict
   def perform
     Rails.logger.info "Start synchronization, organization=#{organization.uid} #{opts[:forced] ? 'forced=true' : ''}"
     current_synchronization = Synchronization.create(organization_id: organization.id, status: 'RUNNING')
