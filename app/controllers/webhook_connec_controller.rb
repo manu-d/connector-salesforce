@@ -37,7 +37,7 @@ class WebhookConnecController < ApplicationController
       end
     end
 
-    render json: "Ok", status: :ok
+    render json: {success: true}
   end
 
 end

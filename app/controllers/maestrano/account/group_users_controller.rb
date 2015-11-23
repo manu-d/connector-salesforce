@@ -22,5 +22,6 @@ class Maestrano::Account::GroupUsersController < Maestrano::Rails::WebHookContro
     organization.remove_user(user)
     #   user.block_access! if user.reload.organizations.empty?
     # end
+    render json: {success: true}
   end
 end
