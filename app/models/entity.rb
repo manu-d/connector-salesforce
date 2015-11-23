@@ -17,18 +17,12 @@ class Entity
 
   # Map a Connec! entity to the external format while preserving the Connec! id
   def map_to_external(entity)
-    id = entity['id']
-    entity = self.mapper_name.constantize.normalize(entity)
-    entity['_connec_id'] = id
-    entity
+    self.mapper_name.constantize.normalize(entity)
   end
 
   # Map an external entity to Connec! format while preserving the external id
   def map_to_connec(entity)
-    id = entity['Id']
-    entity = self.mapper_name.constantize.denormalize(entity)
-    entity['_external_id'] = id
-    entity
+    self.mapper_name.constantize.denormalize(entity)
   end
 
   # ----------------------------------------------
@@ -95,6 +89,17 @@ class Entity
     client.put("/#{self.connec_entity_name.downcase.pluralize}/#{connec_id}", { "#{self.connec_entity_name.downcase.pluralize}": mapped_external_entity })
   end
 
+
+  def map_to_external_with_idmap(entity, organization)
+    idmap = IdMap.find_by(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)
+
+    if idmap && idmap.last_push_to_external && idmap.last_push_to_external > entity['updated_at']
+      nil
+    else
+      {entity: self.map_to_external(entity), idmap: idmap || IdMap.create(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)}
+    end
+  end
+
   # ----------------------------------------------
   #                 External methods
   # ----------------------------------------------
@@ -120,8 +125,6 @@ class Entity
   def push_entity_to_external(external_client, connec_entity_with_idmap)
     idmap = connec_entity_with_idmap[:idmap]
     connec_entity = connec_entity_with_idmap[:entity]
-
-    connec_entity.delete('_connec_id') #SalesForce API does not tolerate none existing fields
 
     if idmap.external_id.blank?
       external_id = self.create_entity_to_external(external_client, connec_entity)
@@ -154,7 +157,7 @@ class Entity
       idmap = IdMap.find_by(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)
 
       # No idmap: creating one, nothing else to do
-      unless idMap
+      unless idmap
         next {entity: self.map_to_connec(entity), idmap: IdMap.create(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)}
       end
 
@@ -176,13 +179,7 @@ class Entity
     }.compact!
 
     connec_entities.map!{|entity|
-      idmap = IdMap.find_by(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)
-
-      if idmap && idmap.last_push_to_external && idmap.last_push_to_external > entity['updated_at']
-        nil
-      else
-        {entity: self.map_to_external(entity), idmap: idmap || IdMap.create(connec_id: entity['id'], connec_entity: self.connec_entity_name, organization_id: organization.id)}
-      end
+      self.map_to_external_with_idmap(entity, organization)
     }.compact!
   end
 end

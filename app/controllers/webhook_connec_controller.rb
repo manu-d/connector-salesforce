@@ -26,8 +26,8 @@ class WebhookConnecController < ApplicationController
                 client_secret: ENV['salesforce_client_secret']
 
               Rails.logger.info "Received entity #{entity_name} from Connec! notification for #{entity['group_id']}. Entity=#{entity}. Pushing it"
-              mapped_entity = entity_class.map_to_external(entity)
-              entity_class.push_entity_to_external(external_client, mapped_entity, organization)
+              mapped_entity = entity_class.map_to_external_with_idmap(entity, organization)
+              entity_class.push_entity_to_external(external_client, mapped_entity)
               entity_class.unset_mapper_organization
             end
 
