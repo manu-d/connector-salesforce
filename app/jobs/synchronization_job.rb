@@ -1,5 +1,4 @@
 class SynchronizationJob < Struct.new(:organization, :opts)
-  EXTERNAL_NAME = "SalesForce"
 
   # Supported options:
   #  * :forced => true  synchronization has been triggered manually (for logging purposes only)
@@ -12,11 +11,7 @@ class SynchronizationJob < Struct.new(:organization, :opts)
     begin
       last_synchronization = Synchronization.where(organization_id: organization.id, status: 'SUCCESS', partial: false).order(updated_at: :desc).first
       connec_client = Maestrano::Connec::Client.new(organization.uid)
-      external_client = Restforce.new :oauth_token => organization.oauth_token,
-        refresh_token: organization.refresh_token,
-        instance_url: organization.instance_url,
-        client_id: ENV['salesforce_client_id'],
-        client_secret: ENV['salesforce_client_secret']
+      external_client = External.get_client(organization)
 
       if opts[:only_entities]
         Rails.logger.info "Synchronization is partial and will synchronize only #{opts[:only_entities].join(' ')}"

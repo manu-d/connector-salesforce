@@ -19,11 +19,7 @@ class WebhookConnecController < ApplicationController
 
             if organization.synchronized_entities[entity_name.to_sym]
               entity_class.set_mapper_organization(organization.id)
-              external_client = Restforce.new :oauth_token => organization.oauth_token,
-                refresh_token: organization.refresh_token,
-                instance_url: organization.instance_url,
-                client_id: ENV['salesforce_client_id'],
-                client_secret: ENV['salesforce_client_secret']
+              external_client = External.get_client(organization)
 
               Rails.logger.info "Received entity #{entity_name} from Connec! notification for #{entity['group_id']}. Entity=#{entity}. Pushing it"
               mapped_entity = entity_class.map_to_external_with_idmap(entity, organization)

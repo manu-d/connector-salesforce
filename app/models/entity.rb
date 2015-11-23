@@ -1,6 +1,6 @@
 class Entity
 
-  @@external_name = "SalesForce"
+  @@external_name = External.name
 
   # ----------------------------------------------
   #                 Mapper methods
