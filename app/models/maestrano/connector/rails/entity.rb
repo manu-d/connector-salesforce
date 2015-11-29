@@ -11,13 +11,18 @@ class Maestrano::Connector::Rails::Entity
   # Return an array of entities from the external app
   def get_external_entities(client, last_synchronization, opts={})
     Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
-    # TODO full sync || !last_synchronization
-    entities = []
-    ids = client.get_updated(self.external_entity_name, 3.week.ago, Time.now)['ids']
-    # ids = client.get_updated(self.external_entity_name, last_synchronization.updated_at, Time.now)['ids']
-    ids.each do |id|
-      entities << client.find(self.external_entity_name, id)
+
+    if opts[:full_sync] || last_synchronization.blank?
+      fields = self.external_attributes.join(', ')
+      entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
+    else
+      entities = []
+      ids = client.get_updated(self.external_entity_name, last_synchronization.updated_at, Time.now)['ids']
+      ids.each do |id|
+        entities << client.find(self.external_entity_name, id)
+      end
     end
+
     Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
     entities
   end
