@@ -1,4 +1,4 @@
-class Entities::Person < Entity
+class Entities::Person < Maestrano::Connector::Rails::Entity
 
   def connec_entity_name
     "Person"
@@ -44,25 +44,22 @@ end
 class PersonMapper
   extend HashMapper
 
-  #Quite ugly but haven't find another way to do it..
   def self.set_organization(organization_id)
     @@organization_id = organization_id
   end
 
-  #Not so pretty
-  #Case when orga does not exist in connec! or Salesforce? TODO
   before_normalize do |input, output|
     if id = input['organization_id']
-      input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).salesforce_id
+      input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).external_id
     end
     input
   end
   before_denormalize do |input, output|
+    output['opts'] = {'create_default_organization' :  true}
     if id = input['AccountId']
-      input['AccountId'] = IdMap.find_by(salesforce_entity: 'Account', salesforce_id: id, organization_id: @@organization_id).connec_id
+      input['AccountId'] = IdMap.find_by(external_entity: 'Account', external_id: id, organization_id: @@organization_id).connec_id
     end
 
-    #Better way to handle dates?
     if input['Birthdate']
       input['Birthdate'] = input['Birthdate'].to_time.iso8601
     end

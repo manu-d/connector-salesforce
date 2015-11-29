@@ -1,8 +1,8 @@
-class SessionsController < ApplicationController
+class OauthController < ApplicationController
 
-  def request_omniauth
+    def request_omniauth
     org_uid = params[:org_uid]
-    organization = Organization.find_by_uid(org_uid)
+    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 
     if organization && is_admin?(current_user, organization)
       auth_params = {
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
   # Link an Organization to SalesForce OAuth account
   def create_omniauth
     org_uid = params[:state]
-    organization = Organization.find_by_uid(org_uid)
+    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 
     if organization && is_admin?(current_user, organization)
       organization.from_omniauth(env["omniauth.auth"])
@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
 
   # Unlink Organization from SalesForce
   def destroy_omniauth
-    organization = Organization.find(params[:organization_id])
+    organization = Maestrano::Connector::Rails::Organization.find(params[:organization_id])
 
     if organization && is_admin?(current_user, organization)
       organization.oauth_uid = nil
@@ -38,14 +38,6 @@ class SessionsController < ApplicationController
       organization.refresh_token = nil
       organization.save
     end
-
-    redirect_to root_url
-  end
-
-  # Logout
-  def destroy
-    session.delete(:uid)
-    @current_user = nil
 
     redirect_to root_url
   end

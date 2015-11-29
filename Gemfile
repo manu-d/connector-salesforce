@@ -24,13 +24,12 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'puma'
 gem 'restforce'
 gem 'omniauth-salesforce'
-gem 'maestrano-rails'
+gem 'maestrano-connector-rails', :path => '../maestrano-connector-rails'
 gem 'figaro'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'hash_mapper'
 gem 'haml-rails'
 gem 'deepstruct'
 

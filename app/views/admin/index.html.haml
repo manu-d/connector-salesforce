@@ -17,7 +17,7 @@
             %li
               %h4
                 Maestrano account:
-                = link_to "Disconnect your Maestrano account", signout_path, class: "btn btn-primary btn-sm"
+                = link_to "Disconnect your Maestrano account", maestrano_connector_rails.signout_path, class: "btn btn-primary btn-sm"
             %li
               %h4
                 Salesforce account:
@@ -25,7 +25,8 @@
                   = link_to "Disconnect #{@organization.name} (#{@organization.uid}) from your Salesforce account", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-primary btn-sm"
                 - else
                   = link_to "Connect #{@organization.name} (#{@organization.uid}) from your Salesforce account", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm"
-            %li= link_to "Force a synchronization", admin_synchronize_path, method: :post, class: "btn btn-warning btn-sm"
+            - if @organization.oauth_uid
+              %li= link_to "Force a synchronization", admin_synchronize_path, method: :post, class: "btn btn-warning btn-sm"
         .spacer1
 
         .row
@@ -40,7 +41,7 @@
                     %label{:for => "#{k}"} #{k.to_s.humanize}
                   .col-md-1
                     %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
-                  -if v
+                  -if v && @organization.oauth_uid
                     .col-md-2
                       = link_to "Force a synchronization for #{k.to_s.pluralize} only", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
               =submit_tag :Update, class: "btn btn-primary"
@@ -67,6 +68,6 @@
                 .col-md-3
                   = idmap.connec_id
                 .col-md-3
-                  = idmap.salesforce_entity ? idmap.salesforce_entity.humanize : nil
+                  = idmap.external_entity ? idmap.external_entity.humanize : nil
                 .col-md-3
-                  = idmap.salesforce_id
+                  = idmap.external_id

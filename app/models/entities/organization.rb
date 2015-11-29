@@ -1,4 +1,4 @@
-class Entities::Organization < Entity
+class Entities::Organization < Maestrano::Connector::Rails::Entity
 
   def connec_entity_name
     "Organization"
