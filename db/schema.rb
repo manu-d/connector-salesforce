@@ -30,13 +30,15 @@ ActiveRecord::Schema.define(version: 20151128113455) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "maestrano_connector_rails_id_maps", force: :cascade do |t|
-    t.string   "connec_id",       limit: 255
-    t.string   "connec_entity",   limit: 255
-    t.string   "external_id",     limit: 255
-    t.string   "external_entity", limit: 255
+    t.string   "connec_id",             limit: 255
+    t.string   "connec_entity",         limit: 255
+    t.string   "external_id",           limit: 255
+    t.string   "external_entity",       limit: 255
     t.integer  "organization_id"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "last_push_to_connec"
+    t.datetime "last_push_to_external"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   add_index "maestrano_connector_rails_id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
@@ -64,9 +66,9 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.integer  "organization_id"
     t.string   "status",          limit: 255
     t.text     "message"
-    t.boolean  "partial"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.boolean  "partial",                     default: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
   create_table "maestrano_connector_rails_user_organization_rels", force: :cascade do |t|
