@@ -36,6 +36,7 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
       MobilePhone
       Fax
       HomePhone
+      LeadSource
     )
   end
 
@@ -50,14 +51,14 @@ class PersonMapper
 
   before_normalize do |input, output|
     if id = input['organization_id']
-      input['organization_id'] = IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).external_id
+      input['organization_id'] = Maestrano::Connector::Rails::IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).external_id
     end
     input
   end
   before_denormalize do |input, output|
-    output['opts'] = {'create_default_organization' :  true}
+    output['opts'] = {'create_default_organization' => true}
     if id = input['AccountId']
-      input['AccountId'] = IdMap.find_by(external_entity: 'Account', external_id: id, organization_id: @@organization_id).connec_id
+      input['AccountId'] = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'Account', external_id: id, organization_id: @@organization_id).connec_id
     end
 
     if input['Birthdate']
@@ -67,11 +68,11 @@ class PersonMapper
   end
   map from('/organization_id'), to('/AccountId')
 
-  map from('/title'), to('/Salutation')
-  map from('/first_name'), to('/FirstName')
-  map from('/last_name'), to('/LastName'), default: 'Undefined'
-  map from('/job_title'), to('/Title')
-  map from('/birth_date'), to('/Birthdate')
+  map from('title'), to('Salutation')
+  map from('first_name'), to('FirstName')
+  map from('last_name'), to('LastName'), default: 'Undefined'
+  map from('job_title'), to('Title')
+  map from('birth_date'), to('Birthdate')
 
   map from('address_work/billing/line1'), to('MailingStreet')
   map from('address_work/billing/city'), to('MailingCity')
@@ -94,6 +95,8 @@ class PersonMapper
 
   map from('phone_home/landline'), to('HomePhone')
 
+  map from('lead_source'), to('LeadSource')
+
 
 #Unmapped salesforce fields
 
@@ -110,8 +113,6 @@ class PersonMapper
 # HasOptedOutOfEmail boolean
 # HasOptedOutOfFax boolean
 # IsEmailBounced boolean
-# LeadSource picklist
-# Salutation picklist
 # PhotoUrl url
 # ReportsToId reference
 
