@@ -8,8 +8,8 @@ class Entities::Person < Maestrano::Connector::Rails::Entity
     "Contact"
   end
 
-  def mapper_name
-    "PersonMapper"
+  def mapper_class
+    PersonMapper
   end
 
   def external_attributes

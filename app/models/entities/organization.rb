@@ -8,8 +8,8 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
     "Account"
   end
 
-  def mapper_name
-    "OrganizationMapper"
+  def mapper_class
+    OrganizationMapper
   end
 
   def external_attributes
