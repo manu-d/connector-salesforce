@@ -38,37 +38,11 @@ class Maestrano::Connector::Rails::Entity
     client.update!(self.external_entity_name, mapped_connec_entity)
   end
 
-  # * Discards entities that do not need to be pushed because they have not been updated since their last push
-  # * Discards entities from one of the two source in case of conflict
-  # * Maps not discarded entities and associates them with their idmap, or create one if there isn't any
-  def consolidate_and_map_data(connec_entities, external_entities, organization)
-    external_entities.map!{|entity|
-      idmap = IdMap.find_by(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)
+  def get_id_from_external_entity_hash(entity)
+    entity['Id']
+  end
 
-      # No idmap: creating one, nothing else to do
-      unless idmap
-        next {entity: self.map_to_connec(entity), idmap: IdMap.create(external_id: entity['Id'], external_entity: self.external_entity_name, organization_id: organization.id)}
-      end
-
-      # Entity has not been modified since its last push to connec!
-      next nil if idmap.last_push_to_connec && idmap.last_push_to_connec > entity['LastModifiedDate']
-
-      # Check for conflict with entities from connec!
-      if idmap.connec_id && connec_entity = connec_entities.detect{|connec_entity| connec_entity['id'] == idmap.connec_id}
-        # We keep the most recently updated entity
-        if connec_entity['updated_at'] < entity['LastModifiedDate']
-          Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Entity from #{@@external_name} kept"
-          connec_entities.delete(connec_entity)
-          {entity: self.map_to_connec(entity), idmap: idmap}
-        else
-          Rails.logger.info "Conflict between #{@@external_name} #{self.external_entity_name} #{entity} and Connec! #{self.connec_entity_name} #{connec_entity}. Entity from Connec! kept"
-          nil
-        end
-      end
-    }.compact!
-
-    connec_entities.map!{|entity|
-      self.map_to_external_with_idmap(entity, organization)
-    }.compact!
+  def get_last_update_date_from_external_entity_hash(entity)
+    entity['LastModifiedDate']
   end
 end
