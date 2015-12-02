@@ -12,4 +12,12 @@ class Maestrano::Connector::Rails::External
       client_id: ENV['salesforce_client_id'],
       client_secret: ENV['salesforce_client_secret']
   end
+
+  def self.get_id_from_entity_hash(entity)
+    entity['Id']
+  end
+
+  def self.get_last_update_date_from_entity_hash(entity)
+    entity['LastModifiedDate']
+  end
 end
