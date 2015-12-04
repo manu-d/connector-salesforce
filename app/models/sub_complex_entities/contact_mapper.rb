@@ -1,64 +1,18 @@
-class Entities::Person < Maestrano::Connector::Rails::Entity
-
-  def connec_entity_name
-    "Person"
-  end
-
-  def external_entity_name
-    "Contact"
-  end
-
-  def mapper_class
-    PersonMapper
-  end
-
-  def external_attributes
-    %w(
-      AccountId
-      Salutation
-      FirstName
-      LastName
-      Title
-      Birthdate
-      MailingStreet
-      MailingCity
-      MailingState
-      MailingPostalCode
-      MailingCountry
-      OtherStreet
-      OtherCity
-      OtherState
-      OtherPostalCode
-      OtherCountry
-      Email
-      Phone
-      OtherPhone
-      MobilePhone
-      Fax
-      HomePhone
-      LeadSource
-    )
-  end
-
-end
-
-class PersonMapper
+class SubComplexEntities::ContactMapper < Maestrano::Connector::Rails::GenericMapper
   extend HashMapper
-
-  def self.set_organization(organization_id)
-    @@organization_id = organization_id
-  end
 
   before_normalize do |input, output|
     if id = input['organization_id']
-      input['organization_id'] = Maestrano::Connector::Rails::IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id).external_id
+      idmap = Maestrano::Connector::Rails::IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id)
+      input['organization_id'] = idmap ? idmap.external_id : ''
     end
     input
   end
   before_denormalize do |input, output|
     output['opts'] = {'create_default_organization' => true}
     if id = input['AccountId']
-      input['AccountId'] = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'Account', external_id: id, organization_id: @@organization_id).connec_id
+      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: @@organization_id)
+      input['AccountId'] = idmap ? idmap.connec_id : ''
     end
 
     if input['Birthdate']
@@ -96,25 +50,4 @@ class PersonMapper
   map from('phone_home/landline'), to('HomePhone')
 
   map from('lead_source'), to('LeadSource')
-
-
-#Unmapped salesforce fields
-
-# AssistantName string
-# AssistantPhone phone
-# MasterRecordId reference
-# Owner OwnerId reference
-# CreatedById reference
-# Department string
-# Description textarea
-# DoNotCall boolean
-# EmailBouncedDate datetime
-# EmailBouncedReason string
-# HasOptedOutOfEmail boolean
-# HasOptedOutOfFax boolean
-# IsEmailBounced boolean
-# PhotoUrl url
-# ReportsToId reference
-
 end
-
