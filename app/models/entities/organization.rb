@@ -36,11 +36,8 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
 
 end
 
-class OrganizationMapper
+class OrganizationMapper < Maestrano::Connector::Rails::GenericMapper
   extend HashMapper
-
-  def self.set_organization(organization_id)
-  end
 
   map from('/name'),  to('/Name')
   map from('/industry'),  to('/Industry')
