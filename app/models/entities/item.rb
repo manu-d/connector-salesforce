@@ -1,10 +1,10 @@
-class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
+class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   def connec_entities_names
-    %w(person)
+    %w(item)
   end
 
   def external_entities_names
-    %w(contact lead)
+    %w(Product2 PricebookEntry)
   end
 
   # input :  {
@@ -21,15 +21,12 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #          }
   def connec_model_to_external_model!(connec_hash_of_entities)
-    people = connec_hash_of_entities['person']
-    connec_hash_of_entities['person'] = { 'lead' => [], 'contact' => [] }
+    items = connec_hash_of_entities['item']
+    connec_hash_of_entities['item'] = { 'Product2' => [], 'PricebookEntry' => [] }
 
-    people.each do |person|
-      if person['is_lead']
-        connec_hash_of_entities['person']['lead'] << person
-      else
-        connec_hash_of_entities['person']['contact'] << person
-      end
+    items.each do |item|
+      connec_hash_of_entities['item']['Product2'] << item
+      connec_hash_of_entities['item']['PricebookEntry'] << item
     end
   end
 
@@ -47,7 +44,19 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #           }
   def external_model_to_connec_model!(external_hash_of_entities)
-    external_hash_of_entities['lead'] = { 'person' => external_hash_of_entities['lead'] }
-    external_hash_of_entities['contact'] = { 'person' => external_hash_of_entities['contact'] }
+    external_hash_of_entities['Product2'] = { 'item' => external_hash_of_entities['Product2'] }
+    external_hash_of_entities['PricebookEntry'] = { 'item' => external_hash_of_entities['PricebookEntry'] }
+  end
+
+  def self.get_pricebook_id(client)
+    unless @pricebook_id
+      Rails.logger.info "Fetching standard pricebook from SalesForce"
+      pricebooks = client.query("Select Id, IsStandard From Pricebook2")
+      standard_pricebook = pricebooks.find{|pricebook| pricebook['IsStandard']}
+
+      raise "No standard pricebook found" unless standard_pricebook
+      @pricebook_id = standard_pricebook['Id']
+    end
+    @pricebook_id
   end
 end
