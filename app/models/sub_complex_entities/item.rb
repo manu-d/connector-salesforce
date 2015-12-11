@@ -12,7 +12,7 @@ class SubComplexEntities::Item < Maestrano::Connector::Rails::SubComplexEntityBa
     [SubComplexEntities::Product2Mapper, SubComplexEntities::PricebookEntryMapper]
   end
 
-  def map_to(name, entity)
+  def map_to(name, entity,organization)
     case name
     when 'PricebookEntry'
       SubComplexEntities::PricebookEntryMapper.normalize(entity)
@@ -23,7 +23,7 @@ class SubComplexEntities::Item < Maestrano::Connector::Rails::SubComplexEntityBa
     end
   end
 
-  def push_entities_to_external_to(external_client, mapped_connec_entities_with_idmaps, external_entity_name)
+  def push_entities_to_external_to(external_client, mapped_connec_entities_with_idmaps, external_entity_name, organization)
     if external_entity_name == 'PricebookEntry' && !mapped_connec_entities_with_idmaps.empty?
       pricebook_id = Entities::Item.get_pricebook_id(external_client)
 
@@ -36,7 +36,7 @@ class SubComplexEntities::Item < Maestrano::Connector::Rails::SubComplexEntityBa
       end
     end
 
-    super(external_client, mapped_connec_entities_with_idmaps, external_entity_name)
+    super(external_client, mapped_connec_entities_with_idmaps, external_entity_name, organization)
   end
 
 end

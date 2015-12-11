@@ -36,7 +36,7 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
 
 end
 
-class OrganizationMapper < Maestrano::Connector::Rails::GenericMapper
+class OrganizationMapper
   extend HashMapper
 
   map from('/name'),  to('/Name')

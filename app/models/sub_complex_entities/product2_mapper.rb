@@ -1,4 +1,4 @@
-class SubComplexEntities::Product2Mapper < Maestrano::Connector::Rails::GenericMapper
+class SubComplexEntities::Product2Mapper
   extend HashMapper
 
   map from('code'), to('ProductCode')

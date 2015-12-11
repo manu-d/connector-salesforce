@@ -27,7 +27,7 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
   end
 end
 
-class OpportunityMapper < Maestrano::Connector::Rails::GenericMapper
+class OpportunityMapper
   extend HashMapper
 
   before_denormalize do |input, output|

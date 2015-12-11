@@ -33,8 +33,8 @@ class SubComplexEntities::PricebookEntry < Maestrano::Connector::Rails::SubCompl
   # --------------------------------------------
   #             Overriden methods
   # --------------------------------------------
-  def push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, connec_entity_name)
-    Rails.logger.info "Push #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}"
+  def push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, connec_entity_name, organization)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
     mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
       external_entity = mapped_external_entity_with_idmap[:entity]
       idmap = mapped_external_entity_with_idmap[:idmap]
@@ -45,13 +45,13 @@ class SubComplexEntities::PricebookEntry < Maestrano::Connector::Rails::SubCompl
         idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: 'item')
       end
 
-      connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id, connec_entity_name)
+      connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id, connec_entity_name, organization)
       idmap.update_attributes(last_push_to_connec: Time.now)
     end
   end
 
-  def get_external_entities(client, last_synchronization, opts={})
-    entities = super(client, last_synchronization, opts)
+  def get_external_entities(client, last_synchronization, organization, opts={})
+    entities = super(client, last_synchronization, organization, opts)
 
     unless entities.empty?
       pricebook_id = Entities::Item.get_pricebook_id(client)

@@ -1,4 +1,4 @@
-class SubComplexEntities::PricebookEntryMapper < Maestrano::Connector::Rails::GenericMapper
+class SubComplexEntities::PricebookEntryMapper
   extend HashMapper
 
   map from('sale_price/net_amount'), to('UnitPrice')

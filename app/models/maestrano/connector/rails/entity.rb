@@ -9,8 +9,8 @@ class Maestrano::Connector::Rails::Entity
   end
 
   # Return an array of entities from the external app
-  def get_external_entities(client, last_synchronization, opts={})
-    Rails.logger.info "Fetching #{@@external_name} #{self.external_entity_name.pluralize}"
+  def get_external_entities(client, last_synchronization, organization, opts={})
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Fetching #{@@external_name} #{self.external_entity_name.pluralize}")
 
     if opts[:full_sync] || last_synchronization.blank?
       fields = self.external_attributes.join(', ')
@@ -23,19 +23,19 @@ class Maestrano::Connector::Rails::Entity
       end
     end
 
-    Rails.logger.info "Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}"
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Received data: Source=#{@@external_name}, Entity=#{self.external_entity_name}, Response=#{entities}")
     entities
   end
 
-  def create_entity_to_external(client, mapped_connec_entity, external_entity_name)
-    Rails.logger.info "Create #{external_entity_name}: #{mapped_connec_entity} to #{@@external_name}"
+  def create_entity_to_external(client, mapped_connec_entity, external_entity_name, organization)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending create #{external_entity_name}: #{mapped_connec_entity} to #{@@external_name}")
     client.create!(external_entity_name, mapped_connec_entity)
   end
 
-  def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name)
+  def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name, organization)
     # Cannot update a converted lead to SF
     unless mapped_connec_entity['IsConverted']
-      Rails.logger.info "Update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}"
+      Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}")
       mapped_connec_entity['ID'] = external_id
       client.update!(external_entity_name, mapped_connec_entity)
     end

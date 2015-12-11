@@ -1,19 +1,8 @@
-class SubComplexEntities::ContactMapper < Maestrano::Connector::Rails::GenericMapper
+class SubComplexEntities::ContactMapper
   extend HashMapper
 
-  before_normalize do |input, output|
-    if id = input['organization_id']
-      idmap = Maestrano::Connector::Rails::IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: @@organization_id)
-      input['organization_id'] = idmap ? idmap.external_id : ''
-    end
-    input
-  end
   before_denormalize do |input, output|
     output['opts'] = {'create_default_organization' => true}
-    if id = input['AccountId']
-      idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: @@organization_id)
-      input['AccountId'] = idmap ? idmap.connec_id : ''
-    end
 
     if input['Birthdate']
       input['Birthdate'] = input['Birthdate'].to_time.iso8601

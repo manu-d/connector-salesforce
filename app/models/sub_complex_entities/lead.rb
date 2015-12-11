@@ -12,7 +12,7 @@ class SubComplexEntities::Lead < Maestrano::Connector::Rails::SubComplexEntityBa
     [SubComplexEntities::LeadMapper]
   end
 
-  def map_to(name, entity)
+  def map_to(name, entity, organization)
     case name
     when 'person'
       SubComplexEntities::LeadMapper.denormalize(entity).merge(is_lead: true)

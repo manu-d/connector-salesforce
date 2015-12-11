@@ -1,4 +1,4 @@
-class SubComplexEntities::LeadMapper < Maestrano::Connector::Rails::GenericMapper
+class SubComplexEntities::LeadMapper
   extend HashMapper
 
   before_normalize do |input, output|

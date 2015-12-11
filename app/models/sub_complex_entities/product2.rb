@@ -12,7 +12,7 @@ class SubComplexEntities::Product2 < Maestrano::Connector::Rails::SubComplexEnti
     [SubComplexEntities::Product2Mapper]
   end
 
-  def map_to(name, entity)
+  def map_to(name, entity, organization)
     case name
     when 'item'
       SubComplexEntities::Product2Mapper.denormalize(entity)
