@@ -3,6 +3,9 @@ require 'spec_helper'
 describe Entities::Opportunity do
   subject { Entities::Opportunity.new }
 
+  it { expect(subject.connec_entity_name).to eql('Opportunity') }
+  it { expect(subject.external_entity_name).to eql('Opportunity') }
+
   describe 'SalesForce to connec!' do
     let(:sf) {
       {

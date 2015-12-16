@@ -4,6 +4,9 @@ describe Entities::ContactAndLead do
   describe 'instance methods' do
     subject { Entities::ContactAndLead.new }
 
+    it { expect(subject.connec_entities_names).to eql(%w(person)) }
+    it { expect(subject.external_entities_names).to eql(%w(contact lead)) }
+
     describe 'connec_model_to_external_model!' do
       let(:person1) { {'first_name' => 'Gary', 'is_lead' => false} }
       let(:person2) { {'first_name' => 'Alice', 'is_lead' => true} }

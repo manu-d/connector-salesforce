@@ -32,6 +32,9 @@ describe Entities::Item do
   describe 'instance methods' do
     subject { Entities::Item.new }
 
+    it { expect(subject.connec_entities_names).to eql(%w(item)) }
+    it { expect(subject.external_entities_names).to eql(%w(Product2 PricebookEntry)) }
+
     describe 'connec_model_to_external_model!' do
       let(:item1) { {'name' => 'Glass'} }
       let(:item2) { {'name' => 'TV'} }

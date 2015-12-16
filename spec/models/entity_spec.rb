@@ -83,9 +83,11 @@ describe Maestrano::Connector::Rails::Entity do
     end
 
     describe 'get_last_update_date_from_external_entity_hash' do
-      Timecop.freeze(Date.today) do
-        it { expect(subject.get_last_update_date_from_external_entity_hash({'LastModifiedDate' => 1.hour.ago})).to eql(1.hour.ago) }
-      end
+      it {
+        Timecop.freeze(Date.today) do
+          expect(subject.get_last_update_date_from_external_entity_hash({'LastModifiedDate' => 1.hour.ago})).to eql(1.hour.ago)
+        end
+      }
     end
 
   end

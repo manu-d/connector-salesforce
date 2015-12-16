@@ -36,10 +36,6 @@ gem 'deepstruct'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
-gem 'rspec-rails'
-gem 'factory_girl_rails'
-gem 'shoulda-matchers'
-gem 'timecop'
 
 group :production do
   gem 'rails_12factor'
@@ -49,4 +45,12 @@ end
 
 group :test, :develpment do
   gem 'activerecord-jdbcsqlite3-adapter'
+end
+
+group :test do
+  gem 'simplecov'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'shoulda-matchers'
+  gem 'timecop'
 end
