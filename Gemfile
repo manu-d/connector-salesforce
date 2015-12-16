@@ -36,6 +36,11 @@ gem 'deepstruct'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
+gem 'rspec-rails'
+gem 'factory_girl_rails'
+gem 'shoulda-matchers'
+gem 'timecop'
+
 group :production do
   gem 'rails_12factor'
   gem 'activerecord-jdbcpostgresql-adapter'
