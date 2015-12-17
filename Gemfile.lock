@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/berardpi/maestrano-connector-rails.git
-  revision: a71d4d24de2c4d407bd6441548bd8d1c2ddcce27
+  revision: 3ab0b142d4d6bf90d6f312f27dd68d0d1a1fe060
   specs:
     maestrano-connector-rails (0.1.3)
       delayed_job_active_record
