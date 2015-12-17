@@ -5,6 +5,7 @@ describe Entities::Organization do
 
   it { expect(subject.connec_entity_name).to eql('Organization') }
   it { expect(subject.external_entity_name).to eql('Account') }
+  it { expect(subject.external_attributes).to be_a(Array) }
 
   describe 'SalesForce to connec!' do
     let(:sf) {

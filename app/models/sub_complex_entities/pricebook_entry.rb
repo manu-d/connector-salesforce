@@ -12,7 +12,7 @@ class SubComplexEntities::PricebookEntry < Maestrano::Connector::Rails::SubCompl
     [SubComplexEntities::PricebookEntryMapper]
   end
 
-  def map_to(name, entity)
+  def map_to(name, entity, organization)
     case name
     when 'item'
       SubComplexEntities::PricebookEntryMapper.denormalize(entity)
@@ -40,9 +40,9 @@ class SubComplexEntities::PricebookEntry < Maestrano::Connector::Rails::SubCompl
       idmap = mapped_external_entity_with_idmap[:idmap]
 
       if idmap.connec_id.blank?
-        product_idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: external_entity[:Product2Id], external_entity: 'product2', organization_id: idmap.organization_id)
-        raise "Trying to push a price for a non existing or not pushed product (id: #{external_entity[:Product2Id]}" unless product_idmap && !product_idmap.connec_id.blank?
-        idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: 'item')
+        product_idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: external_entity[:Product2Id], external_entity: 'product2', organization_id: organization.id)
+        raise "Trying to push a price for a non existing or not pushed product (id: #{external_entity[:Product2Id]})" unless product_idmap && !product_idmap.connec_id.blank?
+        idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: connec_entity_name)
       end
 
       connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id, connec_entity_name, organization)

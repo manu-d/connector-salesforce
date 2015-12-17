@@ -2,7 +2,7 @@ class SubComplexEntities::ContactMapper
   extend HashMapper
 
   before_denormalize do |input, output|
-    output['opts'] = {'create_default_organization' => true}
+    output[:opts] = {'create_default_organization' => true}
 
     if input['Birthdate']
       input['Birthdate'] = input['Birthdate'].to_time.iso8601

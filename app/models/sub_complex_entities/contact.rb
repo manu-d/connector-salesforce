@@ -16,7 +16,7 @@ class SubComplexEntities::Contact < Maestrano::Connector::Rails::SubComplexEntit
     case name
     when 'person'
       if id = entity['AccountId']
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: organization.id)
+        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: organization.id, connec_entity: 'organization')
         entity['AccountId'] = idmap ? idmap.connec_id : ''
       end
       SubComplexEntities::ContactMapper.denormalize(entity)
