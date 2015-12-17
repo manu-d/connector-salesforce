@@ -24,7 +24,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'puma'
 gem 'restforce'
 gem 'omniauth-salesforce'
-gem 'maestrano-connector-rails', :path => '../maestrano-connector-rails'
+# gem 'maestrano-connector-rails', :path => '../maestrano-connector-rails'
+gem 'maestrano-connector-rails', git: 'https://github.com/berardpi/maestrano-connector-rails.git'
 gem 'figaro'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
