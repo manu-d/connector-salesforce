@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/berardpi/maestrano-connector-rails.git
-  revision: b4c38b9fa874445c450f22637f4fc31b5acdff10
+  revision: bf30b3ec331ae8137f1499759d9e2d42b9b6d162
   specs:
     maestrano-connector-rails (0.1.3)
       hash_mapper (~> 0.2.1)

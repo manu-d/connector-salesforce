@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::Contact do
-  subject { SubComplexEntities::Contact.new }
+describe Entities::SubEntities::Contact do
+  subject { Entities::SubEntities::Contact.new }
 
   it { expect(subject.external?).to be(true) }
   it { expect(subject.entity_name).to eql('contact') }
@@ -15,7 +15,7 @@ describe SubComplexEntities::Contact do
     describe 'for a valid entity name' do
       context 'when entity has no AccountId' do
         it 'calls denormalize' do
-          expect(SubComplexEntities::ContactMapper).to receive(:denormalize).with({})
+          expect(Entities::SubEntities::ContactMapper).to receive(:denormalize).with({})
           subject.map_to('person', {}, nil)
         end
       end
@@ -27,7 +27,7 @@ describe SubComplexEntities::Contact do
 
         context 'with no corresponding idmap' do
           it 'leaves the field blank' do
-            expect(SubComplexEntities::ContactMapper).to receive(:denormalize).with({'AccountId' => ''})
+            expect(Entities::SubEntities::ContactMapper).to receive(:denormalize).with({'AccountId' => ''})
             subject.map_to('person', {'AccountId' => sf_id}, organization)
           end
         end
@@ -36,7 +36,7 @@ describe SubComplexEntities::Contact do
           let!(:idmap) { create(:idmap, organization: organization, external_entity: 'account', external_id: sf_id, connec_id: connec_id, connec_entity: 'organization') }
 
           it 'replace the field with the connec id' do
-            expect(SubComplexEntities::ContactMapper).to receive(:denormalize).with({'AccountId' => connec_id})
+            expect(Entities::SubEntities::ContactMapper).to receive(:denormalize).with({'AccountId' => connec_id})
             subject.map_to('person', {'AccountId' => sf_id}, organization)
           end
         end

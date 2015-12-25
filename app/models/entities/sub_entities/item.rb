@@ -1,4 +1,4 @@
-class SubComplexEntities::Item < Maestrano::Connector::Rails::SubComplexEntityBase
+class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
 
   def external?
     false
@@ -9,15 +9,15 @@ class SubComplexEntities::Item < Maestrano::Connector::Rails::SubComplexEntityBa
   end
 
   def mapper_classes
-    [SubComplexEntities::Product2Mapper, SubComplexEntities::PricebookEntryMapper]
+    [Entities::SubEntities::Product2Mapper, Entities::SubEntities::PricebookEntryMapper]
   end
 
   def map_to(name, entity,organization)
     case name
     when 'PricebookEntry'
-      SubComplexEntities::PricebookEntryMapper.normalize(entity)
+      Entities::SubEntities::PricebookEntryMapper.normalize(entity)
     when 'Product2'
-      SubComplexEntities::Product2Mapper.normalize(entity)
+      Entities::SubEntities::Product2Mapper.normalize(entity)
     else
       raise "Impossible mapping from #{self.entity_name} to #{name}"
     end

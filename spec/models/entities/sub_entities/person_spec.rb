@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::Person do
-  subject { SubComplexEntities::Person.new }
+describe Entities::SubEntities::Person do
+  subject { Entities::SubEntities::Person.new }
 
   it { expect(subject.external?).to be(false) }
   it { expect(subject.entity_name).to eql('person') }
@@ -14,7 +14,7 @@ describe SubComplexEntities::Person do
     describe 'for a valid entity name' do
       context 'for leads' do
         it 'calls normalize' do
-          expect(SubComplexEntities::LeadMapper).to receive(:normalize).with({})
+          expect(Entities::SubEntities::LeadMapper).to receive(:normalize).with({})
           subject.map_to('lead', {}, nil)
         end
       end
@@ -22,7 +22,7 @@ describe SubComplexEntities::Person do
       context 'for contacts' do
         context 'when entity has no organization_id' do
           it 'calls normalize' do
-            expect(SubComplexEntities::ContactMapper).to receive(:normalize).with({})
+            expect(Entities::SubEntities::ContactMapper).to receive(:normalize).with({})
             subject.map_to('contact', {}, nil)
           end
         end
@@ -34,7 +34,7 @@ describe SubComplexEntities::Person do
 
           context 'with no corresponding idmap' do
             it 'leaves the field blank' do
-              expect(SubComplexEntities::ContactMapper).to receive(:normalize).with({'organization_id' => ''})
+              expect(Entities::SubEntities::ContactMapper).to receive(:normalize).with({'organization_id' => ''})
               subject.map_to('contact', {'organization_id' => connec_id}, organization)
             end
           end
@@ -43,7 +43,7 @@ describe SubComplexEntities::Person do
             let!(:idmap) { create(:idmap, organization: organization, connec_entity: 'organization', connec_id: connec_id, external_id: sf_id, external_entity: 'account') }
 
             it 'replace the field with the connec id' do
-              expect(SubComplexEntities::ContactMapper).to receive(:normalize).with({'organization_id' => sf_id})
+              expect(Entities::SubEntities::ContactMapper).to receive(:normalize).with({'organization_id' => sf_id})
               subject.map_to('contact', {'organization_id' => connec_id}, organization)
             end
           end

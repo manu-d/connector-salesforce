@@ -1,4 +1,4 @@
-class SubComplexEntities::Contact < Maestrano::Connector::Rails::SubComplexEntityBase
+class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBase
 
   def external?
     true
@@ -9,7 +9,7 @@ class SubComplexEntities::Contact < Maestrano::Connector::Rails::SubComplexEntit
   end
 
   def mapper_classes
-    [SubComplexEntities::ContactMapper]
+    [Entities::SubEntities::ContactMapper]
   end
 
   def map_to(name, entity, organization)
@@ -19,7 +19,7 @@ class SubComplexEntities::Contact < Maestrano::Connector::Rails::SubComplexEntit
         idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: organization.id, connec_entity: 'organization')
         entity['AccountId'] = idmap ? idmap.connec_id : ''
       end
-      SubComplexEntities::ContactMapper.denormalize(entity)
+      Entities::SubEntities::ContactMapper.denormalize(entity)
     else
       raise "Impossible mapping from #{self.entity_name} to #{name}"
     end

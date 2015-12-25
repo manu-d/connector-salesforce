@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::Lead do
-  subject { SubComplexEntities::Lead.new }
+describe Entities::SubEntities::Lead do
+  subject { Entities::SubEntities::Lead.new }
 
   it { expect(subject.external?).to be(true) }
   it { expect(subject.entity_name).to eql('lead') }
@@ -14,7 +14,7 @@ describe SubComplexEntities::Lead do
 
     describe 'for a valid entity name' do
       it 'calls denormalize and adds is_lead' do
-        expect(SubComplexEntities::LeadMapper).to receive(:denormalize).with({'FirstName' => 'John'}).and_return({first_name: 'John'})
+        expect(Entities::SubEntities::LeadMapper).to receive(:denormalize).with({'FirstName' => 'John'}).and_return({first_name: 'John'})
         expect(subject.map_to('person', {'FirstName' => 'John'}, nil)).to eql({first_name: 'John', is_lead: true})
       end
     end

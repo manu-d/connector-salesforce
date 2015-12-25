@@ -1,4 +1,4 @@
-class SubComplexEntities::ContactMapper
+class Entities::SubEntities::ContactMapper
   extend HashMapper
 
   before_denormalize do |input, output|

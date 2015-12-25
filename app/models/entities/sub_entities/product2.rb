@@ -1,4 +1,4 @@
-class SubComplexEntities::Product2 < Maestrano::Connector::Rails::SubComplexEntityBase
+class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBase
 
   def external?
     true
@@ -9,13 +9,13 @@ class SubComplexEntities::Product2 < Maestrano::Connector::Rails::SubComplexEnti
   end
 
   def mapper_classes
-    [SubComplexEntities::Product2Mapper]
+    [Entities::SubEntities::Product2Mapper]
   end
 
   def map_to(name, entity, organization)
     case name
     when 'item'
-      SubComplexEntities::Product2Mapper.denormalize(entity)
+      Entities::SubEntities::Product2Mapper.denormalize(entity)
     else
       raise "Impossible mapping from #{self.entity_name} to #{name}"
     end

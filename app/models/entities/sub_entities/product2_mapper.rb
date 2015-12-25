@@ -1,4 +1,4 @@
-class SubComplexEntities::Product2Mapper
+class Entities::SubEntities::Product2Mapper
   extend HashMapper
 
   map from('code'), to('ProductCode')

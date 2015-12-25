@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::LeadMapper do
-  subject { SubComplexEntities::LeadMapper }
+describe Entities::SubEntities::LeadMapper do
+  subject { Entities::SubEntities::LeadMapper }
 
   describe 'normalize' do
     let(:connec_hash) {

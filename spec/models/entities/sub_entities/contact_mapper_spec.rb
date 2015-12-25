@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::ContactMapper do
-  subject { SubComplexEntities::ContactMapper }
+describe Entities::SubEntities::ContactMapper do
+  subject { Entities::SubEntities::ContactMapper }
 
   describe 'normalize' do
     let(:connec_hash) {

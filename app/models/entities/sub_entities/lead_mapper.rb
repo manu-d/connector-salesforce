@@ -1,4 +1,4 @@
-class SubComplexEntities::LeadMapper
+class Entities::SubEntities::LeadMapper
   extend HashMapper
 
   before_normalize do |input, output|

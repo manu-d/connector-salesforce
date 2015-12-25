@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::Product2 do
-  subject { SubComplexEntities::Product2.new }
+describe Entities::SubEntities::Product2 do
+  subject { Entities::SubEntities::Product2.new }
 
   it { expect(subject.external?).to be(true) }
   it { expect(subject.entity_name).to eql('Product2') }
@@ -14,7 +14,7 @@ describe SubComplexEntities::Product2 do
 
     describe 'for a valid entity name' do
       it 'calls denormalize' do
-        expect(SubComplexEntities::Product2Mapper).to receive(:denormalize).with({})
+        expect(Entities::SubEntities::Product2Mapper).to receive(:denormalize).with({})
         subject.map_to('item', {}, nil)
       end
     end

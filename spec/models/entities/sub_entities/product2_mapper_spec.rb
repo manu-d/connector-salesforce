@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe SubComplexEntities::PricebookEntryMapper do
-  subject { SubComplexEntities::PricebookEntryMapper }
+describe Entities::SubEntities::Product2Mapper do
+  subject { Entities::SubEntities::Product2Mapper }
 
   describe 'normalize' do
     let(:connec_hash) {
@@ -22,7 +22,7 @@ describe SubComplexEntities::PricebookEntryMapper do
     }
 
     let(:output_hash) {
-      {:UnitPrice=>25000.0}
+      {:ProductCode=>"GC1040", :Name=>"GenWatt Diesel 200kW"}
     }
 
     it { expect(subject.normalize(connec_hash)).to eql(output_hash) }
@@ -33,31 +33,28 @@ describe SubComplexEntities::PricebookEntryMapper do
       {
         "attributes"=>
         {
-          "type"=>"PricebookEntry",
-          "url"=>"/services/data/v32.0/sobjects/PricebookEntry/01u28000001VcFyAAK"
+          "type"=>"Product2",
+          "url"=>"/services/data/v32.0/sobjects/Product2/01t28000000yjJ5AAI"
         },
-        "Id"=>"01u28000001VcFyAAK",
-        "Name"=>"Installation: Industrial - High",
-        "Pricebook2Id"=>"01s28000005Cuu4AAC",
-        "Product2Id"=>"01t28000000sB8mAAE",
-        "UnitPrice"=>85000.0,
-        "IsActive"=>true,
-        "UseStandardPrice"=>false,
-        "CreatedDate"=>"2015-11-29T15:24:02.000+0000",
+        "Id"=>"01t28000000yjJ5AAI",
+        "Name"=>"SLA: Platinum",
+        "ProductCode"=>"SL9080",
+        "Description"=>nil,
+        "IsActive"=>false,
+        "CreatedDate"=>"2015-12-05T13:09:45.000+0000",
         "CreatedById"=>"00528000001eP9OAAU",
-        "LastModifiedDate"=>"2015-11-29T15:24:02.000+0000",
+        "LastModifiedDate"=>"2015-12-05T13:09:45.000+0000",
         "LastModifiedById"=>"00528000001eP9OAAU",
-        "SystemModstamp"=>"2015-11-29T15:24:02.000+0000",
-        "ProductCode"=>"IN7080",
-        "IsDeleted"=>false
-      }
+        "SystemModstamp"=>"2015-12-05T13:09:45.000+0000",
+        "Family"=>nil,
+        "IsDeleted"=>false,
+        "LastViewedDate"=>"2015-12-05T13:18:09.000+0000",
+        "LastReferencedDate"=>"2015-12-05T13:18:09.000+0000"
+       }
     }
 
     let(:output_hash) {
-      {
-        :sale_price=>{:net_amount=>85000.0},
-        :Product2Id=>"01t28000000sB8mAAE"
-      }
+      {:code=>"SL9080", :name=>"SLA: Platinum"}
     }
 
     it { expect(subject.denormalize(sf_hash)).to eql(output_hash) }
