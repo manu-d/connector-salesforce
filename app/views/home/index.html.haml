@@ -34,7 +34,10 @@
             - if @synchronizations.first
               %h3.sync-status{class: @synchronizations.first.status.downcase}
                 = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
-                = @synchronizations.first.message if @synchronizations.first.status == 'ERROR'
+                - if @synchronizations.first.status == 'ERROR'
+                  = @synchronizations.first.message
+                - elsif @synchronizations.first.status == 'SUCCESS' && @synchronizations.first.partial?
+                  Partial synchronization
             - else
               %h3 None
         .spacer2
@@ -52,3 +55,6 @@
                   -if sync.status == 'ERROR'
                     .col-md-6
                       = sync.message
+                  - elsif sync.status == 'SUCCESS' && sync.partial?
+                    .col-md-6
+                      Partial synchronization
