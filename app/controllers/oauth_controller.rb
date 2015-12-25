@@ -1,6 +1,6 @@
 class OauthController < ApplicationController
 
-    def request_omniauth
+  def request_omniauth
     org_uid = params[:org_uid]
     organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
 
