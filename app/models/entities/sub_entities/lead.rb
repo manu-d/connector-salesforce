@@ -44,4 +44,11 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
     )
   end
 
+  def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name, organization)
+    # Cannot update a converted lead to SF
+    unless mapped_connec_entity['IsConverted']
+      super
+    end
+  end
+
 end

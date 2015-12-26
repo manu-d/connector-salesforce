@@ -33,12 +33,9 @@ class Maestrano::Connector::Rails::Entity
   end
 
   def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name, organization)
-    # Cannot update a converted lead to SF
-    unless mapped_connec_entity['IsConverted']
-      Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}")
-      mapped_connec_entity['Id'] = external_id
-      client.update!(external_entity_name, mapped_connec_entity)
-    end
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}")
+    mapped_connec_entity['Id'] = external_id
+    client.update!(external_entity_name, mapped_connec_entity)
   end
 
   def get_id_from_external_entity_hash(entity)
