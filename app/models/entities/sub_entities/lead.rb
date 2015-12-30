@@ -8,10 +8,6 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
     'lead'
   end
 
-  def mapper_classes
-    [Entities::SubEntities::LeadMapper]
-  end
-
   def map_to(name, entity, organization)
     case name
     when 'person'

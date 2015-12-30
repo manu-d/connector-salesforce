@@ -8,10 +8,6 @@ class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
     'item'
   end
 
-  def mapper_classes
-    [Entities::SubEntities::Product2Mapper, Entities::SubEntities::PricebookEntryMapper]
-  end
-
   def map_to(name, entity,organization)
     case name
     when 'PricebookEntry'
