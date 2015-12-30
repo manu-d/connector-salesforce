@@ -1,4 +1,4 @@
-class Entities::Organization < Entity
+class Entities::Organization < Maestrano::Connector::Rails::Entity
 
   def connec_entity_name
     "Organization"
@@ -8,8 +8,8 @@ class Entities::Organization < Entity
     "Account"
   end
 
-  def mapper_name
-    "OrganizationMapper"
+  def mapper_class
+    OrganizationMapper
   end
 
   def external_attributes
@@ -38,9 +38,6 @@ end
 
 class OrganizationMapper
   extend HashMapper
-
-  def self.set_organization(organization_id)
-  end
 
   map from('/name'),  to('/Name')
   map from('/industry'),  to('/Industry')

@@ -1,19 +1,15 @@
 Rails.application.routes.draw do
-  maestrano_routes
+  mount Maestrano::Connector::Rails::Engine, at: '/'
 
+  root 'home#index'
   get 'home/index' => 'home#index'
-
   get 'admin/index' => 'admin#index'
   put 'admin/update' => 'admin#update'
   post 'admin/synchronize' => 'admin#synchronize'
 
-  post 'maestrano/connec/notifications' => 'webhook_connec#receive'
-
-  match 'auth/:provider/request', to: 'sessions#request_omniauth', via: [:get, :post]
-  match 'auth/:provider/callback', to: 'sessions#create_omniauth', via: [:get, :post]
+  match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]
+  match 'auth/:provider/callback', to: 'oauth#create_omniauth', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
-  match 'signout_omniauth', to: 'sessions#destroy_omniauth', as: 'signout_omniauth', via: [:get, :post]
-  match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
+  match 'signout_omniauth', to: 'oauth#destroy_omniauth', as: 'signout_omniauth', via: [:get, :post]
 
-  root 'home#index'
 end

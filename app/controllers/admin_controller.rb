@@ -3,12 +3,12 @@ class AdminController < ApplicationController
   def index
     if is_admin
       @organization = current_organization
-      @idmaps = IdMap.where(organization_id: @organization.id).order(:connec_entity)
+      @idmaps = Maestrano::Connector::Rails::IdMap.where(organization_id: @organization.id).order(:connec_entity)
     end
   end
 
   def update
-    organization = Organization.find_by_id(params[:id])
+    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:id])
 
     if organization && is_admin?(current_user, organization)
       organization.synchronized_entities.keys.each do |entity|
@@ -26,7 +26,7 @@ class AdminController < ApplicationController
 
   def synchronize
     if is_admin
-      Delayed::Job.enqueue SynchronizationJob.new(current_organization, params['opts'] || {})
+      ::Delayed::Job.enqueue Maestrano::Connector::Rails::SynchronizationJob.new(current_organization, params['opts'] || {})
     end
 
     redirect_to root_path
