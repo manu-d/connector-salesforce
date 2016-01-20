@@ -59,7 +59,7 @@ describe Entities::Opportunity do
     let (:mapped_sf) {
       {
         :amount=>{:total_amount=>60000.0},
-        :expected_close_date=>"2013-11-07T00:00:00+01:00",
+        :expected_close_date=>Date.parse('2013-11-07T00:00:00').to_time.iso8601,
         :name=>"GenePoint Lab Generators",
         :probability=>60.0,
         :sales_stage=>"Id. Decision Makers"

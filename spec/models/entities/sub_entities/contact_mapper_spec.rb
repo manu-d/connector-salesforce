@@ -160,7 +160,7 @@ describe Entities::SubEntities::ContactMapper do
         :first_name=>"Rose",
         :last_name=>"Gonzalez",
         :job_title=>"SVP, Procurement",
-        :birth_date=>"1963-11-08T00:00:00+01:00",
+        :birth_date=>Date.parse('1963-11-08').to_time.iso8601,
         :address_work=>
         {
           :billing=>{:line1=>"313 Constitution Place\nAustin, TX 78767\nUSA"}
