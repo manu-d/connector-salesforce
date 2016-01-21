@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151115213529) do
+ActiveRecord::Schema.define(version: 20151128113455) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",               default: 0, null: false
@@ -30,14 +30,20 @@ ActiveRecord::Schema.define(version: 20151115213529) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "id_maps", force: :cascade do |t|
-    t.string   "connec_id",         limit: 255
-    t.string   "connec_entity",     limit: 255
-    t.string   "salesforce_id",     limit: 255
-    t.string   "salesforce_entity", limit: 255
+    t.string   "connec_id",             limit: 255
+    t.string   "connec_entity",         limit: 255
+    t.string   "external_id",           limit: 255
+    t.string   "external_entity",       limit: 255
     t.integer  "organization_id"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "last_push_to_connec"
+    t.datetime "last_push_to_external"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
+
+  add_index "id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
+  add_index "id_maps", ["external_id", "external_entity", "organization_id"], name: "idmap_external_index"
+  add_index "id_maps", ["organization_id"], name: "idmap_organization_index"
 
   create_table "organizations", force: :cascade do |t|
     t.string   "provider",              limit: 255
@@ -49,20 +55,20 @@ ActiveRecord::Schema.define(version: 20151115213529) do
     t.string   "oauth_token",           limit: 255
     t.string   "refresh_token",         limit: 255
     t.string   "instance_url",          limit: 255
+    t.string   "synchronized_entities", limit: 255
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
-    t.string   "synchronized_entities", limit: 255
   end
 
+  add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
+
   create_table "synchronizations", force: :cascade do |t|
-    t.string   "provider",        limit: 255
     t.integer  "organization_id"
-    t.string   "tenant",          limit: 255
     t.string   "status",          limit: 255
     t.text     "message"
+    t.boolean  "partial",                     default: false
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
-    t.boolean  "partial",                     default: false
   end
 
   create_table "user_organization_rels", force: :cascade do |t|
@@ -71,6 +77,9 @@ ActiveRecord::Schema.define(version: 20151115213529) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_organization_rels", ["organization_id"], name: "rels_orga_index"
+  add_index "user_organization_rels", ["user_id"], name: "rels_user_index"
 
   create_table "users", force: :cascade do |t|
     t.string   "provider",   limit: 255
@@ -82,5 +91,7 @@ ActiveRecord::Schema.define(version: 20151115213529) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  add_index "users", ["uid", "tenant"], name: "user_uid_index"
 
 end

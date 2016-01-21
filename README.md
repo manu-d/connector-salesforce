@@ -20,10 +20,12 @@ config.app.host = 'http://localhost:3001'
 ```
 
 ### Run the connector
+```
 rvm install jruby-9.0.1.0
 gem install bundler
 bundle
 rails s -p3001
+```
 
 ### Heroku
 Start the Delayed Jobs manually with the command
