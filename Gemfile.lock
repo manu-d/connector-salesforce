@@ -1,10 +1,3 @@
-PATH
-  remote: ../maestrano-connector-rails
-  specs:
-    maestrano-connector-rails (0.2.0)
-      hash_mapper (~> 0.2.1)
-      maestrano-rails (~> 0.13.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -125,16 +118,19 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    maestrano (0.12.1)
+    maestrano (0.12.2)
       httparty (~> 0.13)
       json (~> 1.8)
       mime-types (~> 1.25)
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-rails (0.13.0)
+    maestrano-connector-rails (0.0.1)
+      hash_mapper (~> 0.2.1)
+      maestrano-rails (~> 0.14.0)
+    maestrano-rails (0.14.0)
       jquery-rails
-      maestrano (~> 0.12.1)
+      maestrano (~> 0.12.2)
       rails
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
@@ -269,7 +265,7 @@ DEPENDENCIES
   figaro
   haml-rails
   jquery-rails
-  maestrano-connector-rails!
+  maestrano-connector-rails
   omniauth-salesforce
   puma
   rails (= 4.2.4)
