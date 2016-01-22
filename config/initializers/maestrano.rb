@@ -107,7 +107,7 @@ Maestrano['default'].configure do |config|
 
   # ==> Account Webhooks
   # Single sign on has been setup into your app and Maestrano users are now able
-  # to use your service. Great! Wait what happens when a business (group) decides to
+  # to use your service. Great! Wait what happens when a business (group) decides to 
   # stop using your service? Also what happens when a user gets removed from a business?
   # Well the endpoints below are for Maestrano to be able to notify you of such
   # events.
@@ -116,12 +116,55 @@ Maestrano['default'].configure do |config|
   # to notify you of any service cancellation (group deletion) or any user being
   # removed from a group.
   #
-  # The controllers for these hooks path are automatically generated when
-  # you run 'rake maestrano:install' and is available under
-  # <rails_root>/app/controllers/maestrano/account/
-  #
   # config.webhook.account.groups_path = '/maestrano/account/groups/:id',
   # config.webhook.account.group_users_path = '/maestrano/account/groups/:group_id/users/:id',
+
+
+  # ==> Connec Subscriptions/Webhook
+  # The following section is used to configure the Connec!™ webhooks and which entities
+  # you should receive via webhook.
+  #
+  # == Notification Path
+  # This is the path of your application where notifications (created/updated entities) will
+  # be POSTed to.
+  # You should have a controller matching this path handling the update of your internal entities
+  # based on the Connec!™ entities you receive
+  #
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/default'
+  #
+  # == Subscriptions
+  # This is the list of entities (organizations,people,invoices etc.) for which you want to be
+  # notified upon creation/update in Connec!™
+  # 
+  config.webhook.connec.subscriptions = {
+    accounts: false,
+    company: true,
+    employees: false,
+    events: false,
+    event_orders: false,
+    invoices: false,
+    items: true,
+    journals: false,
+    opportunities: true,
+    organizations: true,
+    payments: false,
+    pay_items: false,
+    pay_schedules: false,
+    pay_stubs: false,
+    pay_runs: false,
+    people: true,
+    projects: false,
+    purchase_orders: false,
+    quotes: false,
+    sales_orders: false,
+    tax_codes: false,
+    tax_rates: false,
+    time_activities: false,
+    time_sheets: false,
+    venues: false,
+    warehouses: false,
+    work_locations: false
+  }
 end
 
 # Example of multi-tenant configuration
