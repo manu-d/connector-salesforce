@@ -1,4 +1,12 @@
 class Maestrano::ConnecController < Maestrano::Rails::WebHookController
+  
+  MODEL_MAPPING ||= {
+    'organizations' => Entities::Organization,
+    'people' => Entities::ContactAndLead,
+    'items' => Entities::Item,
+    'opportunities' => Entities::Opportunity
+  }
+
   def notifications
     Rails.logger.info("received notification #{params}")
 
@@ -9,9 +17,11 @@ class Maestrano::ConnecController < Maestrano::Rails::WebHookController
           Rails.logger.info("mapping tenant=#{params[:tenant]}, organization=#{organization}, resource_type=#{resource_type}, entity=#{entity}")
 
           external_client = Maestrano::Connector::Rails::External.get_client(organization)
-          entity_instance = "Entities::#{resource_type.singularize.titleize.split.join}".constantize.new
-          data = entity_instance.map_to_external_with_idmap(entity, organization)
-          entity_instance.push_entities_to_external(external_client, [data], organization) if data
+          entity_instance = model_class(resource_type)
+          connec_entities = [entity]
+
+          entity_instance.consolidate_and_map_data(connec_entities, {}, organization, {})
+          entity_instance.push_entities_to_external(external_client, connec_entities, organization)
         end
       end
     rescue => e
@@ -19,5 +29,9 @@ class Maestrano::ConnecController < Maestrano::Rails::WebHookController
     end
 
     head 200, content_type: "application/json"
+  end
+
+  def model_class(resource_type)
+    MODEL_MAPPING[resource_type].new
   end
 end
