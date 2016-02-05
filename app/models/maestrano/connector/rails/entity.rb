@@ -17,6 +17,7 @@ class Maestrano::Connector::Rails::Entity
       entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.external_entity_name} ORDER BY LastModifiedDate DESC")
     else
       entities = []
+      raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization.updated_at > 1.minute
       ids = client.get_updated(self.external_entity_name, last_synchronization.updated_at, Time.now)['ids']
       ids.each do |id|
         entities << client.find(self.external_entity_name, id)

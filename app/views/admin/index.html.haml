@@ -32,7 +32,7 @@
         .row
           %h3
             Synchronized entities
-            %small You can customize which entities are synchronized by the connector.
+            %small You can customize which entities are synchronized by the connector
           .col-md-11.col-md-offset-1
             = form_tag admin_update_path(id: @organization.id), method: :put do
               - @organization.synchronized_entities.each do |k, v|
@@ -43,7 +43,7 @@
                     %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
                   -if v && @organization.oauth_uid
                     .col-md-2
-                      = link_to "Force a synchronization for #{k.to_s.pluralize} only", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
+                      = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", admin_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
               =submit_tag :Update, class: "btn btn-primary"
         .spacer1
 
