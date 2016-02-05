@@ -11,25 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151128113455) do
+ActiveRecord::Schema.define(version: 20151122163449) do
 
-  create_table "delayed_jobs", force: :cascade do |t|
-    t.integer  "priority",               default: 0, null: false
-    t.integer  "attempts",               default: 0, null: false
-    t.text     "handler",                            null: false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by",  limit: 255
-    t.string   "queue",      limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
-
-  create_table "id_maps", force: :cascade do |t|
+  create_table "maestrano_connector_rails_id_maps", force: :cascade do |t|
     t.string   "connec_id",             limit: 255
     t.string   "connec_entity",         limit: 255
     t.string   "external_id",           limit: 255
@@ -41,11 +25,11 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.datetime "updated_at",                        null: false
   end
 
-  add_index "id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
-  add_index "id_maps", ["external_id", "external_entity", "organization_id"], name: "idmap_external_index"
-  add_index "id_maps", ["organization_id"], name: "idmap_organization_index"
+  add_index "maestrano_connector_rails_id_maps", ["connec_id", "connec_entity", "organization_id"], name: "idmap_connec_index"
+  add_index "maestrano_connector_rails_id_maps", ["external_id", "external_entity", "organization_id"], name: "idmap_external_index"
+  add_index "maestrano_connector_rails_id_maps", ["organization_id"], name: "idmap_organization_index"
 
-  create_table "organizations", force: :cascade do |t|
+  create_table "maestrano_connector_rails_organizations", force: :cascade do |t|
     t.string   "provider",              limit: 255
     t.string   "uid",                   limit: 255
     t.string   "name",                  limit: 255
@@ -60,9 +44,9 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.datetime "updated_at",                        null: false
   end
 
-  add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
+  add_index "maestrano_connector_rails_organizations", ["uid", "tenant"], name: "orga_uid_index"
 
-  create_table "synchronizations", force: :cascade do |t|
+  create_table "maestrano_connector_rails_synchronizations", force: :cascade do |t|
     t.integer  "organization_id"
     t.string   "status",          limit: 255
     t.text     "message"
@@ -71,17 +55,19 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.datetime "updated_at",                                  null: false
   end
 
-  create_table "user_organization_rels", force: :cascade do |t|
+  add_index "maestrano_connector_rails_synchronizations", ["organization_id"], name: "synchronization_orga_id_index"
+
+  create_table "maestrano_connector_rails_user_organization_rels", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "organization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "user_organization_rels", ["organization_id"], name: "rels_orga_index"
-  add_index "user_organization_rels", ["user_id"], name: "rels_user_index"
+  add_index "maestrano_connector_rails_user_organization_rels", ["organization_id"], name: "rels_orga_index"
+  add_index "maestrano_connector_rails_user_organization_rels", ["user_id"], name: "rels_user_index"
 
-  create_table "users", force: :cascade do |t|
+  create_table "maestrano_connector_rails_users", force: :cascade do |t|
     t.string   "provider",   limit: 255
     t.string   "uid",        limit: 255
     t.string   "first_name", limit: 255
@@ -92,6 +78,6 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.datetime "updated_at",             null: false
   end
 
-  add_index "users", ["uid", "tenant"], name: "user_uid_index"
+  add_index "maestrano_connector_rails_users", ["uid", "tenant"], name: "user_uid_index"
 
 end

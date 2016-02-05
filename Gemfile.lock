@@ -1,3 +1,10 @@
+PATH
+  remote: ../maestrano-connector-rails
+  specs:
+    maestrano-connector-rails (0.0.1)
+      hash_mapper (~> 0.2.1)
+      maestrano-rails (~> 0.14.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -60,11 +67,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.0-java)
-    delayed_job (4.1.1)
-      activesupport (>= 3.0, < 5.0)
-    delayed_job_active_record (4.1.0)
-      activerecord (>= 3.0, < 5)
-      delayed_job (>= 3.0, < 5)
+    connection_pool (2.2.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     domain_name (0.5.25)
@@ -125,9 +128,6 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (0.0.1)
-      hash_mapper (~> 0.2.1)
-      maestrano-rails (~> 0.14.0)
     maestrano-rails (0.14.0)
       jquery-rails
       maestrano (~> 0.12.2)
@@ -190,6 +190,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.5.0)
+    redis (3.2.2)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -222,6 +223,10 @@ GEM
     sexp_processor (4.6.0)
     shoulda-matchers (3.0.1)
       activesupport (>= 4.0.0)
+    sidekiq (4.1.0)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      redis (~> 3.2, >= 3.2.1)
     simplecov (0.11.1)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -260,12 +265,11 @@ DEPENDENCIES
   activerecord-jdbcsqlite3-adapter
   autoprefixer-rails
   bootstrap-sass
-  delayed_job_active_record
   factory_girl_rails
   figaro
   haml-rails
   jquery-rails
-  maestrano-connector-rails
+  maestrano-connector-rails!
   omniauth-salesforce
   puma
   rails (= 4.2.4)
@@ -273,6 +277,7 @@ DEPENDENCIES
   restforce
   rspec-rails
   shoulda-matchers
+  sidekiq
   simplecov
   timecop
   turbolinks
