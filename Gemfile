@@ -10,8 +10,8 @@ gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-# gem 'maestrano-connector-rails'
-gem 'maestrano-connector-rails', path: '../maestrano-connector-rails'
+gem 'maestrano-connector-rails'
+# gem 'maestrano-connector-rails', path: '../maestrano-connector-rails'
 
 gem 'restforce'
 gem 'omniauth-salesforce'
@@ -19,6 +19,9 @@ gem 'omniauth-salesforce'
 gem 'haml-rails'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
+
+gem 'sinatra', :require => nil
+gem 'slim'
 gem 'sidekiq'
 
 group :production do

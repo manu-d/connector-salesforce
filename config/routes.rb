@@ -17,4 +17,7 @@ Rails.application.routes.draw do
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout_omniauth', to: 'oauth#destroy_omniauth', as: 'signout_omniauth', via: [:get, :post]
 
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
 end

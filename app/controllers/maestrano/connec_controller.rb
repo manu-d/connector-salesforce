@@ -20,7 +20,7 @@ class Maestrano::ConnecController < Maestrano::Rails::WebHookController
           entity_instance = model_class(resource_type)
           connec_entities = [entity]
 
-          entity_instance.consolidate_and_map_data(connec_entities, {}, organization, {})
+          entity_instance.consolidate_and_map_data(connec_entities, [{}], organization, {})
           entity_instance.push_entities_to_external(external_client, connec_entities, organization)
         end
       end
