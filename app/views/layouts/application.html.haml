@@ -39,6 +39,8 @@
     -if current_user
       .banners.align-right.sticky-top
         Connected as #{current_user.first_name} #{current_user.last_name}
+        %br
+        Server time: #{Time.now}
 
     .wrapper
       = yield
