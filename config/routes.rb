@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'admin/index' => 'admin#index'
   put 'admin/update' => 'admin#update'
   post 'admin/synchronize' => 'admin#synchronize'
+  put 'admin/toggle_sync' => 'admin#toggle_sync'
 
   match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]
   match 'auth/:provider/callback', to: 'oauth#create_omniauth', via: [:get, :post]

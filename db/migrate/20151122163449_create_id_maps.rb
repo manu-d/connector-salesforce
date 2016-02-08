@@ -1,4 +1,3 @@
-# This migration comes from maestrano_connector_rails_engine (originally 20151122163449)
 class CreateIdMaps < ActiveRecord::Migration
   def change
     create_table :id_maps do |t|

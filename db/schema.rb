@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204212858) do
+ActiveRecord::Schema.define(version: 20160205132857) do
 
   create_table "id_maps", force: :cascade do |t|
     t.string   "connec_id",             limit: 255
@@ -40,8 +40,9 @@ ActiveRecord::Schema.define(version: 20160204212858) do
     t.string   "refresh_token",         limit: 255
     t.string   "instance_url",          limit: 255
     t.string   "synchronized_entities", limit: 255
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.boolean  "sync_enabled",                      default: false
   end
 
   add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"

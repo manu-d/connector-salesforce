@@ -1,4 +1,3 @@
-# This migration comes from maestrano_connector_rails_engine (originally 20151122162613)
 class CreateUserOrganizationRels < ActiveRecord::Migration
   def change
     create_table :user_organization_rels do |t|

@@ -1,4 +1,3 @@
-# This migration comes from maestrano_connector_rails_engine (originally 20151122163325)
 class CreateSynchronizations < ActiveRecord::Migration
   def change
     create_table :synchronizations do |t|

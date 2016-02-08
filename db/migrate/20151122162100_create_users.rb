@@ -1,4 +1,3 @@
-# This migration comes from maestrano_connector_rails_engine (originally 20151122162100)
 class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
