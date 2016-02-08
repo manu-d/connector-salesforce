@@ -27,8 +27,8 @@ bundle
 rails s -p 3001
 ```
 
-### Heroku
-Start the Delayed Jobs manually with the command
+### Start sidekiq
+Start the Sidekiq background jobs
 ```
-heroku run bundle exec rake jobs:work
+bundle exec sidekiq
 ```
