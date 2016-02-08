@@ -16,5 +16,4 @@
 /config/application.yml
 
 /coverage
-
-/db
+*.sqlite3

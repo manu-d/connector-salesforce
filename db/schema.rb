@@ -11,23 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151128113455) do
-
-  create_table "delayed_jobs", force: :cascade do |t|
-    t.integer  "priority",               default: 0, null: false
-    t.integer  "attempts",               default: 0, null: false
-    t.text     "handler",                            null: false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by",  limit: 255
-    t.string   "queue",      limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
+ActiveRecord::Schema.define(version: 20160205132857) do
 
   create_table "id_maps", force: :cascade do |t|
     t.string   "connec_id",             limit: 255
@@ -56,8 +40,9 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.string   "refresh_token",         limit: 255
     t.string   "instance_url",          limit: 255
     t.string   "synchronized_entities", limit: 255
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.boolean  "sync_enabled",                      default: false
   end
 
   add_index "organizations", ["uid", "tenant"], name: "orga_uid_index"
@@ -70,6 +55,8 @@ ActiveRecord::Schema.define(version: 20151128113455) do
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
   end
+
+  add_index "synchronizations", ["organization_id"], name: "synchronization_orga_id_index"
 
   create_table "user_organization_rels", force: :cascade do |t|
     t.integer  "user_id"

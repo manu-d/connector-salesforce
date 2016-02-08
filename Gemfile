@@ -19,7 +19,10 @@ gem 'omniauth-salesforce'
 gem 'haml-rails'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
-gem 'delayed_job_active_record'
+
+gem 'sinatra', :require => nil
+gem 'sidekiq'
+gem 'slim'
 
 group :production do
   gem 'rails_12factor'
