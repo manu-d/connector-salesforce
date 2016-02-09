@@ -23,4 +23,18 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
     end
   end
 
+  def update_entity_to_external(client, mapped_connec_entity, external_id, external_entity_name, organization)
+    # Cannot update a converted lead to SF
+    if mapped_connec_entity['IsConverted']
+      Maestrano::Connector::Rails::ConnectorLogger.log('debug', organization, "Not sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{@@external_name}: lead is converted")
+    else
+      super
+    end
+  end
+
+  def create_entity_to_external(client, mapped_connec_entity, external_entity_name, organization)
+    # Company is mandatory in SF lead and have no equivalent in Connec!
+    mapped_connec_entity['Company'] = 'Undefined' if external_entity_name == 'lead'
+    super
+  end
 end

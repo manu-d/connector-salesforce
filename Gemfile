@@ -21,8 +21,8 @@ gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
 gem 'sinatra', :require => nil
-gem 'slim'
 gem 'sidekiq'
+gem 'slim'
 
 group :production do
   gem 'rails_12factor'

@@ -28,7 +28,8 @@
               %small (#{@organization.oauth_uid})
 
         .row
-          %h3= "Last synchronization:"
+          .col-md-12
+            %h3= "Last synchronization:"
         .row
           .col-md-10.col-md-offset-1.center
             - if @synchronizations.first
@@ -45,7 +46,7 @@
         -if @synchronizations
           .row
             .col-md-12
-              %h3= "Synchronizations history"
+              %h3= "Synchronizations history:"
               - @synchronizations.each do |sync|
                 .row.sync-status{class: sync.status.downcase}
                   .col-md-3
