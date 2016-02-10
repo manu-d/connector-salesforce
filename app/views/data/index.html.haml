@@ -1,0 +1,37 @@
+.home
+  - if current_user
+    .banners
+      .container
+
+        .row
+          .col-md-12
+            %h3= "Last synchronization:"
+        .row
+          .col-md-10.col-md-offset-1.center
+            - if @synchronizations.first
+              %h3.sync-status{class: @synchronizations.first.status.downcase}
+                = "#{@synchronizations.first.updated_at} #{@synchronizations.first.status}"
+                - if @synchronizations.first.status == 'ERROR'
+                  = @synchronizations.first.message
+                - elsif @synchronizations.first.status == 'SUCCESS' && @synchronizations.first.partial?
+                  Partial synchronization
+            - else
+              %h3 None
+        .spacer2
+
+        -if @synchronizations
+          .row
+            .col-md-12
+              %h3= "Synchronizations history:"
+              - @synchronizations.each do |sync|
+                .row.sync-status{class: sync.status.downcase}
+                  .col-md-3
+                    = sync.updated_at
+                  .col-md-3
+                    = sync.status
+                  -if sync.status == 'ERROR'
+                    .col-md-6
+                      = sync.message
+                  - elsif sync.status == 'SUCCESS' && sync.partial?
+                    .col-md-6
+                      Partial synchronization

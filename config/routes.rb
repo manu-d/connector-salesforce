@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
   get 'home/index' => 'home#index'
+  get 'data/index' => 'data#index'
   get 'admin/index' => 'admin#index'
   put 'admin/update' => 'admin#update'
   post 'admin/synchronize' => 'admin#synchronize'

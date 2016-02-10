@@ -1,46 +1,44 @@
 !!!
 %html
   %head
-    %title Maestrano SalesForce Connector
+    %title SalesForce Connector for Connec!™
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body
     .navbar.navbar-fixed-top.navbar-inverse
       .container-fluid
-        .navbar-header
-          %button.navbar-toggle{ type:'button', 'data-toggle'=>"collapse", 'data-target'=>"#maestrano-navbar-collapse" }
-            %span.sr-only Toggle navigation
-            %span.icon-bar
-            %span.icon-bar
-            %span.icon-bar
-          %a.navbar-brand{ href:root_path }
-            .mno-main-logo.hidden-xs
-            .visible-xs{ style:'margin-top:20px;' } Maestrano
-
         .collapse.navbar-collapse#maestrano-navbar-collapse
+          %ul.nav.navbar-nav
+            =image_tag "logos/salesforce.png", class: 'external-logo'
+            =image_tag "logos/connec.png", class: 'external-logo'
+
           %ul.nav.navbar-nav
             %li
               =link_to "Home", root_path
 
             %li
+              =link_to "Data", data_index_path
+
+            %li
               =link_to "Admin panel", admin_index_path
 
-          %ul.nav.navbar-nav.navbar-right
-            =image_tag "logos/salesforce.png", class: 'external-logo'
+          -if current_user
+            %ul.nav.navbar-nav.navbar-right
+              %li.dropdown
+                %a{:href=>"#", :class=>"dropdown-toggle", :'data-toggle'=>"dropdown", :role=>"button"}
+                  Hi #{current_user.first_name} #{current_user.last_name}
+                  %span.caret
+                %ul.dropdown-menu
+                  %li
+
     .padding-navbar
 
     .banners.promo.lightgray.sticky.title
       .container
         .row
-          .col-md-6.col-md-offset-3
-            %h2 Salesforce connector
-
-    -if current_user
-      .banners.align-right.sticky-top
-        Connected as #{current_user.first_name} #{current_user.last_name}
-        %br
-        Server time: #{Time.now}
+          .col-md-8.col-md-offset-2
+            %h2 SalesForce Connector for Connec!™
 
     .wrapper
       = yield
