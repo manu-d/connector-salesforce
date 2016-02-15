@@ -3,7 +3,6 @@ class AdminController < ApplicationController
   def index
     if is_admin
       @organization = current_organization
-      @idmaps = Maestrano::Connector::Rails::IdMap.where(organization_id: @organization.id).order(:connec_entity)
     end
   end
 
@@ -29,7 +28,7 @@ class AdminController < ApplicationController
       Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, params['opts'] || {})
     end
 
-    redirect_to root_path
+    redirect_to(:back)
   end
 
   def toggle_sync
@@ -39,7 +38,7 @@ class AdminController < ApplicationController
       flash[:notice] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
     end
 
-    redirect_to admin_index_path
+    redirect_to(:back)
   end
 
   private

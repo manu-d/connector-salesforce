@@ -4,11 +4,14 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'home/index' => 'home#index'
   get 'home/redirect_to_external' => 'home#redirect_to_external'
-  get 'data/index' => 'data#index'
+
   get 'admin/index' => 'admin#index'
   put 'admin/update' => 'admin#update'
   post 'admin/synchronize' => 'admin#synchronize'
   put 'admin/toggle_sync' => 'admin#toggle_sync'
+
+  get 'synchronizations/index' => 'synchronizations#index'
+  get 'shared_entities/index' => 'shared_entities#index'
 
   match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]
   match 'auth/:provider/callback', to: 'oauth#create_omniauth', via: [:get, :post]

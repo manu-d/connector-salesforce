@@ -9,15 +9,49 @@
   - if current_user
     .container
       .row
-        .col-md-12
-          Your Maestrano company <strong>#{@organization.name} (#{@organization.uid})</strong> is currently linked
+        .col-md-3
+          =image_tag "logos/default-white.png", class: 'external-logo'
+        .col-md-8.alert.alert-success
+          %h4
+            Your Maestrano company <strong>#{@organization.name} (#{@organization.uid})</strong> is currently linked
+        .col-md-1
+          = link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.maestrano_signout_path, class: "btn btn-warning btn-lg"
 
-        .col-md-12
-          - if @organization.oauth_uid
-            Your SalesForce account <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
-          - else
-            Your SalesForce account is not linked
-            = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm" if is_admin?(current_user, @organization)
+      .spacer2
+
+      .row
+        .col-md-3
+          =image_tag "logos/salesforce.png", class: 'external-logo'
+        - if @organization.oauth_uid
+          .col-md-8.alert.alert-success
+            %h4
+              Your SalesForce account <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
+          .col-md-1
+            = link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-lg"
+        - else
+          .col-md-8.alert.alert-warning
+            %h4
+              Your SalesForce account is not linked
+          .col-md-1
+            = link_to "Link to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-lg" if is_admin?(current_user, @organization)
+
+      .spacer2
+
+      .row
+        .col-md-3
+          =image_tag "logos/connec-black.png", class: 'external-logo'
+        - if @organization.sync_enabled
+          .col-md-8.alert.alert-success
+            %h4
+              Synchronizations are enabled
+          .col-md-1
+            = link_to "Toggle off", admin_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg"
+        - else
+          .col-md-8.alert.alert-warning
+            %h4
+              Synchronizations are disabled
+          .col-md-1
+            = link_to "Toggle on", admin_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg"
 
   - else
     .container
