@@ -22,6 +22,7 @@ Maestrano['default'].configure do |config|
   # For testing you can retrieve/generate an api.id and api.key from the API Sandbox directly
   # on http://api-sandbox.maestrano.io
   #
+  config.api.host = 'https://maestrano.com'
   config.api.id = ENV['connec_api_id']
   config.api.key = ENV['connec_api_key']
 
@@ -38,7 +39,7 @@ Maestrano['default'].configure do |config|
   # responsible for the single sign-on handshake (e.g: https://idp.my-app.com)
   # then you can specify it below
   #
-  config.sso.idm = 'https://maestrano.com'
+  # config.sso.idm = 'http://connector-salesforce.herokuapp.com'
 
   # ==> SSO Initialization endpoint
   # This is your application path to the SAML endpoint that allows users to
@@ -173,10 +174,10 @@ Maestrano['maestrano-uat'].configure do |config|
   config.environment = 'uat'
   config.app.host = Rails.env.development? ? 'http://localhost:3001' : 'http://connector-salesforce.herokuapp.com'
   
+  config.api.host = 'https://uat.maestrano.io'
   config.api.id = ENV['maestrano_uat_connec_api_id']
   config.api.key = ENV['maestrano_uat_connec_api_key']
 
-  config.sso.idm = 'https://uat.maestrano.io'
   config.sso.init_path = '/maestrano/auth/saml/init/maestrano-uat'
   config.sso.consume_path = '/maestrano/auth/saml/consume/maestrano-uat'
   config.webhook.connec.notifications_path = '/maestrano/connec/notifications/maestrano-uat'
