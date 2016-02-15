@@ -37,6 +37,7 @@ describe Entities::SubEntities::LeadMapper do
         [
           {"status"=>"Open - Not Contacted", "created_at"=>"2015-12-04T17:12:18Z"}
         ],
+        "lead_conversion_date" => "2016-12-04T17:12:18Z",
         "referred_leads"=>[],
         "opportunities"=>[],
         "notes"=>[],
@@ -56,11 +57,13 @@ describe Entities::SubEntities::LeadMapper do
         :LastName=>"Cotton",
         :Title=>"CFO",
         :State=>"VA",
+        "IsConverted" => true,
+        :ConvertedDate => "2016-12-04T17:12:18Z",
         :Country=>"United States",
         :Email=>"pcotton@abbottins.net",
         :Phone=>"(703) 757-1000",
         :LeadSource=>"Web",
-        :Status=>"Open - Not Contacted"
+        :Status=>"Open - Not Contacted",
       }
     }
 
@@ -119,7 +122,7 @@ describe Entities::SubEntities::LeadMapper do
           "NumberOfEmployees"=>nil,
           "OwnerId"=>"00528000001eP9OAAU",
           "IsConverted"=>false,
-          "ConvertedDate"=>nil,
+          "ConvertedDate"=>"2016-11-29T15:24:02.000+0000",
           "ConvertedAccountId"=>nil,
           "ConvertedContactId"=>nil,
           "ConvertedOpportunityId"=>nil,
@@ -160,7 +163,8 @@ describe Entities::SubEntities::LeadMapper do
         :email=>{:address=>"jeffg@jackson.com"},
         :phone_work=>{:landline=>"886-2-25474189"},
         :lead_source=>"Phone Inquiry",
-        :lead_status=>"Open - Not Contacted"
+        :lead_status=>"Open - Not Contacted",
+        :lead_conversion_date => "2016-11-29T16:24:02+01:00",
       }
     }
 

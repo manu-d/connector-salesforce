@@ -8,7 +8,7 @@ describe Entities::SubEntities::Item do
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil).to raise_error("Impossible mapping from item to lala") } }
+      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from item to lala") }
     end
 
     describe 'for a valid entity name' do
