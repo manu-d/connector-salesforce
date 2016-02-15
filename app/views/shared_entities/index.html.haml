@@ -18,6 +18,8 @@
               SalesForce entity
             %th
               SalesForce id
+            %th
+              Message
 
             - @idmaps.each do |idmap|
               %tr
@@ -25,6 +27,7 @@
                 %td= idmap.connec_id
                 %td= idmap.external_entity ? idmap.external_entity.humanize : nil
                 %td= idmap.external_id
+                %td= idmap.message
         - else
           .row
             .col-md-12
