@@ -1,3 +1,5 @@
+[ ![Codeship Status for maestrano/connector-salesforce](https://codeship.com/projects/e6e21510-b64b-0133-12fb-7a4b33b8d70b/status?branch=master)](https://codeship.com/projects/134339)
+
 # SalesForce Connector
 
 The aim of this connector is to implement data sharing between Connec! and SalesForce
