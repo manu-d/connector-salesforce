@@ -7,7 +7,7 @@ class AdminController < ApplicationController
   end
 
   def update
-    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:id])
+    organization = Maestrano::Connector::Rails::Organization.find(params[:id])
 
     if organization && is_admin?(current_user, organization)
       organization.synchronized_entities.keys.each do |entity|

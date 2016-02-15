@@ -2,7 +2,7 @@ class OauthController < ApplicationController
 
   def request_omniauth
     org_uid = params[:org_uid]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
+    organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
 
     if organization && is_admin?(current_user, organization)
       auth_params = {
@@ -19,7 +19,7 @@ class OauthController < ApplicationController
   # Link an Organization to SalesForce OAuth account
   def create_omniauth
     org_uid = params[:state]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid(org_uid)
+    organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
 
     if organization && is_admin?(current_user, organization)
       organization.from_omniauth(env["omniauth.auth"])
