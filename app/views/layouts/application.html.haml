@@ -23,6 +23,9 @@
             %li
               =link_to "Admin panel", admin_index_path
 
+            %li
+              SalesForce Connector for Connec!™
+
           -if current_user
             %ul.nav.navbar-nav.navbar-right
               %li.dropdown
@@ -33,12 +36,6 @@
                   %li
 
     .padding-navbar
-
-    .banners.promo.lightgray.sticky.title
-      .container
-        .row
-          .col-md-8.col-md-offset-2
-            %h2 SalesForce Connector for Connec!™
 
     .wrapper
       = yield

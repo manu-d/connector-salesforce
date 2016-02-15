@@ -45,7 +45,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.3)
-    autoprefixer-rails (6.3.2)
+    autoprefixer-rails (6.3.3)
       execjs
       json
     bootstrap-sass (3.3.6)
@@ -114,20 +114,20 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    maestrano (0.12.2)
+    maestrano (0.12.3)
       httparty (~> 0.13)
       json (~> 1.8)
       mime-types (~> 1.25)
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (0.2.7)
+    maestrano-connector-rails (0.2.8)
       hash_mapper
       maestrano-rails
       sidekiq
-    maestrano-rails (0.14.0)
+    maestrano-rails (0.15.0)
       jquery-rails
-      maestrano (~> 0.12.2)
+      maestrano
       rails
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
