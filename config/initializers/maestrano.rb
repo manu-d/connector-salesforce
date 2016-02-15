@@ -62,7 +62,7 @@ Maestrano['default'].configure do |config|
   # generated when you run 'rake maestrano:install' and is available at
   # <rails_root>/app/controllers/maestrano/auth/saml.rb
   #
-  # config.sso.consume_path = '/maestrano/auth/saml/consume'
+  config.sso.consume_path = '/maestrano/auth/saml/consume'
 
   # ==> Single Logout activation
   # Enable/Disable single logout. When troubleshooting authentication issues
@@ -175,8 +175,9 @@ Maestrano['maestrano-uat'].configure do |config|
   config.api.id = ENV['maestrano_uat_connec_api_id']
   config.api.key = ENV['maestrano_uat_connec_api_key']
 
-  config.sso.init_path = '/maestrano/auth/saml/init/default'
-  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/default'
+  config.sso.init_path = '/maestrano/auth/saml/init/maestrano-uat'
+  config.sso.consume_path = '/maestrano/auth/saml/consume/maestrano-uat'
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/maestrano-uat'
 
   config.webhook.connec.subscriptions = {
     accounts: false,
