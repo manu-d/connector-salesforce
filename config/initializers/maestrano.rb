@@ -38,6 +38,7 @@ Maestrano['default'].configure do |config|
   # responsible for the single sign-on handshake (e.g: https://idp.my-app.com)
   # then you can specify it below
   #
+  config.sso.idm = 'https://maestrano.com'
 
   # ==> SSO Initialization endpoint
   # This is your application path to the SAML endpoint that allows users to
@@ -175,6 +176,7 @@ Maestrano['maestrano-uat'].configure do |config|
   config.api.id = ENV['maestrano_uat_connec_api_id']
   config.api.key = ENV['maestrano_uat_connec_api_key']
 
+  config.sso.idm = 'https://uat.maestrano.io'
   config.sso.init_path = '/maestrano/auth/saml/init/maestrano-uat'
   config.sso.consume_path = '/maestrano/auth/saml/consume/maestrano-uat'
   config.webhook.connec.notifications_path = '/maestrano/connec/notifications/maestrano-uat'
