@@ -23,6 +23,16 @@ class OauthController < ApplicationController
 
     if organization && is_admin?(current_user, organization)
       organization.from_omniauth(env["omniauth.auth"])
+
+      # Fetch SalesForce user details
+      user_details = Maestrano::Connector::Rails::External.fetch_user(organization)
+      current_user.update_attribute(:locale, user_details['locale'])
+      current_user.update_attribute(:timezone, user_details['timezone'])
+
+      # Fetch SalesForce company name
+      company = Maestrano::Connector::Rails::External.fetch_company(organization)
+      organization.update_attribute(:oauth_name, company['Name'])
+      organization.update_attribute(:oauth_uid, company['Id'])
     end
 
     redirect_to root_url

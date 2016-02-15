@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20160205132857) do
     t.string   "tenant",                limit: 255
     t.string   "oauth_provider",        limit: 255
     t.string   "oauth_uid",             limit: 255
+    t.string   "oauth_name",            limit: 255
     t.string   "oauth_token",           limit: 255
     t.string   "refresh_token",         limit: 255
     t.string   "instance_url",          limit: 255
@@ -74,6 +75,8 @@ ActiveRecord::Schema.define(version: 20160205132857) do
     t.string   "first_name", limit: 255
     t.string   "last_name",  limit: 255
     t.string   "email",      limit: 255
+    t.string   "locale",     limit: 255
+    t.string   "timezone",   limit: 255
     t.string   "tenant",     limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false

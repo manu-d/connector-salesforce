@@ -1,5 +1,5 @@
+# Maestrano production
 Maestrano['default'].configure do |config|
-
   # ==> Environment configuration
   # The environment to connect to.
   # If set to 'production' then all Single Sign-On (SSO) and API requests
@@ -8,7 +8,7 @@ Maestrano['default'].configure do |config|
   # The api-sandbox allows you to easily test integration scenarios.
   # More details on http://api-sandbox.maestrano.io
   #
-  config.environment = Rails.env.development? ? 'local' : 'production'
+  config.environment = Rails.env.development? ? 'local' : Rails.env
 
   # ==> Application host
   # This is your application host (e.g: my-app.com) which is ultimately
@@ -167,11 +167,44 @@ Maestrano['default'].configure do |config|
   }
 end
 
-# Example of multi-tenant configuration
-Maestrano['other-tenant'].configure do |config|
-  config.environment = 'test'
-  config.app.host = (config.environment == 'production' ? 'https://my-app.com' : 'http://localhost:3000')
+# Maestrano UAT
+Maestrano['maestrano-uat'].configure do |config|
+  config.environment = 'uat'
+  config.app.host = Rails.env.development? ? 'http://localhost:3001' : 'http://connector-salesforce.herokuapp.com'
+  
+  config.api.id = ENV['maestrano_uat_connec_api_id']
+  config.api.key = ENV['maestrano_uat_connec_api_key']
 
-  config.api.id = (config.environment == 'production' ? 'prod_app_id' : 'sandbox_app_id')
-  config.api.key = (config.environment == 'production' ? 'prod_api_key' : 'sandbox_api_key')
+  config.sso.init_path = '/maestrano/auth/saml/init/default'
+  config.webhook.connec.notifications_path = '/maestrano/connec/notifications/default'
+
+  config.webhook.connec.subscriptions = {
+    accounts: false,
+    company: true,
+    employees: false,
+    events: false,
+    event_orders: false,
+    invoices: false,
+    items: true,
+    journals: false,
+    opportunities: true,
+    organizations: true,
+    payments: false,
+    pay_items: false,
+    pay_schedules: false,
+    pay_stubs: false,
+    pay_runs: false,
+    people: true,
+    projects: false,
+    purchase_orders: false,
+    quotes: false,
+    sales_orders: false,
+    tax_codes: false,
+    tax_rates: false,
+    time_activities: false,
+    time_sheets: false,
+    venues: false,
+    warehouses: false,
+    work_locations: false
+  }
 end

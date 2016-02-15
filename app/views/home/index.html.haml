@@ -10,11 +10,11 @@
     .container
       .row
         .col-md-12
-          Your company #{@organization.name} (#{@organization.uid}) is currently linked
+          Your Maestrano company <strong>#{@organization.name} (#{@organization.uid})</strong> is currently linked
 
         .col-md-12
           - if @organization.oauth_uid
-            Your SalesForce account (#{@organization.oauth_uid}) is currently linked
+            Your SalesForce account <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
           - else
             Your SalesForce account is not linked
             = link_to "Link this company to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-sm" if is_admin?(current_user, @organization)
