@@ -164,7 +164,7 @@ describe Entities::SubEntities::LeadMapper do
         :phone_work=>{:landline=>"886-2-25474189"},
         :lead_source=>"Phone Inquiry",
         :lead_status=>"Open - Not Contacted",
-        :lead_conversion_date => "2016-11-29T16:24:02+01:00",
+        :lead_conversion_date => DateTime.parse("2016-11-29T15:24:02.000+0000").to_time.iso8601,
       }
     }
 
