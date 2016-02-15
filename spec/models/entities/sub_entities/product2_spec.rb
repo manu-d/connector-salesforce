@@ -9,7 +9,7 @@ describe Entities::SubEntities::Product2 do
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil).to raise_error("Impossible mapping from Product2 to lala") } }
+      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from Product2 to lala") }
     end
 
     describe 'for a valid entity name' do

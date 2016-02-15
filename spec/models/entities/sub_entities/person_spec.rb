@@ -8,7 +8,7 @@ describe Entities::SubEntities::Person do
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil).to raise_error("Impossible mapping from person to lala") } }
+      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from person to lala") }
     end
 
     describe 'for a valid entity name' do
@@ -50,5 +50,36 @@ describe Entities::SubEntities::Person do
         end
       end
     end
+  end
+
+  describe 'update_external_entity' do
+    let(:organization) { create(:organization) }
+    let(:client) { Restforce.new }
+
+    it 'calls client.update! when lead is not converted' do
+      expect(client).to receive(:update!).with('external_name', {'IsConverted' => false, 'Id' => '3456'})
+      subject.update_external_entity(client, {'IsConverted' => false}, '3456', 'external_name', organization)
+    end
+
+    it 'does not call client.update! when lead is converted' do
+      expect(client).to_not receive(:update!)
+      subject.update_external_entity(client, {'IsConverted' => true}, '3456', 'external_name', organization)
+    end
+  end
+
+  describe 'create_external_entity' do
+    let(:organization) { create(:organization) }
+    let(:client) { Restforce.new }
+
+    it 'adds a default company for leads' do
+      expect(client).to receive(:create!).with('lead', {'Name' => 'Eric', 'Company' => 'Undefined'})
+      subject.create_external_entity(client, {'Name' => 'Eric'}, 'lead', organization)
+    end
+
+    it 'does not add a default company for entity other than lead' do
+      expect(client).to receive(:create!).with('not_lead', {'Name' => 'Eric'})
+      subject.create_external_entity(client, {'Name' => 'Eric'}, 'not_lead', organization)
+    end
+
   end
 end

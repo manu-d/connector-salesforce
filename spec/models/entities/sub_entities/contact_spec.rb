@@ -9,7 +9,7 @@ describe Entities::SubEntities::Contact do
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil).to raise_error("Impossible mapping from contact to lala") } }
+      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from contact to lala") }
     end
 
     describe 'for a valid entity name' do

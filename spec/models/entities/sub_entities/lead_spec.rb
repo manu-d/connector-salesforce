@@ -9,7 +9,7 @@ describe Entities::SubEntities::Lead do
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil).to raise_error("Impossible mapping from lead to lala") } }
+      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from lead to lala") }
     end
 
     describe 'for a valid entity name' do
@@ -17,21 +17,6 @@ describe Entities::SubEntities::Lead do
         expect(Entities::SubEntities::LeadMapper).to receive(:denormalize).with({'FirstName' => 'John'}).and_return({first_name: 'John'})
         expect(subject.map_to('person', {'FirstName' => 'John'}, nil)).to eql({first_name: 'John', is_lead: true})
       end
-    end
-  end
-
-  describe 'update_external_entity' do
-    let(:organization) { create(:organization) }
-    let(:client) { Restforce.new }
-
-    it 'calls client.update! when lead is not converted' do
-      expect(client).to receive(:update!).with('external_name', {'IsConverted' => false, 'Id' => '3456'})
-      subject.update_external_entity(client, {'IsConverted' => false}, '3456', 'external_name', organization)
-    end
-
-    it 'does not call client.update! when lead is converted' do
-      expect(client).to_not receive(:update!)
-      subject.update_external_entity(client, {'IsConverted' => true}, '3456', 'external_name', organization)
     end
   end
 end
