@@ -38,7 +38,7 @@ describe Entities::SubEntities::PricebookEntry do
         let!(:product_idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_entity: 'product2', external_id: product_id) }
 
         it 'send an update to connec with it' do
-          expect(subject).to receive(:update_entity_to_connec).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
+          expect(subject).to receive(:update_connec_entity).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
           subject.push_entities_to_connec_to(client, [{entity: {:Product2Id => product_id}, idmap: idmap}], 'item', organization)
         end
       end
@@ -49,7 +49,7 @@ describe Entities::SubEntities::PricebookEntry do
       let!(:idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_id: '133A', external_entity: 'pricebookentry') }
 
       it 'send an update to connec with it' do
-        expect(subject).to receive(:update_entity_to_connec).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
+        expect(subject).to receive(:update_connec_entity).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
         subject.push_entities_to_connec_to(client, [{entity: {:Product2Id => product_id}, idmap: idmap}], 'item', organization)
       end
     end

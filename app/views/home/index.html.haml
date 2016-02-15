@@ -3,7 +3,7 @@
     .container
       .row
         .col-md-12
-          %h2 Salesforce Connector Overview
+          %h2 Salesforce Connector
           Connectors allow Connec!™ to sync with third-party applications such as CRM systems, Accounting and Payroll softwares. Data is exchanged in real-time so you can better manage your business operations.
 
   - if current_user
@@ -39,7 +39,7 @@
 
       .row
         .col-md-3
-          =image_tag "logos/connec-black.png", class: 'external-logo'
+          =image_tag "logos/sync.png", class: 'external-logo'
         - if @organization.sync_enabled
           .col-md-8.alert.alert-success
             %h4

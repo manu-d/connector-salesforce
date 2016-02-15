@@ -41,7 +41,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
         idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: connec_entity_name)
       end
 
-      connec_entity = self.update_entity_to_connec(connec_client, external_entity, idmap.connec_id, connec_entity_name, organization)
+      connec_entity = self.update_connec_entity(connec_client, external_entity, idmap.connec_id, connec_entity_name, organization)
       idmap.update_attributes(last_push_to_connec: Time.now)
     end
   end

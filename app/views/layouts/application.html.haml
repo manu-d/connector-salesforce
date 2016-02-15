@@ -37,6 +37,11 @@
     .padding-navbar
 
     .wrapper
+      - if flash.any?
+        - flash.each do |flash_key, message|
+          .alert{:class => "alert-#{flash_key}"}
+            %strong= flash.discard(flash_key)
+
       = yield
 
     .footer

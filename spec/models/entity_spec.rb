@@ -64,17 +64,17 @@ describe Maestrano::Connector::Rails::Entity do
       end
     end
 
-    describe 'create_entity_to_external' do
+    describe 'create_external_entity' do
       it 'calls create!' do
         expect(client).to receive(:create!).with(external_name, {})
-        subject.create_entity_to_external(client, {}, external_name, organization)
+        subject.create_external_entity(client, {}, external_name, organization)
       end
     end
 
-    describe 'update_entity_to_external' do
+    describe 'update_external_entity' do
       it 'calls update! with the id' do
         expect(client).to receive(:update!).with(external_name, {'Id' => '3456'})
-        subject.update_entity_to_external(client, {}, '3456', external_name, organization)
+        subject.update_external_entity(client, {}, '3456', external_name, organization)
       end
     end
 

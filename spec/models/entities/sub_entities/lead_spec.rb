@@ -20,18 +20,18 @@ describe Entities::SubEntities::Lead do
     end
   end
 
-  describe 'update_entity_to_external' do
+  describe 'update_external_entity' do
     let(:organization) { create(:organization) }
     let(:client) { Restforce.new }
 
     it 'calls client.update! when lead is not converted' do
       expect(client).to receive(:update!).with('external_name', {'IsConverted' => false, 'Id' => '3456'})
-      subject.update_entity_to_external(client, {'IsConverted' => false}, '3456', 'external_name', organization)
+      subject.update_external_entity(client, {'IsConverted' => false}, '3456', 'external_name', organization)
     end
 
     it 'does not call client.update! when lead is converted' do
       expect(client).to_not receive(:update!)
-      subject.update_entity_to_external(client, {'IsConverted' => true}, '3456', 'external_name', organization)
+      subject.update_external_entity(client, {'IsConverted' => true}, '3456', 'external_name', organization)
     end
   end
 end

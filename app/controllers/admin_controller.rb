@@ -26,6 +26,7 @@ class AdminController < ApplicationController
   def synchronize
     if is_admin
       Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, params['opts'] || {})
+      flash[:info] = 'Synchronization requested'
     end
 
     redirect_to(:back)
@@ -35,7 +36,7 @@ class AdminController < ApplicationController
     if is_admin
       current_organization = Maestrano::Connector::Rails::Organization.first
       current_organization.update(sync_enabled: !current_organization.sync_enabled)
-      flash[:notice] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
+      flash[:info] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
     end
 
     redirect_to(:back)
