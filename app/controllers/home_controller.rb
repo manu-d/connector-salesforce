@@ -17,7 +17,7 @@ class HomeController < ApplicationController
       organization.save
     end
 
-    redirect_to admin_index_path
+    redirect_to(:back)
   end
 
   def synchronize
@@ -31,7 +31,6 @@ class HomeController < ApplicationController
 
   def toggle_sync
     if is_admin
-      current_organization = Maestrano::Connector::Rails::Organization.first
       current_organization.update(sync_enabled: !current_organization.sync_enabled)
       flash[:info] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
     end
