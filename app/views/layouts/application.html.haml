@@ -14,16 +14,13 @@
 
           %ul.nav.navbar-nav
             %li
-              =link_to "SalesForce Connector", root_path
+              =link_to "Status", root_path
 
             %li
-              =link_to "Admin panel", admin_index_path
+              =link_to "History", synchronizations_index_path
 
             %li
-              =link_to "Synchronizations", synchronizations_index_path
-
-            %li
-              =link_to "Shared Data", shared_entities_index_path
+              =link_to "Mapping", shared_entities_index_path
 
           -if current_user
             %ul.nav.navbar-nav.navbar-right

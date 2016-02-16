@@ -4,11 +4,10 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'home/index' => 'home#index'
   get 'home/redirect_to_external' => 'home#redirect_to_external'
-
-  get 'admin/index' => 'admin#index'
-  put 'admin/update' => 'admin#update'
-  post 'admin/synchronize' => 'admin#synchronize'
-  put 'admin/toggle_sync' => 'admin#toggle_sync'
+  get 'home/index' => 'home#index'
+  put 'home/update' => 'home#update'
+  post 'home/synchronize' => 'home#synchronize'
+  put 'home/toggle_sync' => 'home#toggle_sync'
 
   get 'synchronizations/index' => 'synchronizations#index'
   get 'shared_entities/index' => 'shared_entities#index'
