@@ -43,7 +43,7 @@
               %h
                 Your SalesForce account is not linked
             .col-md-1
-              = button_to "Link to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+              = button_to "Link to SalesForce", '/auth/salesforce/request', class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
 
         .spacer2
 
