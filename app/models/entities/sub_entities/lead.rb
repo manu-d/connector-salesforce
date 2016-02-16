@@ -11,7 +11,7 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
   def map_to(name, entity, organization)
     case name
     when 'person'
-      Entities::SubEntities::LeadMapper.denormalize(entity).merge(is_lead: true)
+      Entities::SubEntities::LeadMapper.denormalize(entity).merge(is_lead: true, is_customer: false)
     else
       raise "Impossible mapping from #{self.entity_name} to #{name}"
     end
