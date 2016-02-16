@@ -15,7 +15,7 @@ describe Entities::SubEntities::Lead do
     describe 'for a valid entity name' do
       it 'calls denormalize and adds is_lead' do
         expect(Entities::SubEntities::LeadMapper).to receive(:denormalize).with({'FirstName' => 'John'}).and_return({first_name: 'John'})
-        expect(subject.map_to('person', {'FirstName' => 'John'}, nil)).to eql({first_name: 'John', is_lead: true})
+        expect(subject.map_to('person', {'FirstName' => 'John'}, nil)).to eql({first_name: 'John', is_lead: true, is_customer: false})
       end
     end
   end
