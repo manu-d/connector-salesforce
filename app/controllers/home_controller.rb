@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def index
-    @organization = current_organization if current_user
+    @organization = current_organization
   end
 
   def update
@@ -47,8 +47,4 @@ class HomeController < ApplicationController
     end
   end
 
-  private
-    def is_admin
-      current_user && current_organization && is_admin?(current_user, current_organization)
-    end
 end
