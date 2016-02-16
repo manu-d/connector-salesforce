@@ -75,24 +75,25 @@
         .col-md-4.col-md-offset-4.center
           = link_to "Link your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.default_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
 
-  .container
-    .row
-      %h3
-        Synchronized entities
-        %small You can customize which entities are synchronized by the connector
+  - if @organization
+    .container
+      .row
+        %h3
+          Synchronized entities
+          %small You can customize which entities are synchronized by the connector
 
-      .col-md-11.col-md-offset-1
-        = form_tag home_update_path(id: @organization.id), method: :put do
-          - @organization.synchronized_entities.each do |k, v|
-            .row
-              .col-md-2
-                %label{:for => "#{k}"} #{k.to_s.humanize}
-              .col-md-1
-                %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
-              -if v && @organization.oauth_uid
+        .col-md-11.col-md-offset-1
+          = form_tag home_update_path(id: @organization.id), method: :put do
+            - @organization.synchronized_entities.each do |k, v|
+              .row
                 .col-md-2
-                  - if @organization.sync_enabled
-                    = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
-                  - else
-                    .btn.btn-warning.btn-sm.disabled= "Force a synchronization for #{k.to_s.humanize.pluralize} only"
-          =submit_tag :Save, class: "btn btn-primary"
+                  %label{:for => "#{k}"} #{k.to_s.humanize}
+                .col-md-1
+                  %input{type: "checkbox", id: "#{k}", name: "#{k}", checked: v}
+                -if v && @organization.oauth_uid
+                  .col-md-2
+                    - if @organization.sync_enabled
+                      = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm"
+                    - else
+                      .btn.btn-warning.btn-sm.disabled= "Force a synchronization for #{k.to_s.humanize.pluralize} only"
+            =submit_tag :Save, class: "btn btn-primary"
