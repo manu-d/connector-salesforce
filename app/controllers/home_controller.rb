@@ -1,10 +1,10 @@
 class HomeController < ApplicationController
   def index
-    @organization = current_organization if current_user
+    @organization = current_organization
   end
 
   def update
-    organization = Maestrano::Connector::Rails::Organization.find(params[:id])
+    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:id])
 
     if organization && is_admin?(current_user, organization)
       organization.synchronized_entities.keys.each do |entity|
@@ -17,7 +17,7 @@ class HomeController < ApplicationController
       organization.save
     end
 
-    redirect_to admin_index_path
+    redirect_to(:back)
   end
 
   def synchronize
@@ -31,7 +31,6 @@ class HomeController < ApplicationController
 
   def toggle_sync
     if is_admin
-      current_organization = Maestrano::Connector::Rails::Organization.first
       current_organization.update(sync_enabled: !current_organization.sync_enabled)
       flash[:info] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
     end
@@ -48,8 +47,4 @@ class HomeController < ApplicationController
     end
   end
 
-  private
-    def is_admin
-      current_user && current_organization && is_admin?(current_user, current_organization)
-    end
 end
