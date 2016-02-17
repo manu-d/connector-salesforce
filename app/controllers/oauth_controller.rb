@@ -1,12 +1,9 @@
 class OauthController < ApplicationController
 
   def request_omniauth
-    org_uid = params[:org_uid]
-    organization = Maestrano::Connector::Rails::Organization.find_by_uid_and_tenant(org_uid, current_user.tenant)
-
-    if organization && is_admin?(current_user, organization)
+    if is_admin
       auth_params = {
-        :state => org_uid
+        :state => current_organization.uid
       }
       auth_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
 
@@ -40,8 +37,7 @@ class OauthController < ApplicationController
 
   # Unlink Organization from SalesForce
   def destroy_omniauth
-    organization = Maestrano::Connector::Rails::Organization.find(params[:organization_id])
-
+    organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:organization_id])
     if organization && is_admin?(current_user, organization)
       organization.oauth_uid = nil
       organization.oauth_token = nil
