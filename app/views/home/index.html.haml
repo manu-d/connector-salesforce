@@ -60,10 +60,7 @@
             - else
               Synchronizations are disabled
         .col-md-2.text-center.link-step-action
-          - if @organization.oauth_uid
-            = link_to "Toggle off", home_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
-          - else
-            = link_to "Toggle on", home_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+          = link_to "Toggle #{@organization.sync_enabled ? 'off' : 'on'}", home_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
 
     - else
       .row
