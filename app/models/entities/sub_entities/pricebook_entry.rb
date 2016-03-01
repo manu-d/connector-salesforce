@@ -17,6 +17,10 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     end
   end
 
+  def object_name_from_external_entity_hash(entity)
+    "Price for #{entity['Product2Id']}"
+  end
+
   def external_attributes
     %w(
       UnitPrice

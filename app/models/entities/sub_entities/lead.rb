@@ -17,6 +17,10 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
     end
   end
 
+  def object_name_from_external_entity_hash(entity)
+    "#{entity['FirstName']} #{entity['LastName']}"
+  end
+
   def external_attributes
     %w(
       Street

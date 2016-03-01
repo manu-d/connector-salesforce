@@ -6,6 +6,7 @@ describe Entities::SubEntities::PricebookEntry do
   it { expect(subject.external?).to be(true) }
   it { expect(subject.entity_name).to eql('PricebookEntry') }
   it { expect(subject.external_attributes).to be_a(Array) }
+  it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
 
   describe 'map_to' do
     describe 'for an invalid entity name' do

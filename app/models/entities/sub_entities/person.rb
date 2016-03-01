@@ -23,6 +23,10 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
     end
   end
 
+  def object_name_from_connec_entity_hash(entity)
+    "#{entity['first_name']} #{entity['last_name']}"
+  end
+
   def update_external_entity(client, mapped_connec_entity, external_id, external_entity_name, organization)
     # Cannot update a converted lead to SF
     if mapped_connec_entity['IsConverted']

@@ -19,6 +19,10 @@ class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
     end
   end
 
+  def object_name_from_connec_entity_hash(entity)
+    "[#{entity['code']}] #{entity['name']}"
+  end
+
   def push_entities_to_external_to(external_client, mapped_connec_entities_with_idmaps, external_entity_name, organization)
     if external_entity_name == 'PricebookEntry' && !mapped_connec_entities_with_idmaps.empty?
       pricebook_id = Entities::Item.get_pricebook_id(external_client)
