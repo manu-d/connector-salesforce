@@ -5,6 +5,7 @@ describe Entities::SubEntities::Item do
 
   it { expect(subject.external?).to be(false) }
   it { expect(subject.entity_name).to eql('item') }
+  it { expect(subject.object_name_from_connec_entity_hash({'code' => 'M123', 'name' => 'Mno'})).to eql('[M123] Mno') }
 
   describe 'map_to' do
     describe 'for an invalid entity name' do

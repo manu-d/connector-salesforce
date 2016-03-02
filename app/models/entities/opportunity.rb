@@ -25,6 +25,14 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     )
     #StageName and CloseDate are mandatory for SF
   end
+
+  def object_name_from_connec_entity_hash(entity)
+    entity['name']
+  end
+
+  def object_name_from_external_entity_hash(entity)
+    entity['Name']
+  end
 end
 
 class OpportunityMapper

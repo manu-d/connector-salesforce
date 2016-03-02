@@ -34,6 +34,14 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
     )
   end
 
+  def object_name_from_connec_entity_hash(entity)
+    entity['name']
+  end
+
+  def object_name_from_external_entity_hash(entity)
+    entity['Name']
+  end
+
 end
 
 class OrganizationMapper
