@@ -1,6 +1,7 @@
 class Entities::Organization < Maestrano::Connector::Rails::Entity
-  def connec_entities_names
-    %w(organization)
+
+  def connec_entity_name
+    "Organization"
   end
 
   def external_entity_name

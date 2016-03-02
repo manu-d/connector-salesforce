@@ -7,7 +7,7 @@ describe Entities::ContactAndLead do
     it { expect(subject.connec_entities_names).to eql(%w(person)) }
     it { expect(subject.external_entities_names).to eql(%w(contact lead)) }
 
-    describe 'connec_model_to_external_model!' do
+    describe 'connec_model_to_external_model' do
       let(:person1) { {'first_name' => 'Gary', 'is_lead' => false} }
       let(:person2) { {'first_name' => 'Alice', 'is_lead' => true} }
 
@@ -26,12 +26,12 @@ describe Entities::ContactAndLead do
       }
 
       it {
-        subject.connec_model_to_external_model!(connec_hash)
-        expect(connec_hash).to eql(output_hash)
+        modeled_hash = subject.connec_model_to_external_model(connec_hash)
+        expect(modeled_hash).to eql(output_hash)
       }
     end
 
-    describe 'external_model_to_connec_model!' do
+    describe 'external_model_to_connec_model' do
       let(:lead) { {'Name' => 'Arold'} }
       let(:contact) { {'Name' => 'Jane'} }
 
@@ -50,8 +50,8 @@ describe Entities::ContactAndLead do
       }
 
       it {
-        subject.external_model_to_connec_model!(sf_hash)
-        expect(sf_hash).to eql(output_hash)
+        modeled_hash = subject.external_model_to_connec_model(sf_hash)
+        expect(modeled_hash).to eql(output_hash)
       }
     end
   end

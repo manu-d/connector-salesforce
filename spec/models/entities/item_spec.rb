@@ -35,7 +35,7 @@ describe Entities::Item do
     it { expect(subject.connec_entities_names).to eql(%w(item)) }
     it { expect(subject.external_entities_names).to eql(%w(Product2 PricebookEntry)) }
 
-    describe 'connec_model_to_external_model!' do
+    describe 'connec_model_to_external_model' do
       let(:item1) { {'name' => 'Glass'} }
       let(:item2) { {'name' => 'TV'} }
 
@@ -54,12 +54,12 @@ describe Entities::Item do
       }
 
       it {
-        subject.connec_model_to_external_model!(connec_hash)
-        expect(connec_hash).to eql(output_hash)
+        modeled_hash = subject.connec_model_to_external_model(connec_hash)
+        expect(modeled_hash).to eql(output_hash)
       }
     end
 
-    describe 'external_model_to_connec_model!' do
+    describe 'external_model_to_connec_model' do
       let(:product) { {'Name' => 'Laptop'} }
       let(:price) { {'Price' => 3000} }
       let(:sf_hash) {
@@ -77,8 +77,8 @@ describe Entities::Item do
       }
 
       it {
-        subject.external_model_to_connec_model!(sf_hash)
-        expect(sf_hash).to eql(output_hash)
+        modeled_hash = subject.external_model_to_connec_model(sf_hash)
+        expect(modeled_hash).to eql(output_hash)
       }
     end
   end
