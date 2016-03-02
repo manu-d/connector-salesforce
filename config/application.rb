@@ -25,5 +25,8 @@ module ConnectorSalesforce
 
     # ActiveJob config
     config.active_job.queue_adapter = :sidekiq
+
+    # Redis caching
+    config.cache_store = :redis_store if ENV['REDIS_URL']
   end
 end

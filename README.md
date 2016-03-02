@@ -22,15 +22,18 @@ config.app.host = 'http://localhost:3001'
 ```
 
 ### Run the connector
+#### First time setup
 ```
-rvm install jruby-9.0.4.0
+# Install JRuby and gems the first time
+rvm install jruby-9.0.5.0
 gem install bundler
 bundle
-rails s -p 3001
+gem install foreman
 ```
 
-### Start sidekiq
-Start the Sidekiq background jobs
+#### Start the application
 ```
-bundle exec sidekiq
+export PORT=8080
+export RACK_ENV=development
+foreman start
 ```

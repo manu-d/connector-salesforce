@@ -1,0 +1,5 @@
+connec_api_id: API_ID
+connec_api_key: API_KEY
+salesforce_client_id: SALESFORCE_API_ID
+salesforce_client_secret: SALESFORCE_API_SECRET
+REDIS_URL: redis://localhost:6379/0/connector-salesforce

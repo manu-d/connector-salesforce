@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-ruby '2.2.2', :engine => 'jruby', :engine_version => '9.0.4.0'
+ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.5'
 gem 'turbolinks'
 gem 'jquery-rails'
 gem 'puma'
@@ -19,10 +19,14 @@ gem 'haml-rails'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
+# Background jobs
 gem 'sinatra', :require => nil
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slim'
+
+# Redis caching
+gem 'redis-rails'
 
 group :production do
   gem 'rails_12factor'
