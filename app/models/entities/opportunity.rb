@@ -1,7 +1,6 @@
 class Entities::Opportunity < Maestrano::Connector::Rails::Entity
-
-  def connec_entity_name
-    'Opportunity'
+  def connec_entities_names
+    %w(opportunity)
   end
 
   def external_entity_name
