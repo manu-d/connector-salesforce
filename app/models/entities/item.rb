@@ -22,12 +22,13 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   #          }
   def connec_model_to_external_model(connec_hash_of_entities)
     items = connec_hash_of_entities['item']
-    connec_hash_of_entities['item'] = { 'Product2' => [], 'PricebookEntry' => [] }
+    modeled_hash = {'item' => { 'Product2' => [], 'PricebookEntry' => [] }}
 
     items.each do |item|
-      connec_hash_of_entities['item']['Product2'] << item
-      connec_hash_of_entities['item']['PricebookEntry'] << item
+      modeled_hash['item']['Product2'] << item
+      modeled_hash['item']['PricebookEntry'] << item
     end
+    modeled_hash
   end
 
   # input :  {
@@ -44,8 +45,7 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #           }
   def external_model_to_connec_model(external_hash_of_entities)
-    external_hash_of_entities['Product2'] = { 'item' => external_hash_of_entities['Product2'] }
-    external_hash_of_entities['PricebookEntry'] = { 'item' => external_hash_of_entities['PricebookEntry'] }
+    modeled_hash = {'Product2' => { 'item' => external_hash_of_entities['Product2'] }, 'PricebookEntry' => { 'item' => external_hash_of_entities['PricebookEntry'] }}
   end
 
   def self.get_pricebook_id(client)

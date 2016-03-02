@@ -22,15 +22,16 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #          }
   def connec_model_to_external_model(connec_hash_of_entities)
     people = connec_hash_of_entities['person']
-    connec_hash_of_entities['person'] = { 'lead' => [], 'contact' => [] }
+    modeled_hash = {'person' => { 'lead' => [], 'contact' => [] }}
 
     people.each do |person|
       if person['is_lead']
-        connec_hash_of_entities['person']['lead'] << person
+        modeled_hash['person']['lead'] << person
       else
-        connec_hash_of_entities['person']['contact'] << person
+        modeled_hash['person']['contact'] << person
       end
     end
+    modeled_hash
   end
 
   # input :  {
@@ -47,7 +48,6 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #           }
   def external_model_to_connec_model(external_hash_of_entities)
-    external_hash_of_entities['lead'] = { 'person' => external_hash_of_entities['lead'] }
-    external_hash_of_entities['contact'] = { 'person' => external_hash_of_entities['contact'] }
+    modeled_hash = {'lead' => { 'person' => external_hash_of_entities['lead'] }, 'contact' => { 'person' => external_hash_of_entities['contact'] }}
   end
 end
