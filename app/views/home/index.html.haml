@@ -23,7 +23,7 @@
           %h
             Your Maestrano company <strong>#{@organization.name} (#{@organization.uid})</strong> is currently linked
         .col-md-2.text-center.link-step-action
-          = link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.maestrano_signout_path, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+          = link_to "Disconnect", Maestrano::Connector::Rails::Engine.routes.url_helpers.maestrano_signout_path, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"
 
       .spacer1
 
@@ -41,7 +41,7 @@
               Your SalesForce account is not linked
         .col-md-2.text-center.link-step-action
           - if @organization.oauth_uid
-            = link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+            = link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"
           - else
             = link_to "Link to SalesForce", "/auth/salesforce/request?org_uid=#{@organization.uid}", class: "btn btn-warning btn-lg" if is_admin
 
@@ -60,7 +60,7 @@
             - else
               Synchronizations are disabled
         .col-md-2.text-center.link-step-action
-          = link_to "Toggle #{@organization.sync_enabled ? 'off' : 'on'}", home_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}", rel: 'tooltip', title: "#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+          = link_to "Toggle #{@organization.sync_enabled ? 'off' : 'on'}", home_toggle_sync_path, method: :put, class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"
 
     - else
       .row
@@ -89,7 +89,7 @@
                   .col-md-4.text-right
                     - if v && @organization.oauth_uid
                       - if @organization.sync_enabled
-                        = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm #{is_admin && @organization.sync_enabled ? '' : 'disabled'}", rel:"tooltip", title:"#{is_admin ? '' : 'You don\'t have the necessary rights to do this'}"
+                        = link_to "Force a synchronization for #{k.to_s.humanize.pluralize} only", home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: "btn btn-warning btn-sm #{is_admin && @organization.sync_enabled ? '' : 'disabled'}"
                       - else
                         .btn.btn-warning.btn-sm.disabled= "Force a synchronization for #{k.to_s.humanize.pluralize} only"
             -if is_admin
