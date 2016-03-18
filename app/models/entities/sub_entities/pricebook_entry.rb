@@ -40,7 +40,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
       idmap = mapped_external_entity_with_idmap[:idmap]
 
       if idmap.connec_id.blank?
-        product_idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: external_entity[:Product2Id], external_entity: 'product2', organization_id: organization.id)
+        product_idmap = Entities::SubEntities::Product2.find_idmap({external_id: external_entity[:Product2Id], organization_id: organization.id})
         raise "Trying to push a price for a non existing or not pushed product (id: #{external_entity[:Product2Id]})" unless product_idmap && !product_idmap.connec_id.blank?
         idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: connec_entity_name)
       end

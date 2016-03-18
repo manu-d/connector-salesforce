@@ -14,7 +14,7 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
       Entities::SubEntities::LeadMapper.normalize(entity)
     when 'contact'
       if id = entity['organization_id']
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(connec_entity: 'organization', connec_id: id, organization_id: organization.id)
+        idmap = Entities::Organization.find_idmap({connec_id: id, organization_id: organization.id})
         entity['organization_id'] = idmap ? idmap.external_id : ''
       end
       Entities::SubEntities::ContactMapper.normalize(entity)
