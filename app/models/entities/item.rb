@@ -1,9 +1,9 @@
 class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
-  def connec_entities_names
+  def self.connec_entities_names
     %w(item)
   end
 
-  def external_entities_names
+  def self.external_entities_names
     %w(Product2 PricebookEntry)
   end
 

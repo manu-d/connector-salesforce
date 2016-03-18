@@ -1,10 +1,10 @@
 class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
 
-  def external?
+  def self.external?
     true
   end
 
-  def entity_name
+  def self.entity_name
     'lead'
   end
 
@@ -13,15 +13,15 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
     when 'person'
       Entities::SubEntities::LeadMapper.denormalize(entity).merge(is_lead: true, is_customer: false)
     else
-      raise "Impossible mapping from #{self.entity_name} to #{name}"
+      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
     end
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       Street
       City

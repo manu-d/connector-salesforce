@@ -1,11 +1,15 @@
 require 'spec_helper'
 
 describe Entities::ContactAndLead do
-  describe 'instance methods' do
-    subject { Entities::ContactAndLead.new }
+  describe 'class methods' do
+    subject { Entities::ContactAndLead }
 
     it { expect(subject.connec_entities_names).to eql(%w(person)) }
     it { expect(subject.external_entities_names).to eql(%w(contact lead)) }
+  end
+  describe 'instance methods' do
+    subject { Entities::ContactAndLead.new }
+
 
     describe 'connec_model_to_external_model' do
       let(:person1) { {'first_name' => 'Gary', 'is_lead' => false} }

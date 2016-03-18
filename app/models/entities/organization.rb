@@ -1,18 +1,18 @@
 class Entities::Organization < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     "Organization"
   end
 
-  def external_entity_name
+  def self.external_entity_name
     "Account"
   end
 
-  def mapper_class
+  def self.mapper_class
     OrganizationMapper
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       Name
       Industry
@@ -34,11 +34,11 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
     )
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     entity['Name']
   end
 

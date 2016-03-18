@@ -1,12 +1,17 @@
 require 'spec_helper'
 
 describe Entities::SubEntities::PricebookEntry do
-  subject { Entities::SubEntities::PricebookEntry.new }
+  describe 'class methods' do
+    subject { Entities::SubEntities::PricebookEntry }
 
-  it { expect(subject.external?).to be(true) }
-  it { expect(subject.entity_name).to eql('PricebookEntry') }
-  it { expect(subject.external_attributes).to be_a(Array) }
-  it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
+    it { expect(subject.external?).to be(true) }
+    it { expect(subject.entity_name).to eql('PricebookEntry') }
+    it { expect(subject.external_attributes).to be_a(Array) }
+    it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
+  end
+
+
+  subject { Entities::SubEntities::PricebookEntry.new }
 
   describe 'map_to' do
     describe 'for an invalid entity name' do

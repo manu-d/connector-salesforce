@@ -1,11 +1,16 @@
 require 'spec_helper'
 
 describe Entities::SubEntities::Person do
-  subject { Entities::SubEntities::Person.new }
+  describe 'class methods' do
+    subject { Entities::SubEntities::Person }
 
-  it { expect(subject.external?).to be(false) }
-  it { expect(subject.entity_name).to eql('person') }
-  it { expect(subject.object_name_from_connec_entity_hash({'first_name' => 'Eric', 'last_name' => 'Mno'})).to eql('Eric Mno') }
+    it { expect(subject.external?).to be(false) }
+    it { expect(subject.entity_name).to eql('person') }
+    it { expect(subject.object_name_from_connec_entity_hash({'first_name' => 'Eric', 'last_name' => 'Mno'})).to eql('Eric Mno') }
+  end
+
+
+  subject { Entities::SubEntities::Person.new }
 
   describe 'map_to' do
     describe 'for an invalid entity name' do
