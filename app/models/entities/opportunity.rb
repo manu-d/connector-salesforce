@@ -1,18 +1,18 @@
 class Entities::Opportunity < Maestrano::Connector::Rails::Entity
 
-  def connec_entity_name
+  def self.connec_entity_name
     'Opportunity'
   end
 
-  def external_entity_name
+  def self.external_entity_name
     'Opportunity'
   end
 
-  def mapper_class
+  def self.mapper_class
     OpportunityMapper
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       Amount
       CloseDate
@@ -26,11 +26,11 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     #StageName and CloseDate are mandatory for SF
   end
 
-  def object_name_from_connec_entity_hash(entity)
+  def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     entity['Name']
   end
 end

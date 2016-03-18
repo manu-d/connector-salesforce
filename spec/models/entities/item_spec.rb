@@ -27,13 +27,14 @@ describe Entities::Item do
         it { expect(subject.get_pricebook_id(client)).to eql('7766B') }
       end
     end
+
+    it { expect(subject.connec_entities_names).to eql(%w(item)) }
+    it { expect(subject.external_entities_names).to eql(%w(Product2 PricebookEntry)) }
   end
 
   describe 'instance methods' do
     subject { Entities::Item.new }
 
-    it { expect(subject.connec_entities_names).to eql(%w(item)) }
-    it { expect(subject.external_entities_names).to eql(%w(Product2 PricebookEntry)) }
 
     describe 'connec_model_to_external_model' do
       let(:item1) { {'name' => 'Glass'} }

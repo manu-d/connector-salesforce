@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe Entities::Opportunity do
-  subject { Entities::Opportunity.new }
 
-  it { expect(subject.connec_entity_name).to eql('Opportunity') }
-  it { expect(subject.external_entity_name).to eql('Opportunity') }
-  it { expect(subject.external_attributes).to be_a(Array) }
-  it { expect(subject.object_name_from_connec_entity_hash({'name' => 'Mno'})).to eql('Mno') }
-  it { expect(subject.object_name_from_external_entity_hash({'Name' => 'Mno'})).to eql('Mno') }
+  describe 'class methods' do
+    subject { Entities::Opportunity }
+
+    it { expect(subject.connec_entity_name).to eql('Opportunity') }
+    it { expect(subject.external_entity_name).to eql('Opportunity') }
+    it { expect(subject.external_attributes).to be_a(Array) }
+    it { expect(subject.object_name_from_connec_entity_hash({'name' => 'Mno'})).to eql('Mno') }
+    it { expect(subject.object_name_from_external_entity_hash({'Name' => 'Mno'})).to eql('Mno') }
+  end
+
+  subject { Entities::Opportunity.new }
 
   describe 'SalesForce to connec!' do
     let(:sf) {

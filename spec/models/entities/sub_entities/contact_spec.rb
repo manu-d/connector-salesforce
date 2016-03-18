@@ -1,12 +1,17 @@
 require 'spec_helper'
 
 describe Entities::SubEntities::Contact do
+  describe 'class methods' do
+    subject { Entities::SubEntities::Contact }
+
+    it { expect(subject.external?).to be(true) }
+    it { expect(subject.entity_name).to eql('contact') }
+    it { expect(subject.external_attributes).to be_a(Array) }
+    it { expect(subject.object_name_from_external_entity_hash({'FirstName' => 'John', 'LastName' => 'A'})).to eql('John A') }
+  end
+
   subject { Entities::SubEntities::Contact.new }
 
-  it { expect(subject.external?).to be(true) }
-  it { expect(subject.entity_name).to eql('contact') }
-  it { expect(subject.external_attributes).to be_a(Array) }
-  it { expect(subject.object_name_from_external_entity_hash({'FirstName' => 'John', 'LastName' => 'A'})).to eql('John A') }
 
   describe 'map_to' do
     describe 'for an invalid entity name' do

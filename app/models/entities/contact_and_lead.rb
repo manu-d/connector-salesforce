@@ -1,9 +1,9 @@
 class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
-  def connec_entities_names
+  def self.connec_entities_names
     %w(person)
   end
 
-  def external_entities_names
+  def self.external_entities_names
     %w(contact lead)
   end
 

@@ -1,10 +1,10 @@
 class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEntityBase
 
-  def external?
+  def self.external?
     true
   end
 
-  def entity_name
+  def self.entity_name
     'PricebookEntry'
   end
 
@@ -13,15 +13,15 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     when 'item'
       Entities::SubEntities::PricebookEntryMapper.denormalize(entity)
     else
-      raise "Impossible mapping from #{self.entity_name} to #{name}"
+      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
     end
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     "Price for #{entity['Product2Id']}"
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       UnitPrice
       Product2Id
@@ -34,7 +34,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
   #             Overriden methods
   # --------------------------------------------
   def push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, connec_entity_name, organization)
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
     mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
       external_entity = mapped_external_entity_with_idmap[:entity]
       idmap = mapped_external_entity_with_idmap[:idmap]
