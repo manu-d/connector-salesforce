@@ -28,7 +28,7 @@ gem 'slim'
 # Redis caching
 gem 'redis-rails'
 
-group :production do
+group :production, :uat do
   gem 'rails_12factor'
   gem 'activerecord-jdbcpostgresql-adapter'
 end

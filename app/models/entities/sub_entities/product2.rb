@@ -8,13 +8,10 @@ class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBa
     'Product2'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'item'
-      Entities::SubEntities::Product2Mapper.denormalize(entity)
-    else
-      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'item' => Entities::SubEntities::Product2Mapper
+    }
   end
 
   def self.object_name_from_external_entity_hash(entity)

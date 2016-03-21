@@ -8,13 +8,10 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     'PricebookEntry'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'item'
-      Entities::SubEntities::PricebookEntryMapper.denormalize(entity)
-    else
-      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'item' => Entities::SubEntities::PricebookEntryMapper
+    }
   end
 
   def self.object_name_from_external_entity_hash(entity)
@@ -31,7 +28,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
   end
 
   # --------------------------------------------
-  #             Overriden methods
+  #             Overloaded methods
   # --------------------------------------------
   def push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, connec_entity_name, organization)
     Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")

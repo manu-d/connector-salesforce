@@ -3,14 +3,18 @@ class Entities::SubEntities::LeadMapper
 
   before_normalize do |input, output|
     if input['lead_conversion_date'] && !input['lead_conversion_date'].blank?
-      output['IsConverted'] = true
+      output[:IsConverted] = true
     end
     input
   end
+
   before_denormalize do |input, output|
     if input['ConvertedDate']
       input['ConvertedDate'] = input['ConvertedDate'].to_time.iso8601
     end
+    output[:is_lead] = true
+    output[:is_customer] = false
+
     input
   end
 

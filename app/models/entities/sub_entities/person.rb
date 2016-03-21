@@ -8,19 +8,17 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
     'person'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'lead'
-      Entities::SubEntities::LeadMapper.normalize(entity)
-    when 'contact'
-      if id = entity['organization_id']
-        idmap = Entities::Organization.find_idmap({connec_id: id, organization_id: organization.id})
-        entity['organization_id'] = idmap ? idmap.external_id : ''
-      end
-      Entities::SubEntities::ContactMapper.normalize(entity)
-    else
-      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'lead' => Entities::SubEntities::LeadMapper,
+      'contact' => Entities::SubEntities::ContactMapper
+    }
+  end
+
+  def self.references
+    {
+      'contact' => [{reference_class: Entities::Organization, connec_field: 'organization_id', external_field: 'AccountId'}]
+    }
   end
 
   def self.object_name_from_connec_entity_hash(entity)

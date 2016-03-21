@@ -9,7 +9,6 @@ class Entities::SubEntities::ContactMapper
     end
     input
   end
-  map from('/organization_id'), to('/AccountId')
 
   map from('title'), to('Salutation')
   map from('first_name'), to('FirstName')

@@ -11,24 +11,6 @@ describe Entities::SubEntities::Item do
 
   subject { Entities::SubEntities::Item.new }
 
-  describe 'map_to' do
-    describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from item to lala") }
-    end
-
-    describe 'for a valid entity name' do
-      it 'calls normalize' do
-        expect(Entities::SubEntities::PricebookEntryMapper).to receive(:normalize).with({})
-        subject.map_to('PricebookEntry', {}, nil)
-      end
-
-      it 'calls normalize' do
-        expect(Entities::SubEntities::Product2Mapper).to receive(:normalize).with({})
-        subject.map_to('Product2', {}, nil)
-      end
-    end
-  end
-
   describe 'push_entities_to_external_to' do
     context 'for Pricebook entry' do
       let(:organization) { create(:organization) }
