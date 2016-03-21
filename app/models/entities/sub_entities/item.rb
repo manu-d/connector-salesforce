@@ -8,15 +8,11 @@ class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
     'item'
   end
 
-  def map_to(name, entity,organization)
-    case name
-    when 'PricebookEntry'
-      Entities::SubEntities::PricebookEntryMapper.normalize(entity)
-    when 'Product2'
-      Entities::SubEntities::Product2Mapper.normalize(entity)
-    else
-      raise "Impossible mapping from #{self.class.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'PricebookEntry' => Entities::SubEntities::PricebookEntryMapper,
+      'Product2' => Entities::SubEntities::Product2Mapper
+    }
   end
 
   def self.object_name_from_connec_entity_hash(entity)
