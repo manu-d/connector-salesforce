@@ -134,7 +134,6 @@ GEM
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mime-types (1.25.1)
-    mime-types-data (3.2016.0221)
     minitest (5.8.4)
     multi_json (1.11.2)
     multi_xml (0.5.5)
