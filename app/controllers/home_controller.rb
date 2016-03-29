@@ -7,14 +7,18 @@ class HomeController < ApplicationController
     organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:id])
 
     if organization && is_admin?(current_user, organization)
+      old_sync_state = organization.sync_enabled
+
       organization.synchronized_entities.keys.each do |entity|
-        if !!params["#{entity}"]
-          organization.synchronized_entities[entity] = true
-        else
-          organization.synchronized_entities[entity] = false
-        end
+        organization.synchronized_entities[entity] = !!params["#{entity}"]
       end
+      organization.sync_enabled = organization.synchronized_entities.values.any?
       organization.save
+
+      if !old_sync_state
+        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization, {})
+        flash[:info] = 'Congrats, you\'re all set up! Your data are now being synced'
+      end
     end
 
     redirect_to(:back)
@@ -24,15 +28,6 @@ class HomeController < ApplicationController
     if is_admin
       Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, params['opts'] || {})
       flash[:info] = 'Synchronization requested'
-    end
-
-    redirect_to(:back)
-  end
-
-  def toggle_sync
-    if is_admin
-      current_organization.update(sync_enabled: !current_organization.sync_enabled)
-      flash[:info] = current_organization.sync_enabled ? 'Synchronization enabled' : 'Synchronization disabled'
     end
 
     redirect_to(:back)
