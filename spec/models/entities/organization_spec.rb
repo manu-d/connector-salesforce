@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe Entities::Organization do
+  describe 'class methods' do
+    subject { Entities::Organization }
+
+    it { expect(subject.connec_entity_name).to eql('Organization') }
+    it { expect(subject.external_entity_name).to eql('Account') }
+    it { expect(subject.external_attributes).to be_a(Array) }
+    it { expect(subject.object_name_from_connec_entity_hash({'name' => 'Mno'})).to eql('Mno') }
+    it { expect(subject.object_name_from_external_entity_hash({'Name' => 'Mno'})).to eql('Mno') }
+  end
+
   subject { Entities::Organization.new }
 
-  it { expect(subject.connec_entity_name).to eql('Organization') }
-  it { expect(subject.external_entity_name).to eql('Account') }
-  it { expect(subject.external_attributes).to be_a(Array) }
-  it { expect(subject.object_name_from_connec_entity_hash({'name' => 'Mno'})).to eql('Mno') }
-  it { expect(subject.object_name_from_external_entity_hash({'Name' => 'Mno'})).to eql('Mno') }
 
   describe 'SalesForce to connec!' do
     let(:sf) {

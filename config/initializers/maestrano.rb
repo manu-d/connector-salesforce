@@ -70,7 +70,7 @@ Maestrano['default'].configure do |config|
   # generated when you run 'rake maestrano:install' and is available at
   # <rails_root>/app/controllers/maestrano/auth/saml.rb
   #
-  config.sso.consume_path = '/maestrano/auth/saml/consume'
+  config.sso.consume_path = '/maestrano/auth/saml/consume/default'
 
   # ==> Single Logout activation
   # Enable/Disable single logout. When troubleshooting authentication issues

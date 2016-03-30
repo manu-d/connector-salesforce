@@ -1,31 +1,31 @@
 class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBase
 
-  def external?
+  def self.external?
     true
   end
 
-  def entity_name
+  def self.entity_name
     'contact'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'person'
-      if id = entity['AccountId']
-        idmap = Maestrano::Connector::Rails::IdMap.find_by(external_entity: 'account', external_id: id, organization_id: organization.id, connec_entity: 'organization')
-        entity['AccountId'] = idmap ? idmap.connec_id : ''
-      end
-      Entities::SubEntities::ContactMapper.denormalize(entity)
-    else
-      raise "Impossible mapping from #{self.entity_name} to #{name}"
-    end
+  def self.references
+    {
+      'person' => [{reference_class: Entities::Organization, connec_field: 'organization_id', external_field: 'AccountId'}]
+    }
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.mapper_classes
+    {
+      'person' => Entities::SubEntities::ContactMapper
+    }
+  end
+
+
+  def self.object_name_from_external_entity_hash(entity)
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       AccountId
       Salutation

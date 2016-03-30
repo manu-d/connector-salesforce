@@ -1,27 +1,24 @@
 class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEntityBase
 
-  def external?
+  def self.external?
     true
   end
 
-  def entity_name
+  def self.entity_name
     'PricebookEntry'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'item'
-      Entities::SubEntities::PricebookEntryMapper.denormalize(entity)
-    else
-      raise "Impossible mapping from #{self.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'item' => Entities::SubEntities::PricebookEntryMapper
+    }
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     "Price for #{entity['Product2Id']}"
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       UnitPrice
       Product2Id
@@ -31,16 +28,16 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
   end
 
   # --------------------------------------------
-  #             Overriden methods
+  #             Overloaded methods
   # --------------------------------------------
   def push_entities_to_connec_to(connec_client, mapped_external_entities_with_idmaps, connec_entity_name, organization)
-    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{@@external_name} #{self.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
     mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
       external_entity = mapped_external_entity_with_idmap[:entity]
       idmap = mapped_external_entity_with_idmap[:idmap]
 
       if idmap.connec_id.blank?
-        product_idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: external_entity[:Product2Id], external_entity: 'product2', organization_id: organization.id)
+        product_idmap = Entities::SubEntities::Product2.find_idmap({external_id: external_entity[:Product2Id], organization_id: organization.id})
         raise "Trying to push a price for a non existing or not pushed product (id: #{external_entity[:Product2Id]})" unless product_idmap && !product_idmap.connec_id.blank?
         idmap.update_attributes(connec_id: product_idmap.connec_id, connec_entity: connec_entity_name)
       end

@@ -1,25 +1,17 @@
 require 'spec_helper'
 
 describe Entities::SubEntities::PricebookEntry do
-  subject { Entities::SubEntities::PricebookEntry.new }
+  describe 'class methods' do
+    subject { Entities::SubEntities::PricebookEntry }
 
-  it { expect(subject.external?).to be(true) }
-  it { expect(subject.entity_name).to eql('PricebookEntry') }
-  it { expect(subject.external_attributes).to be_a(Array) }
-  it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
-
-  describe 'map_to' do
-    describe 'for an invalid entity name' do
-      it { expect{ subject.map_to('lala', {}, nil) }.to raise_error("Impossible mapping from PricebookEntry to lala") }
-    end
-
-    describe 'for a valid entity name' do
-      it 'calls denormalize' do
-        expect(Entities::SubEntities::PricebookEntryMapper).to receive(:denormalize).with({})
-        subject.map_to('item', {}, nil)
-      end
-    end
+    it { expect(subject.external?).to be(true) }
+    it { expect(subject.entity_name).to eql('PricebookEntry') }
+    it { expect(subject.external_attributes).to be_a(Array) }
+    it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
   end
+
+
+  subject { Entities::SubEntities::PricebookEntry.new }
 
   describe 'push_entities_to_connec_to' do
     let(:organization) { create(:organization) }

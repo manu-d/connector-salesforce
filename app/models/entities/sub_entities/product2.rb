@@ -1,27 +1,24 @@
 class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBase
 
-  def external?
+  def self.external?
     true
   end
 
-  def entity_name
+  def self.entity_name
     'Product2'
   end
 
-  def map_to(name, entity, organization)
-    case name
-    when 'item'
-      Entities::SubEntities::Product2Mapper.denormalize(entity)
-    else
-      raise "Impossible mapping from #{self.entity_name} to #{name}"
-    end
+  def self.mapper_classes
+    {
+      'item' => Entities::SubEntities::Product2Mapper
+    }
   end
 
-  def object_name_from_external_entity_hash(entity)
+  def self.object_name_from_external_entity_hash(entity)
     "[#{entity['ProductCode']}] #{entity['Name']}"
   end
 
-  def external_attributes
+  def self.external_attributes
     %w(
       Name
       ProductCode

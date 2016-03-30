@@ -57,7 +57,7 @@ describe Entities::SubEntities::LeadMapper do
         :LastName=>"Cotton",
         :Title=>"CFO",
         :State=>"VA",
-        "IsConverted" => true,
+        :IsConverted=> true,
         :ConvertedDate => "2016-12-04T17:12:18Z",
         :Country=>"United States",
         :Email=>"pcotton@abbottins.net",
@@ -155,6 +155,8 @@ describe Entities::SubEntities::LeadMapper do
       :title=>"Mr",
         :first_name=>"Jeff",
         :last_name=>"Glimpse",
+        :is_lead=>true,
+        :is_customer=>false,
         :job_title=>"SVP, Procurement",
         :address_work=>
         {
