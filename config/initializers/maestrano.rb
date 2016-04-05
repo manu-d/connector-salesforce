@@ -233,7 +233,7 @@ Maestrano['nab-uat'].configure do |config|
   if Rails.env.development?
     config.app.host = 'http://localhost:3001'
   else
-    config.app.host = 'http://connector-salesforce-uat.herokuapp.com'
+    config.app.host = 'https://connector-salesforce-uat.herokuapp.com'
   end
 
   config.api.host = 'https://api-hub-uat.bio.cd.non.whu.nab.com.au'
@@ -284,7 +284,7 @@ Maestrano['nab-production'].configure do |config|
   if Rails.env.development?
     config.app.host = 'http://localhost:3001'
   else
-    config.app.host = 'http://connector-salesforce.herokuapp.com'
+    config.app.host = 'https://connector-salesforce.herokuapp.com'
   end
 
   config.api.host = 'https://api-hub.bio.nab.com.au'
