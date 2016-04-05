@@ -127,7 +127,7 @@ GEM
       hash_mapper
       maestrano-rails
       sidekiq
-    maestrano-rails (0.15.1)
+    maestrano-rails (0.15.2)
       jquery-rails
       maestrano
       rails
