@@ -30,8 +30,7 @@ describe Entities::ContactAndLead do
       }
 
       it {
-        modeled_hash = subject.connec_model_to_external_model(connec_hash)
-        expect(modeled_hash).to eql(output_hash)
+        expect(subject.connec_model_to_external_model(connec_hash, nil)).to eql(output_hash)
       }
     end
 
@@ -54,8 +53,7 @@ describe Entities::ContactAndLead do
       }
 
       it {
-        modeled_hash = subject.external_model_to_connec_model(sf_hash)
-        expect(modeled_hash).to eql(output_hash)
+        expect(subject.external_model_to_connec_model(sf_hash, nil)).to eql(output_hash)
       }
     end
   end
