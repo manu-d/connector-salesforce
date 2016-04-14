@@ -18,12 +18,4 @@ class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBa
     "[#{entity['ProductCode']}] #{entity['Name']}"
   end
 
-  def self.external_attributes
-    %w(
-      Name
-      ProductCode
-      Description
-    )
-  end
-
 end

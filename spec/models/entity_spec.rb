@@ -29,13 +29,13 @@ describe Maestrano::Connector::Rails::Entity do
     let(:external_name) { 'external_name' }
     before {
       allow(subject.class).to receive(:external_entity_name).and_return(external_name)
-      allow(subject.class).to receive(:external_attributes).and_return(%w(FirstName LastName))
+      allow(client).to receive(:describe).and_return({'fields' => [{'name' => 'Id'}, {'name' => 'LastName'}]})
     }
 
     describe 'get_external_entities' do
       context 'with full sync option' do
         it 'uses a full query' do
-          expect(client).to receive(:query).with(/select Id, LastModifiedDate, FirstName, LastName from #{external_name}/i)
+          expect(client).to receive(:query).with(/select Id, LastName from #{external_name}/i)
           subject.get_external_entities(client, nil, organization, {full_sync: true})
         end
       end
@@ -43,7 +43,7 @@ describe Maestrano::Connector::Rails::Entity do
       context 'without option' do
         context 'without last sync' do
           it 'uses a full query' do
-            expect(client).to receive(:query).with(/select Id, LastModifiedDate, FirstName, LastName from #{external_name}/i)
+            expect(client).to receive(:query).with(/select Id, LastName from #{external_name}/i)
             subject.get_external_entities(client, nil, organization)
           end
         end

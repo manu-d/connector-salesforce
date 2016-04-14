@@ -12,20 +12,6 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     OpportunityMapper
   end
 
-  def self.external_attributes
-    %w(
-      Amount
-      CloseDate
-      Description
-      NextStep
-      Name
-      Probability
-      StageName
-      Type
-    )
-    #StageName and CloseDate are mandatory for SF
-  end
-
   def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
