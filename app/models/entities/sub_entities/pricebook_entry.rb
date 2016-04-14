@@ -18,15 +18,6 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     "Price for #{entity['Product2Id']}"
   end
 
-  def self.external_attributes
-    %w(
-      UnitPrice
-      Product2Id
-      Pricebook2Id
-    )
-    #Pricebook2Id is not used in mapper but is used for standard pricebook filtering
-  end
-
   # --------------------------------------------
   #             Overloaded methods
   # --------------------------------------------

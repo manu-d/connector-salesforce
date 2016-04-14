@@ -6,7 +6,6 @@ describe Entities::SubEntities::PricebookEntry do
 
     it { expect(subject.external?).to be(true) }
     it { expect(subject.entity_name).to eql('PricebookEntry') }
-    it { expect(subject.external_attributes).to be_a(Array) }
     it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
   end
 
@@ -54,6 +53,7 @@ describe Entities::SubEntities::PricebookEntry do
     let(:id1) { '567SQF' }
     let(:id2) { '12SQF' }
     before {
+      allow(client).to receive(:describe).and_return({'fields' => []})
       allow(client).to receive(:query).and_return([{'Pricebook2Id' => id1}])
     }
 
