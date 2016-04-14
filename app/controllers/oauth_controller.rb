@@ -21,15 +21,20 @@ class OauthController < ApplicationController
     if organization && is_admin?(current_user, organization)
       organization.from_omniauth(env["omniauth.auth"])
 
-      # Fetch SalesForce user details
-      user_details = Maestrano::Connector::Rails::External.fetch_user(organization)
-      current_user.update_attribute(:locale, user_details['locale'])
-      current_user.update_attribute(:timezone, user_details['timezone'])
+      begin
+        # Fetch SalesForce user details
+        user_details = Maestrano::Connector::Rails::External.fetch_user(organization)
+        current_user.update_attribute(:locale, user_details['locale'])
+        current_user.update_attribute(:timezone, user_details['timezone'])
 
-      # Fetch SalesForce company name
-      company = Maestrano::Connector::Rails::External.fetch_company(organization)
-      organization.update_attribute(:oauth_name, company['Name'])
-      organization.update_attribute(:oauth_uid, company['Id'])
+        # Fetch SalesForce company name
+        company = Maestrano::Connector::Rails::External.fetch_company(organization)
+        organization.update_attribute(:oauth_name, company['Name'])
+        organization.update_attribute(:oauth_uid, company['Id'])
+      rescue => e
+        empty_organization_fields(organization)
+        alert[:danger] = 'API access is not enabled for your Salesforce organization'
+      end
     end
 
     redirect_to root_url
@@ -39,13 +44,18 @@ class OauthController < ApplicationController
   def destroy_omniauth
     organization = Maestrano::Connector::Rails::Organization.find_by_id(params[:organization_id])
     if organization && is_admin?(current_user, organization)
+      empty_organization_fields(organization)
+    end
+
+    redirect_to root_url
+  end
+
+  private
+    def empty_organization_fields(organization)
       organization.oauth_uid = nil
       organization.oauth_token = nil
       organization.refresh_token = nil
       organization.sync_enabled = false
       organization.save
     end
-
-    redirect_to root_url
-  end
 end

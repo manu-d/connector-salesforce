@@ -25,32 +25,4 @@ class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBas
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def self.external_attributes
-    %w(
-      AccountId
-      Salutation
-      FirstName
-      LastName
-      Title
-      Birthdate
-      MailingStreet
-      MailingCity
-      MailingState
-      MailingPostalCode
-      MailingCountry
-      OtherStreet
-      OtherCity
-      OtherState
-      OtherPostalCode
-      OtherCountry
-      Email
-      Phone
-      OtherPhone
-      MobilePhone
-      Fax
-      HomePhone
-      LeadSource
-    )
-  end
-
 end

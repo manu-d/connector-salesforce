@@ -20,7 +20,7 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   #               external_entities_names[1]: [unmapped_connec_entitiy4]
   #             }
   #          }
-  def connec_model_to_external_model(connec_hash_of_entities)
+  def connec_model_to_external_model(connec_hash_of_entities, organization)
     items = connec_hash_of_entities['item']
     modeled_hash = {'item' => { 'Product2' => [], 'PricebookEntry' => [] }}
 
@@ -44,7 +44,7 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   #               connec_entity_names[0]: [unmapped_external_entity3, unmapped_external_entity4]
   #             }
   #           }
-  def external_model_to_connec_model(external_hash_of_entities)
+  def external_model_to_connec_model(external_hash_of_entities, organization)
     modeled_hash = {'Product2' => { 'item' => external_hash_of_entities['Product2'] }, 'PricebookEntry' => { 'item' => external_hash_of_entities['PricebookEntry'] }}
   end
 

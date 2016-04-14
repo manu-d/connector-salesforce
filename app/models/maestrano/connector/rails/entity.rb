@@ -13,8 +13,9 @@ class Maestrano::Connector::Rails::Entity
     Maestrano::Connector::Rails::ConnectorLogger.log('info', organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize}")
 
     if opts[:full_sync] || last_synchronization.blank?
-      fields = self.class.external_attributes.join(', ')
-      entities = client.query("select Id, LastModifiedDate, #{fields} from #{self.class.external_entity_name} ORDER BY LastModifiedDate DESC")
+      describe = client.describe(self.class.external_entity_name)
+      fields = describe['fields'].map{|f| f['name']}.join(', ')
+      entities = client.query("select #{fields} from #{self.class.external_entity_name} ORDER BY LastModifiedDate DESC")
     else
       entities = []
       raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization.updated_at > 1.minute

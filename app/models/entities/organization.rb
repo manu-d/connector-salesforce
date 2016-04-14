@@ -12,28 +12,6 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
     OrganizationMapper
   end
 
-  def self.external_attributes
-    %w(
-      Name
-      Industry
-      AnnualRevenue
-      NumberOfEmployees
-      BillingStreet
-      BillingCity
-      BillingState
-      BillingPostalCode
-      BillingCountry
-      ShippingStreet
-      ShippingCity
-      ShippingState
-      ShippingPostalCode
-      ShippingCountry
-      Website
-      Phone
-      Fax
-    )
-  end
-
   def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
