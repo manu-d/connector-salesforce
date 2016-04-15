@@ -12,26 +12,30 @@ describe Entities::SubEntities::PricebookEntry do
 
   subject { Entities::SubEntities::PricebookEntry.new }
 
-  describe 'push_entities_to_connec_to' do
+  describe 'link_and_filter_pricebook_entry' do
     let(:organization) { create(:organization) }
-    let(:client) { Maestrano::Connec::Client.new(organization.uid)}
     let(:product_id) { '7766DEA' }
 
     context 'when idmap has no connec_id' do
       let!(:idmap) { create(:idmap, organization: organization, connec_id: nil, connec_entity: 'item', external_id: '133A', external_entity: 'pricebookentry') }
 
-      it 'looks for one' do
-        expect(Maestrano::Connector::Rails::IdMap).to receive(:find_by).with(external_id: product_id, external_entity: 'product2', organization_id: organization.id)
-        expect{ subject.push_entities_to_connec_to(client, [{entity: {:Product2Id => product_id}, idmap: idmap}], 'item', organization) }.to raise_error("Trying to push a price for a non existing or not pushed product (id: #{product_id})")
+      describe 'when none is found' do
+        it 'updates the idmap and remove then entity from the list' do
+          expect(Maestrano::Connector::Rails::IdMap).to receive(:find_by).with(external_id: product_id, external_entity: 'product2', organization_id: organization.id)
+          expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([])
+          idmap.reload
+          expect(idmap.message).to eql("Trying to push a price for a non existing or not pushed product (id: #{product_id})")
+        end
       end
 
       describe 'when one is found' do
         let(:connec_id) { '9887eg-3565ef' }
         let!(:product_idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_entity: 'product2', external_id: product_id) }
 
-        it 'send an update to connec with it' do
-          expect(subject).to receive(:update_connec_entity).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
-          subject.push_entities_to_connec_to(client, [{entity: {:Product2Id => product_id}, idmap: idmap}], 'item', organization)
+        it 'updates the pricebook entry idmap' do
+          expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([{entity: {:Product2Id => product_id}, idmap: idmap}])
+          idmap.reload
+          expect(idmap.connec_id).to eql(connec_id)
         end
       end
     end
@@ -40,9 +44,8 @@ describe Entities::SubEntities::PricebookEntry do
       let(:connec_id) { '9887eg-3565ef' }
       let!(:idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_id: '133A', external_entity: 'pricebookentry') }
 
-      it 'send an update to connec with it' do
-        expect(subject).to receive(:update_connec_entity).with(client, {:Product2Id => product_id}, connec_id, 'item', organization)
-        subject.push_entities_to_connec_to(client, [{entity: {:Product2Id => product_id}, idmap: idmap}], 'item', organization)
+      it 'does nothing' do
+        expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([{entity: {:Product2Id => product_id}, idmap: idmap}])
       end
     end
   end
