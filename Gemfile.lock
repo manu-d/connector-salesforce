@@ -113,14 +113,14 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    maestrano (0.12.3)
+    maestrano (0.12.4)
       httparty (~> 0.13)
       json (~> 1.8)
       mime-types (~> 1.25)
       nokogiri (>= 1.5.0)
       rest-client (~> 1.4)
       uuid (~> 2.3)
-    maestrano-connector-rails (0.4.0)
+    maestrano-connector-rails (0.4.1)
       autoprefixer-rails
       bootstrap-sass
       haml-rails
@@ -134,6 +134,7 @@ GEM
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mime-types (1.25.1)
+    mime-types-data (3.2016.0221)
     minitest (5.8.4)
     multi_json (1.11.2)
     multi_xml (0.5.5)
@@ -191,7 +192,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.1.2)
-    redis (3.2.2)
+    redis (3.3.0)
     redis-actionpack (4.0.1)
       actionpack (~> 4)
       redis-rack (~> 1.5.0)
@@ -280,7 +281,7 @@ GEM
       coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2016.3)
+    tzinfo-data (1.2016.4)
       tzinfo (>= 1.0.0)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
