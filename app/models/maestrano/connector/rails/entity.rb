@@ -47,4 +47,8 @@ class Maestrano::Connector::Rails::Entity
   def self.last_update_date_from_external_entity_hash(entity)
     entity['LastModifiedDate']
   end
+
+  def inactive_from_external_entity_hash?(entity)
+    entity['IsDeleted'] || false
+  end
 end
