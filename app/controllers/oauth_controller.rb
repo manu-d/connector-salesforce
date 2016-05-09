@@ -33,7 +33,7 @@ class OauthController < ApplicationController
         organization.update_attribute(:oauth_uid, company['Id'])
       rescue => e
         empty_organization_fields(organization)
-        alert[:danger] = 'API access is not enabled for your Salesforce organization'
+        flash[:danger] = 'API access is not enabled for your Salesforce organization'
       end
     end
 
