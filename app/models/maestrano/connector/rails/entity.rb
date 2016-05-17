@@ -42,6 +42,6 @@ class Maestrano::Connector::Rails::Entity
   end
 
   def inactive_from_external_entity_hash?(entity)
-    entity['IsDeleted'] || false
+    entity['IsDeleted'] || !entity['IsActive'] || false
   end
 end

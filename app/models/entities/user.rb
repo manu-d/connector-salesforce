@@ -20,6 +20,10 @@ class Entities::User < Maestrano::Connector::Rails::Entity
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
+  def get_external_entities(last_synchronization)
+    super.except{|u| ['Security User', 'Integration User', 'Chatter Expert'].include?(u)}
+  end
+
   # No point in populating app user from Connec!
   def self.can_read_connec?
     false
