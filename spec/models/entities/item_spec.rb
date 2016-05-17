@@ -33,7 +33,7 @@ describe Entities::Item do
   end
 
   describe 'instance methods' do
-    subject { Entities::Item.new }
+    subject { Entities::Item.new(nil, nil, nil) }
 
 
     describe 'connec_model_to_external_model' do
@@ -55,7 +55,7 @@ describe Entities::Item do
       }
 
       it {
-        expect(subject.connec_model_to_external_model(connec_hash, nil)).to eql(output_hash)
+        expect(subject.connec_model_to_external_model(connec_hash)).to eql(output_hash)
       }
     end
 
@@ -77,7 +77,7 @@ describe Entities::Item do
       }
 
       it {
-        expect(subject.external_model_to_connec_model(sf_hash, nil)).to eql(output_hash)
+        expect(subject.external_model_to_connec_model(sf_hash)).to eql(output_hash)
       }
     end
   end
