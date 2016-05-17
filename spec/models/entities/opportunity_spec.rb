@@ -71,7 +71,9 @@ describe Entities::Opportunity do
           :expected_close_date=>Date.parse('2013-11-07T00:00:00').to_time.iso8601,
           :name=>"GenePoint Lab Generators",
           :probability=>60.0,
-          :sales_stage=>"Id. Decision Makers"
+          :sales_stage=>"Id. Decision Makers",
+          :assignee_id => [{"id"=>"00528000001eP9OAAU", "provider"=>"this_app", "realm"=>"sfuiy765"}],
+          :assignee_type => "Entity::AppUser",
         }.with_indifferent_access
       }
 
@@ -115,6 +117,7 @@ describe Entities::Opportunity do
           :CloseDate=>"2015-12-15T23:00:00Z",
           :Description=>"",
           :NextStep=>"",
+          :OwnerId=>"20715521-7cd5-0133-db80-0620e3ce3a45",
           :Name=>"Test",
           :Probability=>23.0,
           :StageName=>"Prospecting",

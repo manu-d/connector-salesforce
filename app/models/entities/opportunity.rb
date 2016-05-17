@@ -12,6 +12,10 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     OpportunityMapper
   end
 
+  def self.references
+    %w(assignee_id)
+  end
+
   def self.object_name_from_connec_entity_hash(entity)
     entity['name']
   end
@@ -24,20 +28,20 @@ end
 class OpportunityMapper
   extend HashMapper
 
-  before_denormalize do |input, output|
-    if input['CloseDate']
-      input['CloseDate'] = input['CloseDate'].to_time.iso8601
-    end
-    input
+  after_denormalize do |input, output|
+    output[:assignee_type] = 'Entity::AppUser'
+    output
   end
 
   map from('amount/total_amount'), to('Amount')
-  map from('expected_close_date'), to('CloseDate')
+  map from('expected_close_date'){|d| d.to_time.iso8601}, to('CloseDate')
   map from('description'), to('Description')
   map from('next_step'), to('NextStep')
   map from('name'), to('Name')
   map from('probability'), to('Probability')
   map from('sales_stage'), to('StageName')
   map from('type'), to('Type')
+  map from('assignee_id'), to('OwnerId')
+
 end
 

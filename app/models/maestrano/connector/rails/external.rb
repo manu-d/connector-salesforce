@@ -5,7 +5,7 @@ class Maestrano::Connector::Rails::External
   # If you add new entities, you need to generate
   # a migration to add them to existing organizations
   def self.entities_list
-    %w(organization contact_and_lead item opportunity)
+    %w(organization contact_and_lead item user opportunity)
   end
 
   def self.external_name
