@@ -28,6 +28,8 @@ class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
   def push_entities_to_external_to(mapped_connec_entities_with_idmaps, external_entity_name)
     if external_entity_name == 'PricebookEntry' && !mapped_connec_entities_with_idmaps.empty?
       entities = link_to_pricebook(mapped_connec_entities_with_idmaps)
+    else
+      entities = mapped_connec_entities_with_idmaps
     end
 
     super(entities, external_entity_name)

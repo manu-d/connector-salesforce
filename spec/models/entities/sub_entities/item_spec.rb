@@ -50,7 +50,7 @@ describe Entities::SubEntities::Item do
           }
 
           let(:output_hash) {
-            {:UnitPrice=>25000.0}
+            {:UnitPrice=>25000.0}.with_indifferent_access
           }
 
           it { expect(subject.map_to('PricebookEntry', connec_hash)).to eql(output_hash) }

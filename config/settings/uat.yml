@@ -1,0 +1,8 @@
+environment: 'uat'
+app_host: 'https://connector-salesforce-uat.herokuapp.com/'
+
+default:
+  api_host: 'https://maestrano.com'
+
+maestrano-uat:
+  api_host: 'https://uat.maestrano.io/'

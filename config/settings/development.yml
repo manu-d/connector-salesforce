@@ -1,0 +1,8 @@
+app_host: 'http://localhost:3001/'
+environment: 'production'
+
+default:
+  api_host: 'https://maestrano.com'
+
+maestrano-uat:
+  api_host: 'https://uat.maestrano.io'

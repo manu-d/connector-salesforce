@@ -98,6 +98,7 @@ describe Entities::SubEntities::Contact do
 
       let(:output_hash) {
         {
+          :id=> [{"id"=>"0032800000ABs2zAAD", "provider"=>"this_app", "realm"=>"sfuiy765"}],
           :opts=>{"create_default_organization"=>true},
           :organization_id=>[{id: org_id, provider: organization.oauth_provider, realm: organization.oauth_uid}],
           :title=>"Ms.",

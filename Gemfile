@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
 gem 'rails', '4.2.5'
 gem 'turbolinks'
@@ -9,6 +10,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'maestrano-connector-rails', git: 'https://github.com/Berardpi/maestrano-connector-rails', branch: '1.0.0'
+gem 'config'
 
 gem 'restforce'
 gem 'omniauth-salesforce'

@@ -103,7 +103,7 @@ describe Entities::SubEntities::Person do
             :Phone=>"(212) 842-5500",
             :MobilePhone=>"(212) 842-2383",
             :Fax=>"(212) 842-5501"
-          }
+          }.with_indifferent_access
         }
 
         it { expect(subject.map_to('contact', connec_hash)).to eql(output_hash) }

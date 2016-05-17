@@ -67,13 +67,11 @@ describe OauthController, :type => :controller do
         before {
           allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin?).and_return(true)
           allow_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-          allow(Maestrano::Connector::Rails::External).to receive(:fetch_user).and_return({'locale' => 'a', 'timezone' => 'b'})
           allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
         }
 
         it 'update the organization with data from oauth and api calls' do
           expect_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-          expect(Maestrano::Connector::Rails::External).to receive(:fetch_user)
           expect(Maestrano::Connector::Rails::External).to receive(:fetch_company)
           subject
         end
