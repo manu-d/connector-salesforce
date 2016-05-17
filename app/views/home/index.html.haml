@@ -26,6 +26,9 @@
               Your Salesforce account <strong>#{@organization.oauth_name} (#{@organization.oauth_uid})</strong> is currently linked
             - else
               Your SalesForce account is not linked
+              %br
+              %small
+                Please note that the integration is available only for Entreprise and Unlimited editions, and may be enabled for Professional editions. #{link_to 'More info', 'http://help.salesforce.com/HTViewSolution?id=000005140', target: '_blank'}
         .col-md-2.col-md-offset-3.text-center.link-step-action
           - if @organization.oauth_uid
             = link_to "Disconnect", signout_omniauth_path(organization_id: @organization.id), class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"

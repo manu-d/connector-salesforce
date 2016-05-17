@@ -28,7 +28,7 @@ class OauthController < ApplicationController
       rescue => e
         empty_organization_fields(organization)
         Rails.logger.info "Error in create_omniauth: #{e}. #{e.backtrace}"
-        flash[:danger] = 'API access is not enabled for your Salesforce organization'
+        flash[:danger] = 'API access is not enabled for your Salesforce edition'
       end
     end
 
