@@ -6,7 +6,7 @@ describe Entities::SubEntities::Item do
 
     it { expect(subject.external?).to be(false) }
     it { expect(subject.entity_name).to eql('item') }
-    it { expect(subject.object_name_from_connec_entity_hash({'code' => 'M123', 'name' => 'Mno'})).to eql('[M123] Mno') }
+    it { expect(subject.object_name_from_connec_entity_hash({'reference' => 'M123', 'name' => 'Mno'})).to eql('[M123] Mno') }
   end
 
   describe 'instance methods' do

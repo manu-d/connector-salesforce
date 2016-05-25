@@ -54,6 +54,6 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
     standard_pricebook = pricebooks.find{|pricebook| pricebook['IsStandard']}
 
     raise 'No standard pricebook found' unless standard_pricebook
-    pricebook_id = standard_pricebook['Id']
+    standard_pricebook['Id']
   end
 end
