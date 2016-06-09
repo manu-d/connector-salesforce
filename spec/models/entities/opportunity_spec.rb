@@ -73,7 +73,7 @@ describe Entities::Opportunity do
           :probability=>60.0,
           :sales_stage=>"Id. Decision Makers",
           :assignee_id => [{"id"=>"00528000001eP9OAAU", "provider"=>"this_app", "realm"=>"sfuiy765"}],
-          :assignee_type => "Entity::AppUser",
+          :assignee_type => "AppUser",
         }.with_indifferent_access
       }
 
