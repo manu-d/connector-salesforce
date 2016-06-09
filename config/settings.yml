@@ -54,7 +54,7 @@ nab-production:
   api_key: 'nab_connec_api_key'
   sso_consume_path: '/maestrano/auth/saml/consume/nab-production'
   sso_init_path: '/maestrano/auth/saml/init/nab-production?settings=true'
-  api_host: https://api-hub.bio.nab.com.au
+  api_host: 'https://api-hub.bio.nab.com.au'
   connec_host: 'https://api-connec.bio.nab.com.au'
   webhook:
     account:
