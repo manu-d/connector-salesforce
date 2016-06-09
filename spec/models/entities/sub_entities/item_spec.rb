@@ -22,9 +22,10 @@ describe Entities::SubEntities::Item do
 
       context 'for a creation' do
         let!(:idmap) { create(:idmap, organization: organization, external_id: nil) }
+        let!(:product_idmap) { Entities::SubEntities::Product2.create_idmap(organization_id: organization.id, connec_id: idmap.connec_id, external_id: 'abc', connec_entity: 'item') }
 
         it 'sets a pricebookID' do
-          expect(subject.send(:link_to_pricebook, [{entity: {'price' => 45}, idmap: idmap}])).to eql([{entity: {'price' => 45, 'Pricebook2Id' => pricebook_id}, idmap: idmap}])
+          expect(subject.send(:link_to_pricebook, [{entity: {'price' => 45}, idmap: idmap}])).to eql([{entity: {'price' => 45, 'Pricebook2Id' => pricebook_id, 'Product2Id' => product_idmap.external_id}, idmap: idmap}])
         end
       end
     end
