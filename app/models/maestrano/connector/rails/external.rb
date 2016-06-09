@@ -1,6 +1,13 @@
 class Maestrano::Connector::Rails::External
   include Maestrano::Connector::Rails::Concerns::External
 
+  # Return an array of all the entities that the connector can synchronize
+  # If you add new entities, you need to generate
+  # a migration to add them to existing organizations
+  def self.entities_list
+    %w(organization contact_and_lead item user opportunity)
+  end
+
   def self.external_name
     'SalesForce'
   end
