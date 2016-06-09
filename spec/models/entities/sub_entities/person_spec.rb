@@ -10,41 +10,35 @@ describe Entities::SubEntities::Person do
   end
 
   describe 'instance methods' do
-    subject { Entities::SubEntities::Person.new }
+    let(:organization) { create(:organization) }
+    let(:external_client) { Restforce.new }
+    subject { Entities::SubEntities::Person.new(organization, nil, external_client) }
 
     describe 'update_external_entity' do
-      let(:organization) { create(:organization) }
-      let(:client) { Restforce.new }
-
       it 'calls client.update! when lead is not converted' do
-        expect(client).to receive(:update!).with('external_name', {'IsConverted' => false, 'Id' => '3456'})
-        subject.update_external_entity(client, {'IsConverted' => false}, '3456', 'external_name', organization)
+        expect(external_client).to receive(:update!).with('external_name', {'IsConverted' => false, 'Id' => '3456'})
+        subject.update_external_entity({'IsConverted' => false}, '3456', 'external_name')
       end
 
       it 'does not call client.update! when lead is converted' do
-        expect(client).to_not receive(:update!)
-        subject.update_external_entity(client, {'IsConverted' => true}, '3456', 'external_name', organization)
+        expect(external_client).to_not receive(:update!)
+        subject.update_external_entity({'IsConverted' => true}, '3456', 'external_name')
       end
     end
 
     describe 'create_external_entity' do
-      let(:organization) { create(:organization) }
-      let(:client) { Restforce.new }
-
       it 'adds a default company for leads' do
-        expect(client).to receive(:create!).with('lead', {'Name' => 'Eric', 'Company' => 'Undefined'})
-        subject.create_external_entity(client, {'Name' => 'Eric'}, 'lead', organization)
+        expect(external_client).to receive(:create!).with('lead', {'Name' => 'Eric', 'Company' => 'Undefined'})
+        subject.create_external_entity({'Name' => 'Eric'}, 'lead')
       end
 
       it 'does not add a default company for entity other than lead' do
-        expect(client).to receive(:create!).with('not_lead', {'Name' => 'Eric'})
-        subject.create_external_entity(client, {'Name' => 'Eric'}, 'not_lead', organization)
+        expect(external_client).to receive(:create!).with('not_lead', {'Name' => 'Eric'})
+        subject.create_external_entity({'Name' => 'Eric'}, 'not_lead')
       end
     end
 
     describe 'mapping' do
-      let!(:organization) { create(:organization) }
-
       describe 'to contacts' do
         let(:connec_hash) {
           {
@@ -56,7 +50,7 @@ describe Entities::SubEntities::Person do
             "last_name"=>"Green",
             "job_title"=>"CFO",
             "birth_date"=>"1929-06-07T00:00:00Z",
-            "organization_id"=>connec_org_id,
+            "organization_id"=>org_id,
             "is_customer"=>true,
             "is_supplier"=>false,
             "is_lead"=>false,
@@ -94,13 +88,11 @@ describe Entities::SubEntities::Person do
           }
         }
 
-        let(:connec_org_id) { 'aaaa-bbbb' }
-        let(:ext_org_id) { '0012800000CaxiJAAR' }
-        let!(:org_idmap) { create(:idmap, organization: organization, connec_entity: 'organization', external_entity: 'account', connec_id: connec_org_id, external_id: ext_org_id) }
+        let(:org_id) { 'aaaa-bbbb' }
 
         let(:output_hash) {
           {
-            :AccountId=>ext_org_id,
+            :AccountId=>org_id,
             :Salutation=>"Mr.",
             :FirstName=>"Avi",
             :LastName=>"Green",
@@ -111,10 +103,10 @@ describe Entities::SubEntities::Person do
             :Phone=>"(212) 842-5500",
             :MobilePhone=>"(212) 842-2383",
             :Fax=>"(212) 842-5501"
-          }
+          }.with_indifferent_access
         }
 
-        it { expect(subject.map_to('contact', connec_hash, organization)).to eql(output_hash) }
+        it { expect(subject.map_to('contact', connec_hash)).to eql(output_hash) }
       end
     end
   end

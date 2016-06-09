@@ -9,69 +9,67 @@ describe Entities::SubEntities::PricebookEntry do
     it { expect(subject.object_name_from_external_entity_hash({'Product2Id' => '67AB'})).to eql('Price for 67AB') }
   end
 
-
-  subject { Entities::SubEntities::PricebookEntry.new }
-
-  describe 'link_and_filter_pricebook_entry' do
+  describe 'instance methods' do
     let(:organization) { create(:organization) }
-    let(:product_id) { '7766DEA' }
+    let(:external_client) { Restforce.new }
+    subject { Entities::SubEntities::PricebookEntry.new(organization, nil, external_client) }
 
-    context 'when idmap has no connec_id' do
-      let!(:idmap) { create(:idmap, organization: organization, connec_id: nil, connec_entity: 'item', external_id: '133A', external_entity: 'pricebookentry') }
+    describe 'get_external_entities' do
+      let(:id1) { '567SQF' }
+      let(:id2) { '12SQF' }
+      before {
+        allow(external_client).to receive(:describe).and_return({'fields' => []})
+        allow(external_client).to receive(:query).and_return([{'Pricebook2Id' => id1}])
+      }
 
-      describe 'when none is found' do
-        it 'updates the idmap and remove then entity from the list' do
-          expect(Maestrano::Connector::Rails::IdMap).to receive(:find_by).with(external_id: product_id, external_entity: 'product2', organization_id: organization.id)
-          expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([])
-          idmap.reload
-          expect(idmap.message).to eql("Trying to push a price for a non existing or not pushed product (id: #{product_id})")
+      context 'for standard pricebook entry' do
+        it 'does nothing' do
+          allow(Entities::Item).to receive(:get_pricebook_id).and_return(id1)
+          expect(subject.get_external_entities(nil)).to eql([{'Pricebook2Id' => id1}])
         end
       end
 
-      describe 'when one is found' do
-        let(:connec_id) { '9887eg-3565ef' }
-        let!(:product_idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_entity: 'product2', external_id: product_id) }
-
-        it 'updates the pricebook entry idmap' do
-          expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([{entity: {:Product2Id => product_id}, idmap: idmap}])
-          idmap.reload
-          expect(idmap.connec_id).to eql(connec_id)
+      context 'for not standard pricebook entry' do
+        it 'deletes them' do
+          allow(Entities::Item).to receive(:get_pricebook_id).and_return(id2)
+          expect(subject.get_external_entities(nil)).to eql([])
         end
       end
     end
 
-    context 'when idmap has a connec_id' do
-      let(:connec_id) { '9887eg-3565ef' }
-      let!(:idmap) { create(:idmap, organization: organization, connec_id: connec_id, connec_entity: 'item', external_id: '133A', external_entity: 'pricebookentry') }
+    describe 'map_to' do
+      let(:sf_hash) {
+        {
+          "attributes"=>
+          {
+            "type"=>"PricebookEntry",
+            "url"=>"/services/data/v32.0/sobjects/PricebookEntry/01u28000001VcFyAAK"
+          },
+          "Id"=>"01u28000001VcFyAAK",
+          "Name"=>"Installation: Industrial - High",
+          "Pricebook2Id"=>"01s28000005Cuu4AAC",
+          "Product2Id"=>"01t28000000sB8mAAE",
+          "UnitPrice"=>85000.0,
+          "IsActive"=>true,
+          "UseStandardPrice"=>false,
+          "CreatedDate"=>"2015-11-29T15:24:02.000+0000",
+          "CreatedById"=>"00528000001eP9OAAU",
+          "LastModifiedDate"=>"2015-11-29T15:24:02.000+0000",
+          "LastModifiedById"=>"00528000001eP9OAAU",
+          "SystemModstamp"=>"2015-11-29T15:24:02.000+0000",
+          "ProductCode"=>"IN7080",
+          "IsDeleted"=>false
+        }
+      }
 
-      it 'does nothing' do
-        expect(subject.send(:link_and_filter_pricebook_entry, [{entity: {:Product2Id => product_id}, idmap: idmap}], organization)).to eql([{entity: {:Product2Id => product_id}, idmap: idmap}])
-      end
-    end
-  end
+      let(:output_hash) {
+        {
+          :sale_price=>{:net_amount=>85000.0},
+          :id=>[{id: "01t28000000sB8mAAE", provider: organization.oauth_provider, realm: organization.oauth_uid}]
+        }.with_indifferent_access
+      }
 
-  describe 'get_external_entities' do
-    let(:client) { Restforce.new }
-    let(:organization) { create(:organization) }
-    let(:id1) { '567SQF' }
-    let(:id2) { '12SQF' }
-    before {
-      allow(client).to receive(:describe).and_return({'fields' => []})
-      allow(client).to receive(:query).and_return([{'Pricebook2Id' => id1}])
-    }
-
-    context 'for standard pricebook entry' do
-      it 'does nothing' do
-        allow(Entities::Item).to receive(:get_pricebook_id).and_return(id1)
-        expect(subject.get_external_entities(client, nil, organization)).to eql([{'Pricebook2Id' => id1}])
-      end
-    end
-
-    context 'for not standard pricebook entry' do
-      it 'deletes them' do
-        allow(Entities::Item).to receive(:get_pricebook_id).and_return(id2)
-        expect(subject.get_external_entities(client, nil, organization)).to eql([])
-      end
+      it { expect(subject.map_to('item',sf_hash)).to eql(output_hash) }
     end
   end
 end

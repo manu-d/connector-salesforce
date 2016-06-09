@@ -9,9 +9,7 @@ class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBas
   end
 
   def self.references
-    {
-      'person' => [{reference_class: Entities::Organization, connec_field: 'organization_id', external_field: 'AccountId'}]
-    }
+    {'person' => %w(organization_id)}
   end
 
   def self.mapper_classes
@@ -19,7 +17,6 @@ class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBas
       'person' => Entities::SubEntities::ContactMapper
     }
   end
-
 
   def self.object_name_from_external_entity_hash(entity)
     "#{entity['FirstName']} #{entity['LastName']}"

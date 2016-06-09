@@ -22,18 +22,13 @@ class OauthController < ApplicationController
       organization.from_omniauth(env["omniauth.auth"])
 
       begin
-        # Fetch SalesForce user details
-        user_details = Maestrano::Connector::Rails::External.fetch_user(organization)
-        current_user.update_attribute(:locale, user_details['locale'])
-        current_user.update_attribute(:timezone, user_details['timezone'])
-
         # Fetch SalesForce company name
         company = Maestrano::Connector::Rails::External.fetch_company(organization)
-        organization.update_attribute(:oauth_name, company['Name'])
-        organization.update_attribute(:oauth_uid, company['Id'])
+        organization.update(oauth_name: company['Name'], oauth_uid: company['Id'])
       rescue => e
         empty_organization_fields(organization)
-        flash[:danger] = 'API access is not enabled for your Salesforce organization'
+        Rails.logger.info "Error in create_omniauth: #{e}. #{e.backtrace}"
+        flash[:danger] = 'API access is not enabled for your Salesforce edition'
       end
     end
 
