@@ -29,7 +29,7 @@ class OpportunityMapper
   extend HashMapper
 
   after_denormalize do |input, output|
-    output[:assignee_type] = 'Entity::AppUser'
+    output[:assignee_type] = 'AppUser'
     output
   end
 
