@@ -8,6 +8,7 @@ describe Entities::SubEntities::Product2Mapper do
       {
         "id"=>"4a38d6f1-7d78-0133-6440-0620e3ce3a45",
         "code"=>"GC1040",
+        "reference"=>"GC1040",
         "name"=>"GenWatt Diesel 200kW",
         "status"=>"ACTIVE",
         "is_inventoried"=>false,
@@ -54,7 +55,7 @@ describe Entities::SubEntities::Product2Mapper do
     }
 
     let(:output_hash) {
-      {:code=>"SL9080", :name=>"SLA: Platinum"}
+      {:reference=>"SL9080", :name=>"SLA: Platinum"}
     }
 
     it { expect(subject.denormalize(sf_hash)).to eql(output_hash) }

@@ -10,8 +10,8 @@ describe Entities::SubEntities::Contact do
   end
 
   describe 'instance methods' do
-    subject { Entities::SubEntities::Contact.new }
     let!(:organization) { create(:organization) }
+    subject { Entities::SubEntities::Contact.new(organization, nil, nil) }
 
     describe 'map_to' do
       let(:sf_hash) {
@@ -24,7 +24,7 @@ describe Entities::SubEntities::Contact do
           "Id"=>"0032800000ABs2zAAD",
           "IsDeleted"=>false,
           "MasterRecordId"=>nil,
-          "AccountId"=>ext_org_id,
+          "AccountId"=>org_id,
           "LastName"=>"Gonzalez",
           "FirstName"=>"Rose",
           "Salutation"=>"Ms.",
@@ -94,14 +94,13 @@ describe Entities::SubEntities::Contact do
         }
       }
 
-      let(:connec_org_id) { 'aaaa-bbbb' }
-      let(:ext_org_id) { '0012800000CaxiJAAR' }
-      let!(:org_idmap) { create(:idmap, organization: organization, connec_entity: 'organization', external_entity: 'account', connec_id: connec_org_id, external_id: ext_org_id) }
+      let(:org_id) { '0012800000CaxiJAAR' }
 
       let(:output_hash) {
         {
+          :id=> [{"id"=>"0032800000ABs2zAAD", "provider"=>"this_app", "realm"=>"sfuiy765"}],
           :opts=>{"create_default_organization"=>true},
-          :organization_id=>connec_org_id,
+          :organization_id=>[{id: org_id, provider: organization.oauth_provider, realm: organization.oauth_uid}],
           :title=>"Ms.",
           :first_name=>"Rose",
           :last_name=>"Gonzalez",
@@ -118,10 +117,10 @@ describe Entities::SubEntities::Contact do
             :mobile=>"(512) 757-9340",
             :fax=>"(512) 757-9000"
           }
-        }
+        }.with_indifferent_access
       }
 
-      it { expect(subject.map_to('person',sf_hash, organization)).to eql(output_hash) }
+      it { expect(subject.map_to('person',sf_hash)).to eql(output_hash) }
     end
 
   end

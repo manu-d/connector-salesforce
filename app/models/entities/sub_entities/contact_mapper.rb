@@ -15,6 +15,7 @@ class Entities::SubEntities::ContactMapper
   map from('last_name'), to('LastName'), default: 'Undefined'
   map from('job_title'), to('Title')
   map from('birth_date'), to('Birthdate')
+  map from('organization_id'), to('AccountId')
 
   map from('address_work/billing/line1'), to('MailingStreet')
   map from('address_work/billing/city'), to('MailingCity')

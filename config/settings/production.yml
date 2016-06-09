@@ -1,0 +1,10 @@
+environment: 'production'
+app_host: 'https://connector-salesforce.herokuapp.com/'
+
+
+default:
+  api_host: 'https://maestrano.com'
+
+maestrano-uat:
+  api_host: 'https://uat.maestrano.io/'
+
