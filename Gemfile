@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
 gem 'rails', '4.2.5'
-gem 'turbolinks'
+gem 'turbolinks', '~> 2.5'
 gem 'jquery-rails'
 gem 'puma'
 gem 'figaro'
@@ -11,10 +11,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'maestrano-connector-rails'
 gem 'config'
+gem 'attr_encrypted', '~> 1.4.0'
 
 gem 'restforce'
 gem 'omniauth-salesforce'
-
 
 gem 'haml-rails'
 gem 'bootstrap-sass'
