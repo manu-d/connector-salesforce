@@ -53,7 +53,7 @@ describe Maestrano::Connector::Rails::Entity do
             Timecop.freeze(Date.today) do
               allow(external_client).to receive(:get_updated).and_return({'ids' => []})
               expect(external_client).to receive(:get_updated).with(external_name, last_sync.updated_at, Time.now)
-              subject.get_external_entities(last_sync)
+              subject.get_external_entities(last_sync.updated_at)
             end
           end
 
@@ -62,13 +62,13 @@ describe Maestrano::Connector::Rails::Entity do
             expect(external_client).to receive(:find).with(external_name, 3)
             expect(external_client).to receive(:find).with(external_name, 5)
             expect(external_client).to receive(:find).with(external_name, 6)
-            subject.get_external_entities(last_sync)
+            subject.get_external_entities(last_sync.updated_at)
           end
 
           it 'returns the entities' do
             allow(external_client).to receive(:get_updated).and_return({'ids' => [3, 5, 6]})
             allow(external_client).to receive(:find).and_return({'FirstName' => 'John'})
-            expect(subject.get_external_entities(last_sync)).to eql([{'FirstName' => 'John'}, {'FirstName' => 'John'}, {'FirstName' => 'John'}])
+            expect(subject.get_external_entities(last_sync.updated_at)).to eql([{'FirstName' => 'John'}, {'FirstName' => 'John'}, {'FirstName' => 'John'}])
           end
         end
       end
