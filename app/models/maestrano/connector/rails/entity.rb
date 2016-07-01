@@ -1,18 +1,18 @@
-class Maestrano::Connector::Rails::Entity
+class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityBase
   include Maestrano::Connector::Rails::Concerns::Entity
 
   # Return an array of entities from the external app
-  def get_external_entities(last_synchronization)
+  def get_external_entities(last_synchronization_date = nil)
     Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize}")
 
-    if @opts[:full_sync] || last_synchronization.blank?
+    if @opts[:full_sync] || last_synchronization_date.blank?
       describe = @external_client.describe(self.class.external_entity_name)
       fields = describe['fields'].map{|f| f['name']}.join(', ')
       entities = @external_client.query("select #{fields} from #{self.class.external_entity_name} ORDER BY LastModifiedDate DESC")
     else
       entities = []
-      raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization.updated_at > 1.minute
-      ids = @external_client.get_updated(self.class.external_entity_name, last_synchronization.updated_at, Time.now)['ids']
+      raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization_date > 1.minute
+      ids = @external_client.get_updated(self.class.external_entity_name, last_synchronization_date, Time.now)['ids']
       ids.each do |id|
         entities << @external_client.find(self.class.external_entity_name, id)
       end
@@ -39,6 +39,10 @@ class Maestrano::Connector::Rails::Entity
 
   def self.last_update_date_from_external_entity_hash(entity)
     entity['LastModifiedDate']
+  end
+
+  def self.creation_date_from_external_entity_hash(entity)
+    entity['CreatedDate']
   end
 
   def inactive_from_external_entity_hash?(entity)

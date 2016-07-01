@@ -20,7 +20,7 @@ class Entities::User < Maestrano::Connector::Rails::Entity
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def get_external_entities(last_synchronization)
+  def get_external_entities(last_synchronization_date = nil)
     super.reject{|e| ['Security User', 'Integration User', 'Chatter Expert'].include?(e['Name'])}
   end
 

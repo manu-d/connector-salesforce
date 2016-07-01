@@ -11,10 +11,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'maestrano-connector-rails'
 gem 'config'
+gem 'attr_encrypted', '~> 1.4.0'
 
 gem 'restforce'
 gem 'omniauth-salesforce'
-
 
 gem 'haml-rails'
 gem 'bootstrap-sass'

@@ -25,7 +25,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
   # --------------------------------------------
   #             Overloaded methods
   # --------------------------------------------
-  def get_external_entities(last_synchronization)
+  def get_external_entities(last_synchronization_date = nil)
     entities = super
 
     unless entities.empty?
