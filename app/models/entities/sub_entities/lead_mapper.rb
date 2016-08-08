@@ -1,21 +1,17 @@
 class Entities::SubEntities::LeadMapper
   extend HashMapper
 
-  before_normalize do |input, output|
+  after_normalize do |input, output|
     if input['lead_conversion_date'] && !input['lead_conversion_date'].blank?
       output[:IsConverted] = true
     end
-    input
+    output
   end
 
-  before_denormalize do |input, output|
-    if input['ConvertedDate']
-      input['ConvertedDate'] = input['ConvertedDate'].to_time.iso8601
-    end
+  after_denormalize do |input, output|
     output[:is_lead] = true
     output[:is_customer] = false
-
-    input
+    output
   end
 
   map from('title'), to('Salutation')
@@ -37,7 +33,7 @@ class Entities::SubEntities::LeadMapper
 
   map from('lead_source'), to('LeadSource')
   map from('lead_status'), to('Status')
-  map from('lead_conversion_date'), to('ConvertedDate')
+  map from('lead_conversion_date') { |d| d.to_time.iso8601 }, to('ConvertedDate')
 
   map from('description'), to('Description')
 end

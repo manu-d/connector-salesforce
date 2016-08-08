@@ -13,7 +13,16 @@ describe Entities::User do
 
   describe 'instance methods' do
     let(:organization) { create(:organization) }
-    subject { Entities::User.new(organization, nil, nil, {}) }
+    let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
+    subject { Entities::User.new(organization, nil, external_client, {}) }
+
+    describe 'get_external_entities' do
+      it 'filters out the system users' do
+        allow(external_client).to receive(:describe).and_return({'fields' => []})
+        allow(external_client).to receive(:query).and_return([{'Name' => 'Security User'}, {'Name' => 'Bob'}])
+        expect(subject.get_external_entities('User')).to eql([{'Name' => 'Bob'}])
+      end
+    end
 
     describe 'SalesForce to connec!' do
       let(:sf) {

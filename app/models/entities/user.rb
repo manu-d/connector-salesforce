@@ -1,11 +1,11 @@
 class Entities::User < Maestrano::Connector::Rails::Entity
 
   def self.connec_entity_name
-    "App user"
+    'App user'
   end
 
   def self.external_entity_name
-    "User"
+    'User'
   end
 
   def self.mapper_class
@@ -20,15 +20,14 @@ class Entities::User < Maestrano::Connector::Rails::Entity
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def get_external_entities(last_synchronization_date = nil)
-    super.reject{|e| ['Security User', 'Integration User', 'Chatter Expert'].include?(e['Name'])}
+  def get_external_entities(external_entity_name, last_synchronization_date = nil)
+    super.reject { |e| e['Name'].in?(['Security User', 'Integration User', 'Chatter Expert']) }
   end
 
   # No point in populating app user from Connec!
   def self.can_read_connec?
     false
   end
-
 end
 
 class UserMapper

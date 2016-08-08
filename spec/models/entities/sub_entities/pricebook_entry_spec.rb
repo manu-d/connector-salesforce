@@ -25,14 +25,14 @@ describe Entities::SubEntities::PricebookEntry do
       context 'for standard pricebook entry' do
         it 'does nothing' do
           allow(Entities::Item).to receive(:get_pricebook_id).and_return(id1)
-          expect(subject.get_external_entities(nil)).to eql([{'Pricebook2Id' => id1}])
+          expect(subject.get_external_entities('')).to eql([{'Pricebook2Id' => id1}])
         end
       end
 
       context 'for not standard pricebook entry' do
         it 'deletes them' do
           allow(Entities::Item).to receive(:get_pricebook_id).and_return(id2)
-          expect(subject.get_external_entities(nil)).to eql([])
+          expect(subject.get_external_entities('')).to eql([])
         end
       end
     end

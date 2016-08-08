@@ -108,6 +108,73 @@ describe Entities::SubEntities::Person do
 
         it { expect(subject.map_to('contact', connec_hash)).to eql(output_hash) }
       end
+
+      describe 'to leads' do
+        let(:connec_hash) {
+          {
+            "id"=>"18b7c3c1-7cd8-0133-dd04-0620e3ce3a45",
+            "code"=>"PE192",
+            "status"=>"ACTIVE",
+            "title"=>"Ms",
+            "first_name"=>"Phyllis",
+            "last_name"=>"Cotton",
+            "job_title"=>"CFO",
+            "is_customer"=>true,
+            "is_supplier"=>false,
+            "is_lead"=>true,
+            "address_work"=>
+            {
+            "billing"=>{"region"=>"VA", "country"=>"United States"},
+             "billing2"=>{},
+             "shipping"=>{},
+             "shipping2"=>{}
+            },
+            "address_home"=>
+            {
+            "billing"=>{}, "billing2"=>{}, "shipping"=>{}, "shipping2"=>{}
+            },
+            "email"=>{"address"=>"pcotton@abbottins.net"},
+            "website"=>{},
+            "phone_work"=>{"landline"=>"(703) 757-1000"},
+            "phone_home"=>{},
+            "lead_status"=>"Open - Not Contacted",
+            "lead_source"=>"Web",
+            "lead_status_changes"=>
+            [
+              {"status"=>"Open - Not Contacted", "created_at"=>"2015-12-04T17:12:18Z"}
+            ],
+            "lead_conversion_date" => "2016-12-04T17:12:18Z",
+            "referred_leads"=>[],
+            "opportunities"=>[],
+            "notes"=>[],
+            "tasks"=>[],
+            "created_at"=>"2015-12-04T17:12:18Z",
+            "updated_at"=>"2015-12-04T17:12:18Z",
+            "group_id"=>"cld-94m8",
+            "channel_id"=>"org-fg5b",
+            "resource_type"=>"people"
+          }
+        }
+
+        let(:output_hash) {
+          {
+            :Salutation=>"Ms",
+            :FirstName=>"Phyllis",
+            :LastName=>"Cotton",
+            :Title=>"CFO",
+            :State=>"VA",
+            :IsConverted=> true,
+            :ConvertedDate => "2016-12-04T17:12:18Z",
+            :Country=>"United States",
+            :Email=>"pcotton@abbottins.net",
+            :Phone=>"(703) 757-1000",
+            :LeadSource=>"Web",
+            :Status=>"Open - Not Contacted",
+          }.with_indifferent_access
+        }
+
+        it { expect(subject.map_to('lead', connec_hash)).to eql(output_hash) }
+      end
     end
   end
 end

@@ -33,15 +33,16 @@ class OpportunityMapper
     output
   end
 
-  map from('amount/total_amount'), to('Amount')
-  map from('expected_close_date'){|d| d.to_time.iso8601}, to('CloseDate')
-  map from('description'), to('Description')
-  map from('next_step'), to('NextStep')
   map from('name'), to('Name')
-  map from('probability'), to('Probability')
-  map from('sales_stage'), to('StageName')
   map from('type'), to('Type')
+
+  map from('description'), to('Description')
+  map from('probability'), to('Probability')
+  map from('expected_close_date') { |d| d.to_time.iso8601 }, to('CloseDate')
+  map from('sales_stage'), to('StageName')
+  map from('next_step'), to('NextStep')
+  
+  map from('amount/total_amount'), to('Amount')
+  
   map from('assignee_id'), to('OwnerId')
-
 end
-

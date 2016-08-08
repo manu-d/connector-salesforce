@@ -1,20 +1,16 @@
 class Entities::SubEntities::ContactMapper
   extend HashMapper
 
-  before_denormalize do |input, output|
+  after_denormalize do |input, output|
     output[:opts] = {'create_default_organization' => true}
-
-    if input['Birthdate']
-      input['Birthdate'] = input['Birthdate'].to_time.iso8601
-    end
-    input
+    output
   end
 
   map from('title'), to('Salutation')
   map from('first_name'), to('FirstName')
   map from('last_name'), to('LastName'), default: 'Undefined'
   map from('job_title'), to('Title')
-  map from('birth_date'), to('Birthdate')
+  map from('birth_date') { |d| d.to_time.iso8601 }, to('Birthdate')
   map from('organization_id'), to('AccountId')
 
   map from('address_work/billing/line1'), to('MailingStreet')
