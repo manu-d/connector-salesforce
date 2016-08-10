@@ -12,6 +12,10 @@ class Maestrano::Connector::Rails::External
     'SalesForce'
   end
 
+  def self.create_account_link(organization = nil)
+    'https://www.salesforce.com/ap/form/signup/freetrial-lb.jsp'
+  end
+
   def self.get_client(organization)
     Restforce.new :oauth_token => organization.oauth_token,
       refresh_token: organization.refresh_token,
