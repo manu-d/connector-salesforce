@@ -1,11 +1,11 @@
 class Entities::Organization < Maestrano::Connector::Rails::Entity
 
   def self.connec_entity_name
-    "Organization"
+    'Organization'
   end
 
   def self.external_entity_name
-    "Account"
+    'Account'
   end
 
   def self.mapper_class
@@ -19,7 +19,6 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
   def self.object_name_from_external_entity_hash(entity)
     entity['Name']
   end
-
 end
 
 class OrganizationMapper
@@ -46,4 +45,3 @@ class OrganizationMapper
   map from('phone/landline'), to('Phone')
   map from('phone/fax'), to('Fax')
 end
-

@@ -7,6 +7,10 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
     %w(Product2 PricebookEntry)
   end
 
+  def self.public_external_entity_name
+    'Products'
+  end
+
   # input :  {
   #             connec_entity_names[0]: [unmapped_connec_entitiy1, unmapped_connec_entitiy2],
   #             connec_entity_names[1]: [unmapped_connec_entitiy3, unmapped_connec_entitiy4]

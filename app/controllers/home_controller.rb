@@ -1,6 +1,7 @@
 class HomeController < ApplicationController
   def index
     @organization = current_organization
+    @displayable_synchronized_entities = @organization.displayable_synchronized_entities if @organization
   end
 
   def update
@@ -37,7 +38,7 @@ class HomeController < ApplicationController
 
   def synchronize
     if is_admin
-      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, params['opts'] || {})
+      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, (params['opts'] || {}).merge(forced: true))
       flash[:info] = 'Synchronization requested'
     end
 

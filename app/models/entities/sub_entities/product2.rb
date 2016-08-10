@@ -17,5 +17,4 @@ class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBa
   def self.object_name_from_external_entity_hash(entity)
     "[#{entity['ProductCode']}] #{entity['Name']}"
   end
-
 end

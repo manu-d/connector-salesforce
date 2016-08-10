@@ -9,3 +9,7 @@ function historicalDataDisplay()
       document.getElementById('historical-data-display-checked').style.display = 'none';
   }
 }
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})

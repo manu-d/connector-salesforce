@@ -17,5 +17,4 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
   def self.object_name_from_external_entity_hash(entity)
     "#{entity['FirstName']} #{entity['LastName']}"
   end
-
 end
