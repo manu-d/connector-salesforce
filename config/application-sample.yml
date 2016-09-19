@@ -1,5 +1,10 @@
-connec_api_id: API_ID
-connec_api_key: API_KEY
 salesforce_client_id: SALESFORCE_API_ID
 salesforce_client_secret: SALESFORCE_API_SECRET
+
 REDIS_URL: redis://localhost:6379/0/connector-salesforce
+
+MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+⁠⁠⁠⁠MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
+MNO_DEVPL_ENV_NAME: connector-salesforce-uat
+MNO_DEVPL_ENV_KEY: 9794a45b-333f-41b3-a034-1e988e92f010
+MNO_DEVPL_ENV_SECRET: SVWpzNkGlzjx9zR5mT4YOw
