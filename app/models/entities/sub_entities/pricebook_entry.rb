@@ -18,7 +18,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     "Price for #{entity['Product2Id']}"
   end
 
-  def map_to(name, entity)
+  def map_to(name, entity, first_time_mapped = nil)
     super.merge(id: [{id: entity['Product2Id'], provider: @organization.oauth_provider, realm: @organization.oauth_uid}])
   end
 
