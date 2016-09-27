@@ -68,7 +68,7 @@
                         #{v[:connec_name]}
                     -if is_admin
                       .col-md-3.text-right
-                        - if v && @organization.oauth_uid && @organization.sync_enabled
+                        - if v && @organization.oauth_uid && @organization.sync_enabled && @organization.synchronized_entities[k]
                           = link_to 'Force a synchronization', home_synchronize_path(opts: {only_entities: [k.to_s]}), method: :post, class: 'btn btn-warning btn-sm', title: "Force a synchronization for #{v[:external_name]} only", 'data-toggle' => 'tooltip', 'data-placement' => 'right'
 
             .spacer2
@@ -84,7 +84,7 @@
                 %small#historical-data-display-unchecked{style: "display: #{@organization.historical_data ? 'none' : 'block'}"} Only data created after #{(@organization.date_filtering_limit && @organization.date_filtering_limit.utc || Time.now.utc).to_formatted_s(:long_ordinal)} will be synchronized
                 %small#historical-data-display-checked{style: "display: #{!@organization.historical_data ? 'none' : 'block'}"}
                   Synchronizing your historical data will share all data in Salesforce. This action is not reversible. Want to know more? Check #{link_to 'here', 'https://maestrano.atlassian.net/wiki/display/UKB/How+Connec%21+manages+Historical+Data+Sharing'}
-                
+
           .spacer1
           .row
             .col-md-2.col-md-offset-10.text-center.link-step-action
@@ -100,4 +100,3 @@
       .row
         .col-md-4.col-md-offset-4.center
           = link_to "Link your Maestrano account", Maestrano::Connector::Rails::Engine.routes.url_helpers.default_maestrano_auth_saml_index_path(tenant: :default), class: 'btn btn-warning'
-
