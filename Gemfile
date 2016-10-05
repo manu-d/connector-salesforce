@@ -1,28 +1,28 @@
 source 'https://rubygems.org'
-ruby '2.3.1', :engine => 'jruby', :engine_version => '9.1.5.0'
 
 gem 'rails', '~> 4.2'
-gem 'puma', require: false
+gem 'turbolinks'
+gem 'jquery-rails'
+gem 'coffee-rails'
+gem 'haml-rails'
+gem 'bootstrap-sass'
+gem 'autoprefixer-rails'
 
+gem 'puma', require: false
 gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'maestrano-connector-rails', '~> 1.5'
+gem 'maestrano-connector-rails', '2.0.0.pre.RC7'
+
 gem 'config'
 gem 'attr_encrypted', '~> 1.4.0'
 
 gem 'restforce'
 gem 'omniauth-salesforce'
 
-gem 'turbolinks', '~> 2.5'
-gem 'jquery-rails'
-gem 'haml-rails'
-gem 'bootstrap-sass'
-gem 'autoprefixer-rails'
-
 # Background jobs
-gem 'sinatra', :require => false
+gem 'sinatra', require: false
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slim'
@@ -31,14 +31,14 @@ gem 'slim'
 gem 'redis-rails'
 
 group :production, :uat do
+  gem 'activerecord-jdbcmysql-adapter', platforms: :jruby
+  gem 'mysql2', :platforms => :ruby
   gem 'rails_12factor'
-  gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
-  gem 'pg', :platforms => :ruby
 end
 
 group :test, :develpment do
-  gem 'activerecord-jdbcsqlite3-adapter', :platforms => :jruby
-  gem 'sqlite3', :platforms => :ruby
+  gem 'activerecord-jdbcsqlite3-adapter', platforms: :jruby
+  gem 'sqlite3', platforms: :ruby
 end
 
 group :test do
