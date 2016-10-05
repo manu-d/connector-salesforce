@@ -13,7 +13,7 @@ gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'maestrano-connector-rails', '2.0.0.pre.RC6'
+gem 'maestrano-connector-rails', '2.0.0.pre.RC7'
 
 gem 'config'
 gem 'attr_encrypted', '~> 1.4.0'
@@ -22,7 +22,7 @@ gem 'restforce'
 gem 'omniauth-salesforce'
 
 # Background jobs
-gem 'sinatra', :require => nil
+gem 'sinatra', :require => false
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slim'

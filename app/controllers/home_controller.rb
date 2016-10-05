@@ -24,11 +24,11 @@ class HomeController < ApplicationController
           organization.date_filtering_limit ||= Time.now
         end
       end
-      
+
       organization.save
 
       if !old_sync_state
-        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization, {})
+        Maestrano::Connector::Rails::SynchronizationJob.perform_later(organization.id, {})
         flash[:info] = 'Congrats, you\'re all set up! Your data are now being synced'
       end
     end
@@ -38,7 +38,7 @@ class HomeController < ApplicationController
 
   def synchronize
     if is_admin
-      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization, (params['opts'] || {}).merge(forced: true))
+      Maestrano::Connector::Rails::SynchronizationJob.perform_later(current_organization.id, (params['opts'] || {}).merge(forced: true))
       flash[:info] = 'Synchronization requested'
     end
 
@@ -53,5 +53,4 @@ class HomeController < ApplicationController
       redirect_to 'https://login.salesforce.com'
     end
   end
-
 end
