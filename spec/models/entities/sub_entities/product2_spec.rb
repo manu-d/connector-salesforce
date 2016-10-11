@@ -43,9 +43,9 @@ describe Entities::SubEntities::Product2 do
 
       let(:output_hash) {
         {
-          reference: "SL9080", 
+          reference: "SL9080",
           name: "SLA: Platinum",
-          "id" => [{"id"=>"01t28000000yjJ5AAI", "provider"=>"this_app", "realm"=>"sfuiy765"}]
+          "id" => [{"id"=>"01t28000000yjJ5AAI", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}]
         }.with_indifferent_access
       }
 

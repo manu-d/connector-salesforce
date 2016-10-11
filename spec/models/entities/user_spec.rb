@@ -196,8 +196,8 @@ describe Entities::User do
           "id" => [
             {
               "id" => "00558000001BYS8AAO",
-              "provider" => "this_app",
-              "realm" => "sfuiy765"
+              "provider" => organization.oauth_provider,
+              "realm" => organization.oauth_uid
             }
           ]
         }.with_indifferent_access

@@ -1,3 +1,22 @@
+PATH
+  remote: ../maestrano-connector-rails
+  specs:
+    maestrano-connector-rails (2.0.0.pre.RC9)
+      attr_encrypted (~> 1.4.0)
+      autoprefixer-rails
+      bootstrap-sass
+      config
+      figaro
+      haml-rails
+      hash_mapper (>= 0.2.2)
+      maestrano-rails (= 1.0.0.pre.RC7)
+      rails (~> 4.2)
+      sidekiq
+      sidekiq-cron
+      sidekiq-unique-jobs
+      sinatra
+      slim
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -117,21 +136,6 @@ GEM
       nokogiri (>= 1.5.0)
       rest-client (~> 1.8)
       uuid (~> 2.3)
-    maestrano-connector-rails (2.0.0.pre.RC8)
-      attr_encrypted (~> 1.4.0)
-      autoprefixer-rails
-      bootstrap-sass
-      config
-      figaro
-      haml-rails
-      hash_mapper (>= 0.2.2)
-      maestrano-rails (= 1.0.0.pre.RC7)
-      rails (~> 4.2)
-      sidekiq
-      sidekiq-cron
-      sidekiq-unique-jobs
-      sinatra
-      slim
     maestrano-rails (1.0.0.pre.RC7)
       haml-rails
       jquery-rails
@@ -327,7 +331,7 @@ DEPENDENCIES
   figaro
   haml-rails
   jquery-rails
-  maestrano-connector-rails (= 2.0.0.pre.RC8)
+  maestrano-connector-rails!
   mysql2
   omniauth-salesforce
   puma

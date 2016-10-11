@@ -104,7 +104,7 @@ describe Entities::Organization do
 
       let (:mapped_sf) {
         {
-          :id=>[{:id=>"0012800000CaxiOAAR", :provider=>"this_app", :realm=>"sfuiy765"}],
+          :id=>[{:id=>"0012800000CaxiOAAR", :provider=>organization.oauth_provider, :realm=>organization.oauth_uid}],
           :name=>"Burlington Textiles Corp of America",
           :industry=>"Apparel",
           :annual_revenue=>350000000.0,
