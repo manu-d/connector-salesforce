@@ -72,7 +72,7 @@ describe Entities::Opportunity do
           :name=>"GenePoint Lab Generators",
           :probability=>60.0,
           :sales_stage=>"Id. Decision Makers",
-          :assignee_id => [{"id"=>"00528000001eP9OAAU", "provider"=>"this_app", "realm"=>"sfuiy765"}],
+          :assignee_id => [{"id"=>"00528000001eP9OAAU", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}],
           :assignee_type => "AppUser",
         }.with_indifferent_access
       }

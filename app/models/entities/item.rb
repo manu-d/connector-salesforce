@@ -53,7 +53,7 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   end
 
   def self.get_pricebook_id(client)
-    Rails.logger.info "Fetching standard pricebook from SalesForce"
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching standard pricebook from SalesForce")
     pricebooks = client.query("Select Id, IsStandard From Pricebook2")
     standard_pricebook = pricebooks.find{|pricebook| pricebook['IsStandard']}
 

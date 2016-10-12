@@ -98,7 +98,7 @@ describe Entities::SubEntities::Lead do
 
       let(:output_hash) {
         {
-          "id" => [{"id"=>"00Q28000003FcanEAC", "provider"=>"this_app", "realm"=>"sfuiy765"}],
+          "id" => [{"id"=>"00Q28000003FcanEAC", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}],
           :title=>"Mr",
           :first_name=>"Jeff",
           :last_name=>"Glimpse",
