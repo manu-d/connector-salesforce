@@ -13,7 +13,7 @@ gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'maestrano-connector-rails', '2.0.0.pre.RC10'
+gem 'maestrano-connector-rails', '2.0.0.pre.RC13'
 
 gem 'config'
 gem 'attr_encrypted', '~> 1.4.0'
@@ -32,7 +32,7 @@ gem 'redis-rails'
 
 group :production, :uat do
   gem 'activerecord-jdbcmysql-adapter', platforms: :jruby
-  gem 'mysql2', :platforms => :ruby
+  gem 'mysql2', platforms: :ruby
   gem 'rails_12factor'
 end
 
