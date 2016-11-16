@@ -39,16 +39,32 @@ describe OauthController, :type => :controller do
     end
 
     context 'when admin' do
-      before {
+
+      before do
         allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
         allow_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-        allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
-      }
+      end
 
       it 'update the organization with data from oauth and api calls' do
-        expect_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-        expect(Maestrano::Connector::Rails::External).to receive(:fetch_company)
+
+        allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
+
+        expect(organization).to receive(:update)
         subject
+      end
+    end
+
+    context 'when an error is thrown' do
+
+      before do
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
+        allow_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
+      end
+
+      it 'displays a flash error to the user' do
+        subject
+        expect(flash[:danger]).to match "Your SalesForce account cannot be linked (bad argument (expected URI object or URI string))"
+
       end
     end
   end
