@@ -9,7 +9,6 @@ Configure your SalesForce application. To create a new SalesForce application: h
 
 ### Access Maestrano Developer Platform and create a sandbox application
 
-
 :soon: :construction:
 
 
