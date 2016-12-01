@@ -30,7 +30,6 @@ class OauthController < ApplicationController
         flash[:danger] = "Your SalesForce account \"#{company['Name']}\" cannot be linked: #{current_organization.errors.full_messages}"
       end
     rescue => e
-      empty_organization_fields(current_organization)
       Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error in create_omniauth: #{e.message}. #{e.backtrace.join("\n")}")
       flash[:danger] = "Your SalesForce account cannot be linked (#{e.message})"
     end
