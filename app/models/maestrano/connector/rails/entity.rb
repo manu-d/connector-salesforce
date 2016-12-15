@@ -10,12 +10,9 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
       fields = describe['fields'].map{|f| f['name']}.join(', ')
       entities = @external_client.query("select #{fields} from #{external_entity_name} ORDER BY LastModifiedDate DESC")
     else
-      entities = []
       raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization_date > 1.minute
-      ids = @external_client.get_updated(external_entity_name, last_synchronization_date, Time.now)['ids']
-      ids.each do |id|
-        entities << @external_client.find(external_entity_name, id)
-      end
+      ids = @external_client.get_updated(external_entity_name, last_synchronization_date - 2.minutes, Time.now + 2.minutes)['ids']
+      entities = ids.map { |id| @external_client.find(external_entity_name, id) }
     end
 
     Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{external_entity_name}, Response=#{entities}")
