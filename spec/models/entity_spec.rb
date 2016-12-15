@@ -51,7 +51,7 @@ describe Maestrano::Connector::Rails::Entity do
           it 'uses get updated' do
             Timecop.freeze(Date.today) do
               allow(external_client).to receive(:get_updated).and_return({'ids' => []})
-              expect(external_client).to receive(:get_updated).with(external_name, last_sync.updated_at, Time.now)
+              expect(external_client).to receive(:get_updated).with(external_name, last_sync.updated_at - 2.minutes, Time.now + 2.minutes)
               subject.get_external_entities(external_name, last_sync.updated_at)
             end
           end
