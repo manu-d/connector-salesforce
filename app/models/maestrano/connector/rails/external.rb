@@ -13,7 +13,7 @@ class Maestrano::Connector::Rails::External
   end
 
   def self.create_account_link(organization = nil)
-    'https://www.salesforce.com/ap/form/signup/freetrial-lb.jsp'
+    'https://www.salesforce.com/au/form/signup/freetrial-sales-ee.jsp?d=70130000000F6Dc'
   end
 
   def self.get_client(organization)

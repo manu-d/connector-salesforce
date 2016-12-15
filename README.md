@@ -7,33 +7,41 @@ The aim of this connector is to implement data sharing between Connec! and Sales
 ### Configuration
 Configure your SalesForce application. To create a new SalesForce application: http://geekymartian.com/articles/ruby-on-rails-4-salesforce-oauth-implementation/
 
-Create a configuration file `config/application.yml` with the following settigns (complete with your SalesForce / Connec! credentials)
+### Access Maestrano Developer Platform and create a sandbox application
+
+:soon: :construction:
+
+
+Edit the configuration file `config/application-sample.yml` with the correct credentials (both Salesforce's and Maestrano's Developer Platform ones).
 ```
-connec_api_id: 
-connec_api_key: 
-salesforce_client_id: 
-salesforce_client_secret: 
+encryption_key1: ''
+encryption_key2: ''
+
+salesforce_client_id: 'your_salesforce_id'
+salesforce_client_secret: 'your_salesforce_secret'
+
+REDIS_URL: redis://localhost:6379/0/connector-salesforce
+
+MNO_DEVPL_HOST: https://dev-platform.maestrano.io
+MNO_DEVPL_API_PATH: /api/config/v1/marketplaces
+MNO_DEVPL_ENV_NAME: salesforce-uat
+MNO_DEVPL_ENV_KEY: 'your_local_env_key'
+MNO_DEVPL_ENV_SECRET: 'your_local_env_secret'
+
 ```
 
-### Run the connector locally against the Maestrano production environment
-In the initialize `config/initializers/maestrano.rb`
-```
-config.app.host = 'http://localhost:3001'
-```
+### Run the connector locally against the Maestrano UAT environment
 
 ### Run the connector
 #### First time setup
 ```
-# Install JRuby and gems the first time
-rvm install jruby-9.0.5.0
+# Install bundler and update your gemset
+gem install ruby-2.3.1
 gem install bundler
 bundle
-gem install foreman
 ```
 
 #### Start the application
 ```
-export PORT=8080
-export RACK_ENV=development
-foreman start
+bin/rails s puma -p 3001
 ```

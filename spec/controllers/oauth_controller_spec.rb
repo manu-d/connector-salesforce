@@ -27,6 +27,10 @@ describe OauthController, :type => :controller do
     before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_user).and_return(user) }
     before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
 
+    let(:credentials) { double(token: 'abc', refresh_token: 'def', instance_url: 'http://example.com') }
+    let(:auth) { double(provider: 'salesforce', uid: '123', credentials: credentials) }
+    before { request.env['omniauth.auth'] = auth }
+
     subject { get :create_omniauth, provider: 'salesforce' }
 
     context 'when not admin' do
@@ -39,16 +43,39 @@ describe OauthController, :type => :controller do
     end
 
     context 'when admin' do
-      before {
+      before do
         allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
-        allow_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-        allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
-      }
+      end
 
       it 'update the organization with data from oauth and api calls' do
-        expect_any_instance_of(Maestrano::Connector::Rails::Organization).to receive(:from_omniauth)
-        expect(Maestrano::Connector::Rails::External).to receive(:fetch_company)
+        allow(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_return({'Name' => 'lala', 'Id' => 'idd'})
+
         subject
+
+        expect(organization.oauth_name).to eql('lala')
+        expect(organization.oauth_uid).to eql('idd')
+      end
+    end
+
+    context 'when an error is thrown' do
+      before do
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
+      end
+
+      it 'displays API error to the user' do
+        expect(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_raise('API_DISABLED_FOR_ORG no API access')
+
+        subject
+
+        expect(flash[:danger]).to match "Your SalesForce account does not support API access, please upgrade your subscription<br/>Error detail: API_DISABLED_FOR_ORG no API access"
+      end
+
+      it 'displays generic errors to the user' do
+        expect(Maestrano::Connector::Rails::External).to receive(:fetch_company).and_raise('Cannot fetch data')
+
+        subject
+
+        expect(flash[:danger]).to match "Your SalesForce account cannot be linked<br/>Error detail: Cannot fetch data"
       end
     end
   end

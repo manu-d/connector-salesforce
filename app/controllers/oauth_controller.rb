@@ -17,22 +17,40 @@ class OauthController < ApplicationController
 
     begin
       # Update organization oauth details
-      current_organization.from_omniauth(env["omniauth.auth"])
+      auth = request.env["omniauth.auth"]
+      current_organization.oauth_provider = auth.provider
+      current_organization.oauth_uid = auth.uid
+      current_organization.oauth_token = auth.credentials.token
+      current_organization.refresh_token = auth.credentials.refresh_token
+      current_organization.instance_url = auth.credentials.instance_url
 
       # Fetch SalesForce company name
       company = Maestrano::Connector::Rails::External.fetch_company(current_organization)
+      current_organization.oauth_name = company['Name']
+      current_organization.oauth_uid = company['Id']
 
-      if current_organization.valid?
-        current_organization.update(oauth_name: company['Name'], oauth_uid: company['Id'])
-      else
+      unless current_organization.save
         # Display the error to the user
         Maestrano::Connector::Rails::ConnectorLogger.log('info', current_organization, "Error in create_omniauth: #{current_organization.errors.full_messages}")
         flash[:danger] = "Your SalesForce account \"#{company['Name']}\" cannot be linked: #{current_organization.errors.full_messages}"
       end
     rescue => e
-      empty_organization_fields(current_organization)
-      Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error in create_omniauth: #{e.message}. #{e.backtrace.join("\n")}")
-      flash[:danger] = "Your SalesForce account cannot be linked (#{e.message})"
+      if e.message.include?('API_DISABLED_FOR_ORG')
+        # API access is disabled
+        Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error in create_omniauth, API Access disabled: #{e.message}. #{e.backtrace.join("\n")}")
+        errors = [
+          'Your SalesForce account does not support API access, please upgrade your subscription',
+          "Error detail: #{e.message}"
+        ]
+        flash[:danger] = errors.join("<br/>")
+      else
+        Maestrano::Connector::Rails::ConnectorLogger.log('warn', current_organization, "Error in create_omniauth: #{e.message}. #{e.backtrace.join("\n")}")
+        errors = [
+          'Your SalesForce account cannot be linked',
+          "Error detail: #{e.message}"
+        ]
+        flash[:danger] = errors.join("<br/>")
+      end
     end
 
     redirect_to root_url
