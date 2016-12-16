@@ -9,7 +9,7 @@ Configure your SalesForce application. To create a new SalesForce application: h
 
 ### Access Maestrano Developer Platform and create a sandbox application
 
-:soon: :construction:
+[Create a new app](https://maestrano.atlassian.net/wiki/display/DEV/Testing+using+Maestrano+Sandbox+environment)
 
 
 Edit the configuration file `config/application-sample.yml` with the correct credentials (both Salesforce's and Maestrano's Developer Platform ones).
