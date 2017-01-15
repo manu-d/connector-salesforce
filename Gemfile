@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2'
-gem 'turbolinks'
 gem 'jquery-rails'
 gem 'coffee-rails'
 gem 'haml-rails'
