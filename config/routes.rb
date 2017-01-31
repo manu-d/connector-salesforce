@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
   match 'auth/:provider/request', to: 'oauth#request_omniauth', via: [:get, :post]
   match 'auth/:provider/callback', to: 'oauth#create_omniauth', via: [:get, :post]
+
+  match 'oauth_failure', to: 'oauth#oauth_failure', via: [:get, :post]
   match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout_omniauth', to: 'oauth#destroy_omniauth', as: 'signout_omniauth', via: [:get, :post]
 
