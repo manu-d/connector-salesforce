@@ -28,6 +28,14 @@ class Entities::User < Maestrano::Connector::Rails::Entity
   def self.can_read_connec?
     false
   end
+
+  def self.last_update_date_from_external_entity_hash(entity)
+    Time.now
+  end
+
+  def self.creation_date_from_external_entity_hash(entity)
+    Time.now
+  end
 end
 
 class UserMapper
