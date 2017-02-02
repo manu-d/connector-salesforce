@@ -20,21 +20,25 @@ class Entities::User < Maestrano::Connector::Rails::Entity
     "#{entity['FirstName']} #{entity['LastName']}"
   end
 
-  def get_external_entities(external_entity_name, last_synchronization_date = nil)
-    super.reject { |e| e['Name'].in?(['Security User', 'Integration User', 'Chatter Expert']) }
-  end
-
   # No point in populating app user from Connec!
   def self.can_read_connec?
     false
   end
 
-  def self.last_update_date_from_external_entity_hash(entity)
+  def self.creation_date_from_external_entity_hash(entity)
     Time.now
   end
 
-  def self.creation_date_from_external_entity_hash(entity)
-    Time.now
+  def get_external_entities(external_entity_name, last_synchronization_date = nil)
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching #{Maestrano::Connector::Rails::External.external_name} #{external_entity_name.pluralize}")
+    raise 'Cannot perform synchronizations less than a minute apart' if last_synchronization_date && (Time.now - last_synchronization_date < 1.minute)
+
+    describe = @external_client.describe(external_entity_name)
+    fields = describe['fields'].map{|f| f['name']}.join(', ')
+    entities = @external_client.query("select #{fields} from #{external_entity_name} ORDER BY LastModifiedDate DESC")
+
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{external_entity_name}, Response=#{entities}")
+    entities.reject { |e| e['Name'].in?(['Security User', 'Integration User', 'Chatter Expert']) }
   end
 end
 
