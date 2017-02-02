@@ -80,6 +80,12 @@ describe OauthController, :type => :controller do
     end
   end
 
+  describe 'oauth_failure' do
+    subject { get :oauth_failure, error: 'Access Denied', error_description: "end-user denied authorization" }
+
+    it {expect(subject).to redirect_to(root_url)}
+  end
+
   describe 'destroy_omniauth' do
     let(:user) { create(:user) }
     let(:organization) { create(:organization, oauth_uid: 'oauth_uid') }
