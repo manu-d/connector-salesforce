@@ -57,7 +57,7 @@ class OauthController < ApplicationController
   end
 
   def oauth_failure
-    flash.now[:danger] = [params[:error], params[:error_description]].join(': ')
+    flash[:danger] = [params[:error], params[:error_description]].join(': ')
     redirect_to root_url
   end
 
