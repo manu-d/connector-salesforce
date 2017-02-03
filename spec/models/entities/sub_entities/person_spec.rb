@@ -137,7 +137,7 @@ describe Entities::SubEntities::Person do
             "website"=>{},
             "phone_work"=>{"landline"=>"(703) 757-1000"},
             "phone_home"=>{},
-            "lead_status"=>"Open - Not Contacted",
+            "lead_status"=>"",
             "lead_source"=>"Web",
             "lead_status_changes"=>
             [
@@ -153,7 +153,7 @@ describe Entities::SubEntities::Person do
             "group_id"=>"cld-94m8",
             "channel_id"=>"org-fg5b",
             "resource_type"=>"people"
-          }
+          }.with_indifferent_access
         }
 
         let(:output_hash) {
@@ -173,7 +173,12 @@ describe Entities::SubEntities::Person do
           }.with_indifferent_access
         }
 
+        let(:connec_hash_with_status) {
+          connec_hash.merge({"lead_status"=>"Open - Not Contacted"})
+        }
+
         it { expect(subject.map_to('lead', connec_hash)).to eql(output_hash) }
+        it { expect(subject.map_to('lead', connec_hash_with_status)).to eql(output_hash) }
       end
     end
   end

@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2'
-gem 'turbolinks'
 gem 'jquery-rails'
 gem 'coffee-rails'
 gem 'haml-rails'
@@ -13,7 +12,7 @@ gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'maestrano-connector-rails', '2.0.0'
+gem 'maestrano-connector-rails', '2.0.2.pre.RC5'
 
 gem 'config'
 gem 'attr_encrypted', '~> 1.4.0'
@@ -47,4 +46,5 @@ group :test do
   gem 'factory_girl_rails'
   gem 'shoulda-matchers'
   gem 'timecop'
+  gem 'webmock'
 end

@@ -93,7 +93,7 @@ describe Entities::SubEntities::Lead do
             "Primary__c"=>"Yes",
             "CurrentGenerators__c"=>"All",
             "NumberofLocations__c"=>130.0
-          }
+          }.with_indifferent_access
       }
 
       let(:output_hash) {

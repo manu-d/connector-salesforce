@@ -56,6 +56,11 @@ class OauthController < ApplicationController
     redirect_to root_url
   end
 
+  def oauth_failure
+    flash[:danger] = [params[:error], params[:error_description]].join(': ')
+    redirect_to root_url
+  end
+
   # Unlink Organization from SalesForce
   def destroy_omniauth
     return redirect_to root_url unless is_admin

@@ -22,6 +22,11 @@ describe Entities::User do
         allow(external_client).to receive(:query).and_return([{'Name' => 'Security User'}, {'Name' => 'Bob'}])
         expect(subject.get_external_entities('User')).to eql([{'Name' => 'Bob'}])
       end
+
+      context 'It raises an error if not first sync and less than a minute apart' do
+
+        it { expect{subject.get_external_entities('User', Time.now)}.to raise_error 'Cannot perform synchronizations less than a minute apart'} 
+      end
     end
 
     describe 'SalesForce to connec!' do
