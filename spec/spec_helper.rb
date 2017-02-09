@@ -26,7 +26,7 @@ RSpec.configure do |config|
     unless spec.metadata[:skip_before]
       allow(SecureRandom).to receive(:uuid).and_return '4d33acc5-3448-46d4-ad94-c2b37630da9a'
       # stub_request(:get, "#{Maestrano['local'].param('api.host')}/api/v1/account/groups/").to_return({status: 200, body: "{}", headers: {}})
-      stub_request(:get, "https://maestrano.com/api/v1/account/groups/4d33acc5-3448-46d4-ad94-c2b37630da9a")
+      stub_request(:get, %r(https://maestrano.com/api/v1/account/groups/\w+))
         .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'})
         .to_return({status: 200, body: "{}", headers: {}})
     end
