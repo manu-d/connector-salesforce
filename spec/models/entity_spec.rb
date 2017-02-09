@@ -10,11 +10,11 @@ describe Maestrano::Connector::Rails::Entity do
     end
 
     describe 'last_update_date_from_external_entity_hash' do
-      it {
+      it 'store the LastModifiedDate' do
         Timecop.freeze(Date.today) do
           expect(subject.last_update_date_from_external_entity_hash({'LastModifiedDate' => 1.hour.ago})).to eql(1.hour.ago)
         end
-      }
+      end
     end
   end
 
@@ -46,7 +46,7 @@ describe Maestrano::Connector::Rails::Entity do
           end
         end
 
-        context 'with a last sync', :skip_before do
+        context 'with a last sync' do
           let(:last_sync) { create(:synchronization, updated_at: 1.hour.ago) }
 
           it 'uses get updated' do
@@ -54,12 +54,6 @@ describe Maestrano::Connector::Rails::Entity do
             Timecop.freeze(Date.today) do
               allow(SecureRandom).to receive(:uuid).and_return('4d33acc5-3448-46d4-ad94-c2b37630xx9x', '4d33acc5-3448-46d4-ad94-c2b37630xx9y')
               # stub_request(:get, "#{Maestrano['local'].param('api.host')}/api/v1/account/groups/").to_return({status: 200, body: "{}", headers: {}})
-              stub_request(:get, "https://maestrano.com/api/v1/account/groups/4d33acc5-3448-46d4-ad94-c2b37630xx9x")
-                .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'})
-                .to_return({status: 200, body: "{}", headers: {}})
-              stub_request(:get, "https://maestrano.com/api/v1/account/groups/4d33acc5-3448-46d4-ad94-c2b37630xx9y")
-                .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'})
-                .to_return({status: 200, body: "{}", headers: {}})
 
               allow(external_client).to receive(:get_updated).and_return({'ids' => []})
               expect(external_client).to receive(:get_updated).with(external_name, last_sync.updated_at - 2.minutes, Time.now + 2.minutes)
@@ -67,15 +61,26 @@ describe Maestrano::Connector::Rails::Entity do
             end
           end
 
+          context 'when last synch date is older than 30 days' do
+            let(:last_sync) { create(:synchronization, updated_at: 45.days.ago) }
+
+            it 'defaults to 30 days' do
+              allow(SecureRandom).to receive(:uuid).and_return('4d33acc5-3448-46d4-ad94-c2b37630xx9c', '4d33acc5-3448-46d4-ad94-c2b37630xx9d')
+              # stub_request(:get, "#{Maestrano['local'].param('api.host')}/api/v1/account/groups/{id}").to_return({status: 200, body: "{}", headers: {}})
+
+              Timecop.freeze(Date.today) do
+                allow(external_client).to receive(:get_updated).and_return({'ids' => []})
+                expect(external_client).to receive(:get_updated).with(external_name, 30.days.ago - 2.minutes, Time.now + 2.minutes)
+                subject.get_external_entities(external_name, last_sync.updated_at)
+              end
+            end
+          end
+
+
+
           it 'calls find on received ids' do
             allow(SecureRandom).to receive(:uuid).and_return('4d33acc5-3448-46d4-ad94-c2b37630xx9w', '4d33acc5-3448-46d4-ad94-c2b37630xx9z')
             # stub_request(:get, "#{Maestrano['local'].param('api.host')}/api/v1/account/groups/").to_return({status: 200, body: "{}", headers: {}})
-            stub_request(:get, "https://maestrano.com/api/v1/account/groups/4d33acc5-3448-46d4-ad94-c2b37630xx9w")
-              .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'})
-              .to_return({status: 200, body: "{}", headers: {}})
-            stub_request(:get, "https://maestrano.com/api/v1/account/groups/4d33acc5-3448-46d4-ad94-c2b37630xx9z")
-              .with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'Basic Og==', 'User-Agent'=>'Ruby'})
-              .to_return({status: 200, body: "{}", headers: {}})
 
             allow(external_client).to receive(:get_updated).and_return({'ids' => [3, 5, 6]})
             expect(external_client).to receive(:find).with(external_name, 3)

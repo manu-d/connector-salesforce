@@ -10,9 +10,7 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
       fields = describe['fields'].map{|f| f['name']}.join(', ')
       entities = @external_client.query("select #{fields} from #{external_entity_name} ORDER BY LastModifiedDate DESC")
     else
-      raise 'Cannot perform synchronizations less than a minute apart' unless Time.now - last_synchronization_date > 1.minute
-      ids = @external_client.get_updated(external_entity_name, last_synchronization_date - 2.minutes, Time.now + 2.minutes)['ids']
-      entities = ids.map { |id| @external_client.find(external_entity_name, id) }
+      entities = get_updated_data(external_entity_name, last_synchronization_date)
     end
 
     Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Received data: Source=#{Maestrano::Connector::Rails::External.external_name}, Entity=#{external_entity_name}, Response=#{entities}")
@@ -50,4 +48,22 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   def inactive_from_external_entity_hash?(entity)
     entity['IsDeleted'] || !entity['IsActive'] || false
   end
+
+  private
+
+    def get_updated_data(external_entity_name, last_synchronization_date)
+      raise 'Cannot perform synchronizations less than a minute apart' if Time.now - last_synchronization_date < 1.minute
+      # to avoid INVALID_REPLICATION_DATE error we set the startDate to maximum 30 days ago.
+      replication_date = (last_synchronization_date > 30.days.ago) ? last_synchronization_date : 30.days.ago
+      ids = @external_client.get_updated(external_entity_name, replication_date - 2.minutes, Time.now + 2.minutes)['ids']
+      entities = ids.map { |id| @external_client.find(external_entity_name, id) }
+    rescue Faraday::ClientError => e
+      return entities = get_only_recent_data(external_entity_name) if e.message == 'INVALID_REPLICATION_DATE: startDate before org replication enabled date'
+      raise e
+    end
+
+    def get_only_recent_data(external_entity_name)
+      ids = @external_client.get_updated(external_entity_name, Time.now - 2.minute, Time.now + 2.minutes)['ids']
+      ids.map { |id| @external_client.find(external_entity_name, id) }
+    end
 end
