@@ -54,8 +54,6 @@ describe Entities::SubEntities::Lead do
               "street"=>nil
             },
             "Phone"=>"886-2-25474189",
-            "MobilePhone"=>nil,
-            "Fax"=>nil,
             "Email"=>"jeffg@jackson.com",
             "Website"=>nil,
             "PhotoUrl"=>"/services/images/photo/00Q28000003FcanEAC",
