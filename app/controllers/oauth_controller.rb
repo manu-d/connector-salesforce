@@ -20,8 +20,8 @@ class OauthController < ApplicationController
       auth = request.env["omniauth.auth"]
       current_organization.oauth_provider = auth.provider
       current_organization.oauth_uid = auth.uid
-      current_organization.encrypted_oauth_token = auth.credentials.token
-      current_organization.encrypted_refresh_token = auth.credentials.refresh_token
+      current_organization.oauth_token = auth.credentials.token
+      current_organization.refresh_token = auth.credentials.refresh_token
       current_organization.instance_url = auth.credentials.instance_url
 
       # Fetch SalesForce company name
