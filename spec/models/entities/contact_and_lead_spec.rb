@@ -4,8 +4,8 @@ describe Entities::ContactAndLead do
   describe 'class methods' do
     subject { Entities::ContactAndLead }
 
-    it { expect(subject.connec_entities_names).to eql(%w(person)) }
-    it { expect(subject.external_entities_names).to eql(%w(contact lead)) }
+    it { expect(subject.connec_entities_names).to eql(%w(Person)) }
+    it { expect(subject.external_entities_names).to eql(%w(Contact Lead)) }
   end
   describe 'instance methods' do
     subject { Entities::ContactAndLead.new(nil, nil, nil, {}) }
@@ -17,14 +17,14 @@ describe Entities::ContactAndLead do
 
       let(:connec_hash) {
         {
-          'person' => [person1, person2]
+          'Person' => [person1, person2]
         }
       }
       let(:output_hash) {
         {
-          'person' => {
-            'contact' => [person1],
-            'lead' => [person2]
+          'Person' => {
+            'Contact' => [person1],
+            'Lead' => [person2]
           }
         }
       }
@@ -40,15 +40,15 @@ describe Entities::ContactAndLead do
 
       let(:sf_hash) {
         {
-          'contact' => [contact],
-          'lead' => [lead]
+          'Contact' => [contact],
+          'Lead' => [lead]
         }
       }
 
       let(:output_hash) {
         {
-          'contact' => {'person' => [contact]},
-          'lead' => {'person' => [lead]}
+          'Contact' => {'Person' => [contact]},
+          'Lead' => {'Person' => [lead]}
         }
       }
 

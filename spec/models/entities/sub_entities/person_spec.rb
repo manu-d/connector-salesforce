@@ -5,7 +5,7 @@ describe Entities::SubEntities::Person do
     subject { Entities::SubEntities::Person }
 
     it { expect(subject.external?).to be(false) }
-    it { expect(subject.entity_name).to eql('person') }
+    it { expect(subject.entity_name).to eql('Person') }
     it { expect(subject.object_name_from_connec_entity_hash({'first_name' => 'Eric', 'last_name' => 'Mno'})).to eql('Eric Mno') }
   end
 
@@ -28,8 +28,8 @@ describe Entities::SubEntities::Person do
 
     describe 'create_external_entity' do
       it 'adds a default company for leads' do
-        expect(external_client).to receive(:create!).with('lead', {'Name' => 'Eric', 'Company' => 'Undefined'})
-        subject.create_external_entity({'Name' => 'Eric'}, 'lead')
+        expect(external_client).to receive(:create!).with('Lead', {'Name' => 'Eric', 'Company' => 'Undefined'})
+        subject.create_external_entity({'Name' => 'Eric'}, 'Lead')
       end
 
       it 'does not add a default company for entity other than lead' do
@@ -106,7 +106,7 @@ describe Entities::SubEntities::Person do
           }.with_indifferent_access
         }
 
-        it { expect(subject.map_to('contact', connec_hash)).to eql(output_hash) }
+        it { expect(subject.map_to('Contact', connec_hash)).to eql(output_hash) }
       end
 
       describe 'to leads' do
@@ -177,8 +177,8 @@ describe Entities::SubEntities::Person do
           connec_hash.merge({"lead_status"=>"Open - Not Contacted"})
         }
 
-        it { expect(subject.map_to('lead', connec_hash)).to eql(output_hash) }
-        it { expect(subject.map_to('lead', connec_hash_with_status)).to eql(output_hash) }
+        it { expect(subject.map_to('Lead', connec_hash)).to eql(output_hash) }
+        it { expect(subject.map_to('Lead', connec_hash_with_status)).to eql(output_hash) }
       end
     end
   end
