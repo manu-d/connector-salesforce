@@ -5,12 +5,12 @@ class Entities::SubEntities::Lead < Maestrano::Connector::Rails::SubEntityBase
   end
 
   def self.entity_name
-    'lead'
+    'Lead'
   end
 
   def self.mapper_classes
     {
-      'person' => Entities::SubEntities::LeadMapper
+      'Person' => Entities::SubEntities::LeadMapper
     }
   end
 

@@ -1,10 +1,10 @@
 class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   def self.connec_entities_names
-    %w(person)
+    %w(Person)
   end
 
   def self.external_entities_names
-    %w(contact lead)
+    %w(Contact Lead)
   end
 
   # input :  {
@@ -21,14 +21,14 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #          }
   def connec_model_to_external_model(connec_hash_of_entities)
-    people = connec_hash_of_entities['person']
-    modeled_hash = {'person' => { 'lead' => [], 'contact' => [] }}
+    people = connec_hash_of_entities['Person']
+    modeled_hash = { 'Person' => { 'Lead' => [], 'Contact' => [] } }
 
     people.each do |person|
       if person['is_lead']
-        modeled_hash['person']['lead'] << person
+        modeled_hash['Person']['Lead'] << person
       else
-        modeled_hash['person']['contact'] << person
+        modeled_hash['Person']['Contact'] << person
       end
     end
     modeled_hash
@@ -48,6 +48,6 @@ class Entities::ContactAndLead < Maestrano::Connector::Rails::ComplexEntity
   #             }
   #           }
   def external_model_to_connec_model(external_hash_of_entities)
-    modeled_hash = {'lead' => { 'person' => external_hash_of_entities['lead'] }, 'contact' => { 'person' => external_hash_of_entities['contact'] }}
+    {'Lead' => { 'Person' => external_hash_of_entities['Lead'] }, 'Contact' => { 'Person' => external_hash_of_entities['Contact'] }}
   end
 end

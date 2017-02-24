@@ -5,7 +5,7 @@ describe Entities::SubEntities::Lead do
     subject { Entities::SubEntities::Lead }
 
     it { expect(subject.external?).to be(true) }
-    it { expect(subject.entity_name).to eql('lead') }
+    it { expect(subject.entity_name).to eql('Lead') }
     it { expect(subject.object_name_from_external_entity_hash({'FirstName' => 'John', 'LastName' => 'A'})).to eql('John A') }
   end
 
@@ -54,8 +54,6 @@ describe Entities::SubEntities::Lead do
               "street"=>nil
             },
             "Phone"=>"886-2-25474189",
-            "MobilePhone"=>nil,
-            "Fax"=>nil,
             "Email"=>"jeffg@jackson.com",
             "Website"=>nil,
             "PhotoUrl"=>"/services/images/photo/00Q28000003FcanEAC",
@@ -117,7 +115,7 @@ describe Entities::SubEntities::Lead do
         }.with_indifferent_access
       }
 
-      it { expect(subject.map_to('person', sf_hash)).to eql(output_hash) }
+      it { expect(subject.map_to('Person', sf_hash)).to eql(output_hash) }
     end
   end
 end

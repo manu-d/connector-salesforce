@@ -5,16 +5,16 @@ class Entities::SubEntities::Contact < Maestrano::Connector::Rails::SubEntityBas
   end
 
   def self.entity_name
-    'contact'
+    'Contact'
   end
 
   def self.references
-    {'person' => %w(organization_id)}
+    { 'Person' => %w(organization_id) }
   end
 
   def self.mapper_classes
     {
-      'person' => Entities::SubEntities::ContactMapper
+      'Person' => Entities::SubEntities::ContactMapper
     }
   end
 

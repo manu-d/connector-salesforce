@@ -5,18 +5,18 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
   end
 
   def self.entity_name
-    'person'
+    'Person'
   end
 
   def self.mapper_classes
     {
-      'lead' => Entities::SubEntities::LeadMapper,
-      'contact' => Entities::SubEntities::ContactMapper
+      'Lead' => Entities::SubEntities::LeadMapper,
+      'Contact' => Entities::SubEntities::ContactMapper
     }
   end
 
   def self.references
-    {'contact' => %w(organization_id)}
+    { 'Contact' => %w(organization_id) }
   end
 
   def self.object_name_from_connec_entity_hash(entity)
@@ -34,7 +34,7 @@ class Entities::SubEntities::Person < Maestrano::Connector::Rails::SubEntityBase
 
   def create_external_entity(mapped_connec_entity, external_entity_name)
     # Company is mandatory in SF lead and have no equivalent in Connec!
-    mapped_connec_entity['Company'] = 'Undefined' if external_entity_name == 'lead'
+    mapped_connec_entity['Company'] = 'Undefined' if external_entity_name == 'Lead'
     super
   end
 end
