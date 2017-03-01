@@ -54,6 +54,7 @@ describe Entities::SubEntities::Lead do
               "street"=>nil
             },
             "Phone"=>"886-2-25474189",
+            "MobilePhone"=>"0777-225474189",
             "Email"=>"jeffg@jackson.com",
             "Website"=>nil,
             "PhotoUrl"=>"/services/images/photo/00Q28000003FcanEAC",
@@ -96,7 +97,7 @@ describe Entities::SubEntities::Lead do
 
       let(:output_hash) {
         {
-          "id" => [{"id"=>"00Q28000003FcanEAC", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}],
+          :id => [{"id"=>"00Q28000003FcanEAC", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}],
           :title=>"Mr",
           :first_name=>"Jeff",
           :last_name=>"Glimpse",
@@ -108,7 +109,7 @@ describe Entities::SubEntities::Lead do
             :billing=>{:country=>"Taiwan, Republic Of China"}
           },
           :email=>{:address=>"jeffg@jackson.com"},
-          :phone_work=>{:landline=>"886-2-25474189"},
+          :phone_work=>{:landline=>"886-2-25474189", :mobile=>"0777-225474189"},
           :lead_source=>"Phone Inquiry",
           :lead_status=>"Open - Not Contacted",
           :lead_conversion_date => DateTime.parse("2016-11-29T15:24:02.000+0000").to_time.iso8601,
