@@ -135,7 +135,7 @@ describe Entities::SubEntities::Person do
             },
             "email"=>{"address"=>"pcotton@abbottins.net"},
             "website"=>{},
-            "phone_work"=>{"landline"=>"(703) 757-1000"},
+            "phone_work"=>{"landline"=>"(703) 757-1000", "mobile"=>"0777-225474189"},
             "phone_home"=>{},
             "lead_status"=>"",
             "lead_source"=>"Web",
@@ -168,6 +168,7 @@ describe Entities::SubEntities::Person do
             :Country=>"United States",
             :Email=>"pcotton@abbottins.net",
             :Phone=>"(703) 757-1000",
+            :MobilePhone=>"0777-225474189",
             :LeadSource=>"Web",
             :Status=>"Open - Not Contacted",
           }.with_indifferent_access
