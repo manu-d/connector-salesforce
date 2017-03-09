@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 class HomeController < ApplicationController
+
+  def index
+    @all_currencies ||= currencies
+  end
+
+  def currencies
+    currencies = []
+    Money::Currency.table.each do |key, hash|
+      currencies << "#{hash[:name]} (#{hash[:iso_code]})" 
+    end
+    currencies.sort_by!(&:downcase)
+  end
+
   def update
     return redirect_to(:back) unless is_admin
 
