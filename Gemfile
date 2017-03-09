@@ -19,6 +19,7 @@ gem 'attr_encrypted', '~> 1.4.0'
 
 gem 'restforce'
 gem 'omniauth-salesforce'
+gem 'money'
 
 # Background jobs
 gem 'sinatra', require: false

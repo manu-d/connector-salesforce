@@ -1,7 +1,12 @@
 class OauthController < ApplicationController
 
   def request_omniauth
+    if params[:currency].blank?
+      flash[:danger] = "You must specify a default currency"
+      return redirect_to root_url
+    end
     if is_admin
+      current_organization.update_attributes(default_currency: params[:currency][/\((.*?)\)/m, 1])
       auth_params = {state: current_organization.uid}
       url_params = URI.escape(auth_params.collect{|k,v| "#{k}=#{v}"}.join('&'))
 
