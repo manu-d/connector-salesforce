@@ -31,7 +31,6 @@ class Entities::SubEntities::LeadMapper
 
   map from('phone_work/landline'), to('Phone')
   map from('phone_work/mobile'), to('MobilePhone')
-  map from('phone_work/fax'), to('Fax')
 
   map from('lead_source'), to('LeadSource')
   map from('lead_conversion_date') { |d| d.to_time.iso8601 }, to('ConvertedDate')
