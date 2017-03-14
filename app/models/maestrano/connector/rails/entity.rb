@@ -7,8 +7,9 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
 
     if @opts[:full_sync] || last_synchronization_date.blank?
       describe = @external_client.describe(external_entity_name)
-      fields = describe['fields'].map{|f| f['name']}.join(', ')
-      entities = @external_client.query("select #{fields} from #{external_entity_name} ORDER BY LastModifiedDate DESC")
+      @fields = describe['fields'].map{|f| f['name']}
+      fields_query = @fields.join(', ')
+      entities = @external_client.query("select #{fields_query} from #{external_entity_name} ORDER BY LastModifiedDate DESC")
     else
       entities = get_updated_data(external_entity_name, last_synchronization_date)
     end

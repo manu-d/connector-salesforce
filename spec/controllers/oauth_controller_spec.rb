@@ -14,7 +14,10 @@ describe OauthController, :type => :controller do
     end
 
     context 'when admin' do
-      before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true) }
+      before {
+        allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(true)
+        allow(controller).to receive(:params).and_return({provider: 'salesforce', currency: "AUD"})
+      }
 
       it {expect(subject).to redirect_to("http://test.host/auth/salesforce?state=#{organization.uid}")}
     end
