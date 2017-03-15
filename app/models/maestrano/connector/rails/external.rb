@@ -60,8 +60,8 @@ class Maestrano::Connector::Rails::External
   #   "utcOffset"=>36000000,
   #   "last_modified_date"=>"2016-02-05T04:37:19.000+0000"
   # }
-  def self.fetch_user(organization)
-    client = Maestrano::Connector::Rails::External.get_client(organization)
+  def self.fetch_user(organization, client = nil)
+    client = Maestrano::Connector::Rails::External.get_client(organization) unless client
     response = client.authenticate!
     client.get(response.id).body
   end

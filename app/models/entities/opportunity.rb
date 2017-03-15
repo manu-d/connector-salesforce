@@ -24,9 +24,70 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     entity['Name']
   end
 
+  def push_entities_to_connec_to(mapped_external_entities_with_idmaps, connec_entity_name)
+    return unless @organization.push_to_connec_enabled?(self)
+
+    Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Sending #{Maestrano::Connector::Rails::External.external_name} #{self.class.external_entity_name.pluralize} to Connec! #{connec_entity_name.pluralize}")
+
+    # Existing connec entities will contain all the hashes from Connec that need to be updated
+    connec_existing_ids = mapped_external_entities_with_idmaps.map { |mapped_external_entity_with_idmap| mapped_external_entity_with_idmap[:idmap].connec_id }.compact
+    proc = ->(connec_existing_id) { batch_get(connec_existing_id) }
+    existing_connec_entities = batch_get_call(connec_existing_ids, proc)
+
+    mapped_external_entities_with_idmaps.each do |mapped_external_entity_with_idmap|
+      id = mapped_external_entity_with_idmap[:idmap].connec_id
+      next unless id
+      # For updates, we remove the price as we don't want to update it if the currencies don't match
+      entity = mapped_external_entity_with_idmap[:entity]
+      entity.delete('amount') unless (currency = entity.dig('amount', 'currency')).blank? || currency == get_currency(existing_connec_entities, id)
+    end
+
+    proc = ->(mapped_external_entity_with_idmap) { batch_op('post', mapped_external_entity_with_idmap[:entity], nil, self.class.normalize_connec_entity_name(connec_entity_name)) }
+    batch_calls(mapped_external_entities_with_idmaps, proc, connec_entity_name)
+  end
+
+  def batch_get(id)
+    {
+      method: 'get',
+      url: "/api/v2/#{@organization.uid}/opportunities/#{id}",
+    }
+  end
+
+  def batch_get_call(ids, proc)
+    request_per_call = @opts[:request_per_batch_call] || 100
+    start = 0
+    results = []
+    while start < ids.size
+      # Prepare batch request
+      batch_entities = ids.slice(start, request_per_call)
+      batch_request = {sequential: true, ops: []}
+      batch_entities.each do |id|
+        batch_request[:ops] << proc.call(id)
+      end
+
+      # Batch call
+      response = @connec_client.batch(batch_request)
+      response = JSON.parse(response.body)
+      # Parse batch response
+      response['results'].each do |result|
+        results << result.dig('body', 'opportunities')
+      end
+
+      start += request_per_call
+    end
+    results.compact
+  end
+
+  def get_currency(connec_hashes, id)
+    connec_hashes.each do |connec_hash|
+      return connec_hash.dig('amount', 'currency') if connec_hash['id'].select { |id| id['provider'] == 'connec' }.first['id'] == id
+    end
+    nil
+  end
+
   def get_external_entities(external_entity_name, last_synchronization_date = nil)
     @valid_currencies = @external_client.query("select IsoCode from CurrencyType").map{|c| c['IsoCode']}
-    @timezone = Maestrano::Connector::Rails::External.fetch_user(@organization)[]
+    @timezone = Maestrano::Connector::Rails::External.fetch_user(@organization, @external_client)['timezone']
     super
   rescue Faraday::ClientError => e
     @valid_currencies = []
