@@ -12,7 +12,7 @@ gem 'figaro'
 gem 'uglifier', '>= 1.3.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'maestrano-connector-rails', '2.0.2.pre.RC5'
+gem 'maestrano-connector-rails', '2.0.2.pre.RC6'
 
 gem 'config'
 gem 'attr_encrypted', '~> 1.4.0'
