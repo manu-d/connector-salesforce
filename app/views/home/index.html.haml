@@ -15,28 +15,33 @@
         .row
           .col-md-12.alert.alert-warning
             Only administrators can modify the application settings
-
-      .row.link-step{class: "#{current_organization.oauth_uid ? 'done' : 'todo'}"}
-        .col-md-1.text-center.link-step-number
-          %span.badge.link-step-badge
-            1
-        .col-md-6.link-step-description
-          %h
+      = form_tag "/auth/salesforce/request?org_uid=#{current_organization.uid}", method: :post do
+        .row.link-step{class: "#{current_organization.oauth_uid ? 'done' : 'todo'}"}
+          .col-md-1.text-center.link-step-number
+            %span.badge.link-step-badge 1
+          .col-md-6.link-step-description
+            %h
+              - if current_organization.oauth_uid
+                Your Salesforce account <strong>#{current_organization.oauth_name} (#{current_organization.oauth_uid})</strong> is currently linked
+              - else
+                Your SalesForce account is not linked
+                %br
+                %small
+                  Please note that the integration is available only for Entreprise and Unlimited editions, and may be enabled for Professional editions. #{link_to 'More info', 'http://help.  salesforce.com/HTViewSolution?id=000005140', target: '_blank'}
+                  .spacer1
+                  .row
+                    .form-group
+                      %label{for: 'currency'}
+                        Default currency
+                      = select_tag 'currency', options_for_select(@all_currencies), class: 'form-control', :include_blank => '-- Select your default currency --' , :required => true
+          .col-md-2.col-md-offset-3.text-center.link-step-action
             - if current_organization.oauth_uid
-              Your Salesforce account <strong>#{current_organization.oauth_name} (#{current_organization.oauth_uid})</strong> is currently linked
+              = link_to "Disconnect", signout_omniauth_path(organization_id: current_organization.id), class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"
             - else
-              Your SalesForce account is not linked
-              %br
-              %small
-                Please note that the integration is available only for Entreprise and Unlimited editions, and may be enabled for Professional editions. #{link_to 'More info', 'http://help.salesforce.com/HTViewSolution?id=000005140', target: '_blank'}
-        .col-md-2.col-md-offset-3.text-center.link-step-action
-          - if current_organization.oauth_uid
-            = link_to "Disconnect", signout_omniauth_path(organization_id: current_organization.id), class: "btn btn-warning btn-lg #{is_admin ? '' : 'disabled'}"
-          - else
-            - if is_admin
-              = link_to "Link to SalesForce", "/auth/salesforce/request?org_uid=#{current_organization.uid}", class: 'btn btn-warning btn-lg'
-              %br
-              %small If you don’t have an account #{link_to 'create yours here', Maestrano::Connector::Rails::External.create_account_link(current_organization || nil)}
+              - if is_admin
+                = submit_tag "Link to SalesForce", class: "btn btn-warning btn-lg"
+                %br
+                %small If you don’t have an account #{link_to 'create yours here', Maestrano::Connector::Rails::External.create_account_link(current_organization || nil)}
 
 
       .spacer1
@@ -121,7 +126,7 @@
           .spacer1
           .row
             .col-md-2.col-md-offset-10.text-center.link-step-action
-              =submit_tag "#{current_organization.sync_enabled ? 'Update' : 'Start synchronizing!'}", class: "btn btn-lg btn-warning #{current_organization.oauth_uid ? '' : 'disabled'} text-sm"
+              =submit_tag "#{current_organization.sync_enabled ? 'Synchronize' : 'Start synchronizing!'}", class: "btn btn-lg btn-warning #{current_organization.oauth_uid ? '' : 'disabled'} text-sm"
 
       -if current_organization.oauth_uid && current_organization.sync_enabled
         .spacer2

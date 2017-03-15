@@ -114,7 +114,7 @@ describe Entities::Opportunity do
       let(:mapped_connec) {
         {
           :Amount=>0.0,
-          :CloseDate=>"2015-12-15T23:00:00Z",
+          :CloseDate=>"2015-12-15",
           :Description=>"",
           :NextStep=>"",
           :OwnerId=>"20715521-7cd5-0133-db80-0620e3ce3a45",
@@ -125,6 +125,7 @@ describe Entities::Opportunity do
         }.with_indifferent_access
       }
 
+      before { subject.instance_variable_set(:@timezone, 'UTC') }
       it { expect(subject.map_to_external(connec)).to eql(mapped_connec) }
     end
   end
