@@ -23,13 +23,32 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
   def self.object_name_from_external_entity_hash(entity)
     entity['Name']
   end
+
+  def get_external_entities(external_entity_name, last_synchronization_date = nil)
+    @valid_currencies = @external_client.query("select IsoCode from CurrencyType").map{|c| c['IsoCode']}
+    @timezone = Maestrano::Connector::Rails::External.fetch_user(@organization)[]
+    super
+  rescue Faraday::ClientError => e
+    @valid_currencies = []
+    super
+  end
 end
 
 class OpportunityMapper
   extend HashMapper
 
-  after_denormalize do |input, output|
+  after_normalize do |input, output, opts|
+    unless opts['valid_currencies']&.include?(output[:CurrencyIsoCode])
+      output.delete(:Amount) unless (currency = opts["organization"]&.default_currency).blank? || currency == output.delete(:CurrencyIsoCode)
+    end
+    output[:CloseDate] = ActiveSupport::TimeZone[opts['timezone']].parse(output[:CloseDate]).strftime('%F') if opts['timezone']
+    output
+  end
+
+  after_denormalize do |input, output, opts|
     output[:assignee_type] = 'Entity::AppUser'
+    output[:amount].merge!(currency: currency) unless output[:amount].blank? || output[:amount][:currency] || (currency = opts["organization"].default_currency).blank?
+    output[:expected_close_date] = ActiveSupport::TimeZone[opts['timezone']].parse(output[:expected_close_date]+' 23:59:59').utc.strftime('%FT%TZ') if opts['timezone']
     output
   end
 
@@ -43,6 +62,7 @@ class OpportunityMapper
   map from('next_step'), to('NextStep')
   
   map from('amount/total_amount'), to('Amount')
+  map from('amount/currency'), to('CurrencyIsoCode')
   
   map from('assignee_id'), to('OwnerId')
 end

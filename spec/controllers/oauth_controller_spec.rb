@@ -5,7 +5,7 @@ describe OauthController, :type => :controller do
     let(:organization) { create(:organization) }
     before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:current_organization).and_return(organization) }
 
-    subject { get :request_omniauth, provider: 'salesforce' }
+    subject { get :request_omniauth, {provider: 'salesforce', currency: 'AUD'} }
 
     context 'when not admin' do
       before { allow_any_instance_of(Maestrano::Connector::Rails::SessionHelper).to receive(:is_admin).and_return(false) }
