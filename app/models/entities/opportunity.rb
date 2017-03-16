@@ -35,7 +35,7 @@ class OpportunityMapper
   after_normalize do |input, output, opts|
     valid_currencies = Maestrano::Connector::Rails::External.valid_currencies
     unless valid_currencies&.include?(output[:CurrencyIsoCode])
-      currency = opts["organization"]&.default_currency
+      currency = opts[:organization]&.default_currency
       unless currency.blank? || currency == output.delete(:CurrencyIsoCode)
         output.delete(:Amount)
         idmap = input['idmap']
@@ -49,7 +49,7 @@ class OpportunityMapper
 
   after_denormalize do |input, output, opts|
     output[:assignee_type] = 'Entity::AppUser'
-    output[:amount].merge!(currency: opts["organization"].default_currency) unless output[:amount].blank? || output[:amount][:currency] || opts["organization"].default_currency.blank?
+    output[:amount].merge!(currency: opts[:organization].default_currency) unless output[:amount].blank? || output[:amount][:currency] || opts[:organization].default_currency.blank?
     timezone = Maestrano::Connector::Rails::External.timezone
     output[:expected_close_date] = ActiveSupport::TimeZone[timezone].parse(input['CloseDate'] + ' 23:59:59').utc.strftime('%FT%TZ') if timezone && input['CloseDate']
     output

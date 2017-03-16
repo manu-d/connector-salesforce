@@ -4,7 +4,7 @@ class Entities::SubEntities::PricebookEntryMapper
   after_normalize do |input, output, opts|
   	valid_currencies = Maestrano::Connector::Rails::External.valid_currencies
     unless valid_currencies&.include?(output[:CurrencyIsoCode])
-      currency = opts["organization"]&.default_currency
+      currency = opts[:organization]&.default_currency
       unless currency.blank? || currency == output.delete(:CurrencyIsoCode)
         output[:UnitPrice] = "0.0"
         idmap = input['idmap']
@@ -15,7 +15,7 @@ class Entities::SubEntities::PricebookEntryMapper
   end
 
   after_denormalize do |input, output, opts|
-    output[:sale_price].merge!(currency: opts["organization"].default_currency) unless output[:sale_price].blank? || output[:sale_price][:currency] || opts["organization"].default_currency.blank?
+    output[:sale_price].merge!(currency: opts[:organization].default_currency) unless output[:sale_price].blank? || output[:sale_price][:currency] || opts[:organization].default_currency.blank?
     output
   end
 
