@@ -69,7 +69,7 @@ describe Entities::SubEntities::PricebookEntry do
         }.with_indifferent_access
       }
 
-      it { expect(subject.map_to('item',sf_hash)).to eql(output_hash) }
+      it { expect(subject.map_to('Item',sf_hash)).to eql(output_hash) }
     end
   end
 end
