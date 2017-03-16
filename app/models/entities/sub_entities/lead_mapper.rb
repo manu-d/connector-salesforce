@@ -28,6 +28,7 @@ class Entities::SubEntities::LeadMapper
   map from('address_work/billing/country'), to('Country')
 
   map from('email/address'), to('Email')
+  map from('website/url'), to('Website')
 
   map from('phone_work/landline'), to('Phone')
   map from('phone_work/mobile'), to('MobilePhone')
