@@ -56,7 +56,7 @@ describe Entities::SubEntities::Lead do
             "Phone"=>"886-2-25474189",
             "MobilePhone"=>"0777-225474189",
             "Email"=>"jeffg@jackson.com",
-            "Website"=>nil,
+            "Website"=>"jeff.com",
             "PhotoUrl"=>"/services/images/photo/00Q28000003FcanEAC",
             "Description"=>nil,
             "LeadSource"=>"Phone Inquiry",
@@ -107,6 +107,10 @@ describe Entities::SubEntities::Lead do
           :address_work=>
           {
             :billing=>{:country=>"Taiwan, Republic Of China"}
+          },
+          :website=>
+          {
+            :url=>"jeff.com"
           },
           :email=>{:address=>"jeffg@jackson.com"},
           :phone_work=>{:landline=>"886-2-25474189", :mobile=>"0777-225474189"},
