@@ -17,7 +17,7 @@ class Maestrano::Connector::Rails::External
   end
 
   def self.get_client(organization)
-    Restforce.new :oauth_token => organization.oauth_token,
+    @@client = Restforce.new :oauth_token => organization.oauth_token,
       refresh_token: organization.refresh_token,
       instance_url: organization.instance_url,
       client_id: ENV['salesforce_client_id'],
@@ -71,5 +71,25 @@ class Maestrano::Connector::Rails::External
   def self.fetch_company(organization)
     client = Maestrano::Connector::Rails::External.get_client(organization)
     client.query('SELECT id, Name from Organization LIMIT 1')[0]
+  end
+
+  def self.timezone
+    @@timezone ||= user_timezone
+  end
+
+  def self.user_timezone
+    Maestrano::Connector::Rails::External.fetch_user(nil, @@client)['timezone']
+  rescue => e
+    nil
+  end
+
+  def self.valid_currencies
+    @@valid_currencies ||= account_currencies
+  end
+
+  def self.account_currencies
+    @@client.query("select IsoCode from CurrencyType").map{|c| c['IsoCode']}
+  rescue => e
+    []
   end
 end
