@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Entities::Opportunity do
 
+  before { allow(Maestrano::Connector::Rails::External).to receive(:timezone).and_return('UTC') }
+
   describe 'class methods' do
     subject { Entities::Opportunity }
 
@@ -68,7 +70,7 @@ describe Entities::Opportunity do
         {
           :id => [{:id=>"00628000006HPkiAAG", :provider=>organization.oauth_provider, :realm=>organization.oauth_uid}],
           :amount=>{:total_amount=>60000.0},
-          :expected_close_date=>Date.parse('2013-11-07T00:00:00').to_time.iso8601,
+          :expected_close_date=>'2013-11-07T23:59:59Z',
           :name=>"GenePoint Lab Generators",
           :probability=>60.0,
           :sales_stage=>"Id. Decision Makers",
@@ -125,7 +127,6 @@ describe Entities::Opportunity do
         }.with_indifferent_access
       }
 
-      before { subject.instance_variable_set(:@timezone, 'UTC') }
       it { expect(subject.map_to_external(connec)).to eql(mapped_connec) }
     end
   end

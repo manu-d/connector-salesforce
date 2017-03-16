@@ -10,7 +10,7 @@ class Entities::SubEntities::Product2 < Maestrano::Connector::Rails::SubEntityBa
 
   def self.mapper_classes
     {
-      'item' => Entities::SubEntities::Product2Mapper
+      'Item' => Entities::SubEntities::Product2Mapper
     }
   end
 

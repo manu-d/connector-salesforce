@@ -28,7 +28,7 @@ describe Entities::Item do
       end
     end
 
-    it { expect(subject.connec_entities_names).to eql(%w(item)) }
+    it { expect(subject.connec_entities_names).to eql(%w(Item)) }
     it { expect(subject.external_entities_names).to eql(%w(Product2 PricebookEntry)) }
   end
 
@@ -42,12 +42,12 @@ describe Entities::Item do
 
       let(:connec_hash) {
         {
-          'item' => [item1, item2]
+          'Item' => [item1, item2]
         }
       }
       let(:output_hash) {
         {
-          'item' => {
+          'Item' => {
             'Product2' => [item1, item2],
             'PricebookEntry' => [item1, item2]
           }
@@ -71,8 +71,8 @@ describe Entities::Item do
 
       let(:output_hash) {
         {
-          'Product2' => {'item' => [product]},
-          'PricebookEntry' => {'item' => [price]}
+          'Product2' => {'Item' => [product]},
+          'PricebookEntry' => {'Item' => [price]}
         }
       }
 

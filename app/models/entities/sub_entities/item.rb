@@ -5,7 +5,7 @@ class Entities::SubEntities::Item < Maestrano::Connector::Rails::SubEntityBase
   end
 
   def self.entity_name
-    'item'
+    'Item'
   end
 
   def self.mapper_classes

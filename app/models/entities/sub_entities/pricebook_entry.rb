@@ -10,7 +10,7 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
 
   def self.mapper_classes
     {
-      'item' => Entities::SubEntities::PricebookEntryMapper
+      'Item' => Entities::SubEntities::PricebookEntryMapper
     }
   end
 
@@ -18,8 +18,12 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     "Price for #{entity['Product2Id']}"
   end
 
-  def map_to(name, entity, first_time_mapped = nil)
+  def map_to(name, entity, idmap = nil)
     super.merge(id: [{id: entity['Product2Id'], provider: @organization.oauth_provider, realm: @organization.oauth_uid}])
+  end
+
+  def self.currency_check_field
+    'sale_price'
   end
 
   # --------------------------------------------

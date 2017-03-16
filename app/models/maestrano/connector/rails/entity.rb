@@ -29,7 +29,8 @@ class Maestrano::Connector::Rails::Entity < Maestrano::Connector::Rails::EntityB
   def update_external_entity(mapped_connec_entity, external_id, external_entity_name)
     Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Sending update #{external_entity_name} (id=#{external_id}): #{mapped_connec_entity} to #{Maestrano::Connector::Rails::External.external_name}")
     mapped_connec_entity.merge!('Id' => external_id)
-    @external_client.update!(external_entity_name, mapped_connec_entity)
+    idmap = Maestrano::Connector::Rails::IdMap.find_by(external_id: external_id, external_entity: external_entity_name.downcase, organization_id: @organization.id) if external_entity_name == 'PricebookEntry'
+    @external_client.update!(external_entity_name, mapped_connec_entity) unless idmap&.metadata&.dig(:ignore_currency_update)
     {}
   end
 
