@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Entities::SubEntities::Product2Mapper do
   subject { Entities::SubEntities::Product2Mapper }
+  let(:organization) { create(:organization, default_currency: 'GBP')}
 
   describe 'normalize' do
     let(:connec_hash) {
@@ -55,9 +56,14 @@ describe Entities::SubEntities::Product2Mapper do
     }
 
     let(:output_hash) {
-      {:reference=>"SL9080", :name=>"SLA: Platinum"}
+      {
+       :reference=>"SL9080",
+       :name=>"SLA: Platinum",
+       :purchase_price => {:currency=>"GBP"},
+       :sale_price => {:currency=>"GBP"}
+     }
     }
 
-    it { expect(subject.denormalize(sf_hash)).to eql(output_hash) }
+    it { expect(subject.denormalize(sf_hash, {organization: organization})).to eql(output_hash) }
   end
 end
