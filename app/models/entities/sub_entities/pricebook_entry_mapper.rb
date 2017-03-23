@@ -6,7 +6,7 @@ class Entities::SubEntities::PricebookEntryMapper
     unless valid_currencies&.include?(output[:CurrencyIsoCode])
       currency = opts[:organization]&.default_currency
       unless currency == output.delete(:CurrencyIsoCode) || currency.blank?
-        output[:UnitPrice] = "0.0"
+        output[:UnitPrice] = 0.0
         idmap = input['idmap']
         idmap.update_attributes(metadata: idmap.metadata.merge(ignore_currency_update: true)) if idmap
       end
@@ -14,11 +14,6 @@ class Entities::SubEntities::PricebookEntryMapper
     output
   end
 
-  after_denormalize do |input, output, opts|
-    output[:sale_price].merge!(currency: opts[:organization].default_currency) unless output[:sale_price].blank? || output[:sale_price][:currency] || opts[:organization].default_currency.blank?
-    output
-  end
-
-  map from('sale_price/net_amount'), to('UnitPrice')
+  map from('sale_price/net_amount'), to('UnitPrice'), default: 0.0
   map from('sale_price/currency'), to('CurrencyIsoCode')
 end

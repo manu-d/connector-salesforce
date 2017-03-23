@@ -22,8 +22,8 @@ class Entities::SubEntities::PricebookEntry < Maestrano::Connector::Rails::SubEn
     super.merge(id: [{id: entity['Product2Id'], provider: @organization.oauth_provider, realm: @organization.oauth_uid}])
   end
 
-  def self.currency_check_field
-    'sale_price'
+  def self.currency_check_fields
+    %w(sale_price purchase_price)
   end
 
   # --------------------------------------------

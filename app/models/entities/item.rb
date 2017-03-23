@@ -55,7 +55,7 @@ class Entities::Item < Maestrano::Connector::Rails::ComplexEntity
   def self.get_pricebook_id(client)
     Maestrano::Connector::Rails::ConnectorLogger.log('info', @organization, "Fetching standard pricebook from SalesForce")
     pricebooks = client.query("Select Id, IsStandard From Pricebook2")
-    standard_pricebook = pricebooks.find{|pricebook| pricebook['IsStandard']}
+    standard_pricebook = pricebooks.find { |pricebook| pricebook['IsStandard']}
 
     raise 'No standard pricebook found' unless standard_pricebook
     standard_pricebook['Id']

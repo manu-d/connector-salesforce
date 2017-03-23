@@ -10,10 +10,10 @@ describe Entities::SubEntities::Product2 do
   end
 
   describe 'instance methods' do
-    let(:organization) { create(:organization) }
+    let(:organization) { create(:organization, default_currency: 'AMD') }
     let(:connec_client) { Maestrano::Connec::Client[organization.tenant].new(organization.uid) }
     let(:external_client) { Maestrano::Connector::Rails::External.get_client(organization) }
-    let(:opts) { {} }
+    let(:opts) { {organization: organization} }
     subject { Entities::SubEntities::Product2.new(organization, connec_client, external_client, opts) }
 
     describe 'mapping to item' do
@@ -45,7 +45,10 @@ describe Entities::SubEntities::Product2 do
         {
           reference: "SL9080",
           name: "SLA: Platinum",
-          "id" => [{"id"=>"01t28000000yjJ5AAI", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}]
+          purchase_price:  {"currency"=>"AMD"},
+          reference:  "SL9080",
+          sale_price:  {"currency"=>"AMD"},
+          id:  [{"id"=>"01t28000000yjJ5AAI", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}]
         }.with_indifferent_access
       }
 
