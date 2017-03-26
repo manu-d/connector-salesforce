@@ -24,8 +24,8 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
     entity['Name']
   end
 
-  def self.currency_check_field
-    'amount'
+  def self.currency_check_fields
+    %w(amount)
   end
 end
 
@@ -63,9 +63,9 @@ class OpportunityMapper
   map from('expected_close_date'), to('CloseDate')
   map from('sales_stage'), to('StageName')
   map from('next_step'), to('NextStep')
-  
+
   map from('amount/total_amount'), to('Amount')
   map from('amount/currency'), to('CurrencyIsoCode')
-  
+
   map from('assignee_id'), to('OwnerId')
 end
