@@ -52,6 +52,8 @@ describe OauthController, :type => :controller do
 
         subject
 
+        organization.reload
+
         expect(organization.oauth_name).to eql('lala')
         expect(organization.oauth_uid).to eql('idd')
       end
