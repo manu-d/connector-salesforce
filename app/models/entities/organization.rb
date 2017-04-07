@@ -19,10 +19,20 @@ class Entities::Organization < Maestrano::Connector::Rails::Entity
   def self.object_name_from_external_entity_hash(entity)
     entity['Name']
   end
+
+  def before_sync(last_synchronization_date)
+    @opts[:has_fax] = @external_client.describe('Account')['fields'].map{|f| f['name']}.include?('Fax')
+  rescue => e
+  end
 end
 
 class OrganizationMapper
   extend HashMapper
+
+  after_normalize do |input, output, opts|
+    output.delete(:Fax) unless opts[:opts][:has_fax]
+    output
+  end
 
   map from('name'),  to('Name')
   map from('industry'),  to('Industry')
