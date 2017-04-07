@@ -30,7 +30,7 @@ class OrganizationMapper
   extend HashMapper
 
   after_normalize do |input, output, opts|
-    output.delete(:Fax) unless opts[:has_fax]
+    output.delete(:Fax) unless opts[:opts][:has_fax]
     output
   end
 
