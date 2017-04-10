@@ -13,7 +13,8 @@ describe Entities::Organization do
 
   describe 'instance methods' do
     let(:organization) { create(:organization) }
-    subject { Entities::Organization.new(organization, nil, nil, {}) }
+    let(:opts)         { {has_fax: true}}
+    subject { Entities::Organization.new(organization, nil, nil, opts) }
 
 
     describe 'SalesForce to connec!' do
@@ -196,6 +197,12 @@ describe Entities::Organization do
       }
 
       it { expect(subject.map_to_external(connec)).to eql(mapped_connec) }
+
+      context 'the account has the fax field disabled' do
+        let!(:opts)         { {has_fax: false}}
+
+        it { expect(subject.map_to_external(connec)).to eql(mapped_connec.except(:Fax)) }
+      end
     end
   end
 end
