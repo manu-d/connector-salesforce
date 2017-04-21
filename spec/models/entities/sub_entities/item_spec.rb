@@ -78,7 +78,8 @@ describe Entities::SubEntities::Item do
         let(:output_hash) {
           {
             ProductCode: 'GC1040',
-            Name: 'GenWatt Diesel 200kW'
+            Name: 'GenWatt Diesel 200kW',
+            IsActive: true
           }.with_indifferent_access
         }
 
