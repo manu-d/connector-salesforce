@@ -24,7 +24,7 @@ describe Entities::SubEntities::Product2Mapper do
     }
 
     let(:output_hash) {
-      {:ProductCode=>"GC1040", :Name=>"GenWatt Diesel 200kW"}
+      {:ProductCode=>"GC1040", :Name=>"GenWatt Diesel 200kW", :IsActive=>true}
     }
 
     it { expect(subject.normalize(connec_hash)).to eql(output_hash) }

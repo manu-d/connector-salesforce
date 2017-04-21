@@ -3,6 +3,7 @@ class Entities::SubEntities::Product2Mapper
 
   after_normalize do |input, output|
     output[:ProductCode] ||= input['code']
+    output[:IsActive] = input['status'] == 'ACTIVE'
     output
   end
 
