@@ -97,6 +97,9 @@ describe Entities::SubEntities::Lead do
 
       let(:output_hash) {
         {
+          :opts => {
+            :attach_to_organization => "Jackson Controls"
+          },
           :id => [{"id"=>"00Q28000003FcanEAC", "provider"=>organization.oauth_provider, "realm"=>organization.oauth_uid}],
           :title=>"Mr",
           :first_name=>"Jeff",

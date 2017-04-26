@@ -69,6 +69,9 @@ describe Entities::Opportunity do
 
       let (:mapped_sf) {
         {
+          :opts => {
+            :attached_to_org => "0012800000C3cS9AAJ"
+          },
           :id => [{:id=>"00628000006HPkiAAG", :provider=>organization.oauth_provider, :realm=>organization.oauth_uid}],
           :amount=>{:total_amount=>60000.0},
           :expected_close_date=>'2013-11-07T23:59:59Z',
@@ -124,10 +127,12 @@ describe Entities::Opportunity do
           :Name=>"Test",
           :Probability=>23.0,
           :StageName=>"Prospecting",
-          :Type=>""
+          :Type=>"",
+          :AccountId=>'abc'
         }.with_indifferent_access
       }
 
+      before { allow(Entities::Opportunity).to receive(:get_org_id) { 'abc' } }
       it { expect(subject.map_to_external(connec)).to eql(mapped_connec) }
     end
   end

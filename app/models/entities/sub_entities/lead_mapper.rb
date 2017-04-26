@@ -13,6 +13,7 @@ class Entities::SubEntities::LeadMapper
     output[:is_lead] = true
     output[:is_customer] = false
     output[:lead_status] = input[:Status]
+    output[:opts] = { attach_to_organization: input['Company']} unless input['Company'].blank?
     output
   end
 

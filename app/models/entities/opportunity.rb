@@ -27,6 +27,20 @@ class Entities::Opportunity < Maestrano::Connector::Rails::Entity
   def self.currency_check_fields
     %w(amount)
   end
+
+  def self.get_org_id(lead_id, client)
+    lead_id = lead_id.find{|id| id['provider'] == 'connec'}['id']
+    uri = "people/#{lead_id}"
+    response = client.get(uri)
+    response_hash = JSON.parse(response.body)
+    ids = response_hash.dig('people','organization_id')
+    ids.each do |id_hash|
+      return id_hash['id'] if id_hash['provider'] == 'salesforce'
+    end
+    ''
+  rescue => e
+    ''
+  end
 end
 
 class OpportunityMapper
@@ -44,6 +58,7 @@ class OpportunityMapper
     end
     timezone = Maestrano::Connector::Rails::External.timezone
     output[:CloseDate] = ActiveSupport::TimeZone[timezone].parse(output[:CloseDate]).strftime('%F') if timezone
+    output[:AccountId] = Entities::Opportunity.get_org_id(input['lead_id'], opts[:connec_client])
     output
   end
 
@@ -52,6 +67,7 @@ class OpportunityMapper
     output[:amount].merge!(currency: opts[:organization].default_currency) unless output[:amount].blank? || output[:amount][:currency] || opts[:organization].default_currency.blank?
     timezone = Maestrano::Connector::Rails::External.timezone
     output[:expected_close_date] = ActiveSupport::TimeZone[timezone].parse(input['CloseDate'] + ' 23:59:59').utc.strftime('%FT%TZ') if timezone && input['CloseDate']
+    output[:opts] = {attached_to_org: input['AccountId']}
     output
   end
 
