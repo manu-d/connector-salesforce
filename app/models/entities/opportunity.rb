@@ -57,7 +57,7 @@ class OpportunityMapper
       end
     end
     timezone = Maestrano::Connector::Rails::External.timezone
-    output[:CloseDate] = ActiveSupport::TimeZone[timezone].parse(output[:CloseDate]).strftime('%F') if timezone
+    output[:CloseDate] = ActiveSupport::TimeZone[timezone].parse(output[:CloseDate]).strftime('%F') if timezone && output[:CloseDate]
     output[:AccountId] = Entities::Opportunity.get_org_id(input['lead_id'], opts[:connec_client])
     output
   end
